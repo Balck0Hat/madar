@@ -3,6 +3,7 @@ import { C, P, FONT } from "../shared/constants/theme";
 import { nextUnit } from "../shared/utils/progress";
 import { isCenter } from "../shared/utils/units";
 import { PrefsProvider } from "../shared/context/PrefsContext";
+import { I18nProvider, LOCALES, DEFAULT_LOCALE } from "../shared/i18n";
 import { CSS } from "../shared/styles/global";
 import { TabBar, SideNav, Toast, ShortcutsHelp } from "../shared/components/ui";
 import { useShortcuts } from "../shared/hooks/useShortcuts";
@@ -71,8 +72,9 @@ export default function App() {
   const prefs = { theme: profile?.theme ?? "system", fontScale: profile?.fontScale ?? 1, arabicNums: Boolean(profile?.arabicNums) };
 
   return (
+    <I18nProvider locale={DEFAULT_LOCALE}>
     <PrefsProvider value={prefs}>
-      <div className="madar madar-app" dir="rtl" style={{ background: paper ? P.bg : C.bg, color: paper ? P.ink : C.text, fontFamily: FONT, transition: "background .4s" }}>
+      <div className="madar madar-app" dir={LOCALES[DEFAULT_LOCALE].dir} style={{ background: paper ? P.bg : C.bg, color: paper ? P.ink : C.text, fontFamily: FONT, transition: "background .4s" }}>
         <style>{CSS}</style>
         {!focus && profile && <SideNav tab={screen} onTab={setScreen} name={profile.name} />}
         <main className={`madar-main${focus ? " is-focus" : ""}`}>
@@ -105,5 +107,6 @@ export default function App() {
         </main>
       </div>
     </PrefsProvider>
+    </I18nProvider>
   );
 }
