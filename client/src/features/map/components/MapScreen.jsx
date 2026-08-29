@@ -1,25 +1,31 @@
 import { useState } from "react";
-import { Play, Clock, Target, Snowflake, RotateCcw } from "lucide-react";
 import { C } from "../../../shared/constants/theme";
-import { RING_NAMES, XP_LESSON, XP_QUIZ } from "../../../shared/data/curriculum";
 import { unitInfo, isCenter } from "../../../shared/utils/units";
-import { stats, nextUnit, eta } from "../../../shared/utils/progress";
+import { nextUnit, eta } from "../../../shared/utils/progress";
 import { levelFromXp, levelTitle } from "../../../shared/utils/level";
-import { useNum } from "../../../shared/context/NumContext";
 import { useTilt } from "../../../shared/hooks/useTilt";
-import { Btn, Card, Pill } from "../../../shared/components/ui";
+import { Pill } from "../../../shared/components/ui";
 import Wheel from "../../../shared/components/wheel/Wheel";
 import { polar, RADII, sectorMid } from "../../../shared/components/wheel/geometry";
-import StatsRow from "./StatsRow";
+import { resumeUnit } from "../utils/resume";
+import PrimaryCard from "./PrimaryCard";
+import TodayStrip from "./TodayStrip";
 import DomainGrid from "./DomainGrid";
-import { ChallengeCard } from "../../challenge";
 
-export default function MapScreen({ profile, progress, xp, streak, freezes = 0, weeklyXp, reviewDue = 0, onOpenDomain, onOpenUnit, onProfile, onReview, onToast, threadsNew }) {
-  const num = useNum();
+// الشاشة الأولى تحمل فعلاً واحداً: العجلة (خريطة المعرفة) ثم بطاقة واحدة تقول
+// «تابع القراءة» أو «ابدأ الوحدة». كل ما عداها مطويّ في شريط «اليوم».
+export default function MapScreen({
+  profile, progress, xp, streak, freezes = 0, weeklyXp, reviewDue = 0, resume = {},
+  calm: calmProp, onOpenDomain, onOpenUnit, onProfile, onReview, onToast, threadsNew,
+}) {
   const level = levelFromXp(xp);
-  const st = stats(progress);
   const next = nextUnit(progress, profile.fav);
-  const info = next ? unitInfo(next) : null;
+  // وضع الهدوء يصل مع الملف الشخصي، ونقبل تجاوزه كخاصية صريحة للاختبار والتركيب
+  const calm = calmProp ?? Boolean(profile.calm);
+  // ما بدأه ولم يُنهه يسبق ما لم يبدأه: العودة إلى صفحة مفتوحة أقلّ كلفة من بداية جديدة
+  const started = resumeUnit(resume, progress, next);
+  const target = started || next;
+  const info = target ? unitInfo(target) : null;
   const e = eta(progress, profile.minutes);
   const tilt = useTilt();
   const [zoom, setZoom] = useState(null);
@@ -53,38 +59,9 @@ export default function MapScreen({ profile, progress, xp, streak, freezes = 0, 
           </div>
         </div>
         <div>
-          <StatsRow streak={streak} weeklyXp={weeklyXp} rank={st.rank} />
-          {freezes > 0 && <div style={{ padding: "8px 16px 0", color: C.muted, fontSize: 12, display: "flex", gap: 6, alignItems: "center" }}><Snowflake size={13} color="#52B8E8" />لديك {num(freezes)} تجميد للسلسلة: يحفظها إذا فاتك يوم.</div>}
           <div style={{ padding: "14px 16px 0", display: "grid", gap: 10 }}>
-            <ChallengeCard onToast={onToast} />
-        {reviewDue > 0 && (
-              // البطاقة قابلة للضغط لكن Card لا يقبل className، فنلفّها بغلاف يحمل تأثير الضغط
-              <div className="madar-press">
-                <Card accent={C.gold} onClick={onReview}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div><div style={{ fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}><RotateCcw size={16} color={C.gold} />مراجعة الصباح</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>{num(reviewDue)} وحدات مستحقة · 3 دقائق تثبّت ما تعلمته</div></div>
-                    <Pill>+{num(10)} لكل وحدة</Pill>
-                  </div>
-                </Card>
-              </div>
-            )}
-            {info ? (
-              <Card accent={info.color}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Pill color={info.color}>{info.domain ? `${info.domainName} · ${RING_NAMES[info.ring]}` : "المركز"}</Pill>
-                  <span style={{ color: C.muted, fontSize: 12, display: "flex", alignItems: "center", gap: 4 }}><Clock size={12} />{num(info.minutes)} د · {num(XP_LESSON[info.ring] + XP_QUIZ[info.ring])} XP</span>
-                </div>
-                <div style={{ fontWeight: 800, fontSize: 17, margin: "10px 0 12px", lineHeight: 1.5 }}>{info.title}</div>
-                <span className="madar-press" style={{ display: "block" }}>
-                  <Btn primary onClick={() => onOpenUnit(next)}><span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}><Play size={16} />ابدأ الوحدة</span></Btn>
-                </span>
-              </Card>
-            ) : (
-              <Card><div style={{ fontWeight: 800 }}>أنهيت المدار الأول</div><div style={{ color: C.muted, fontSize: 13 }}>امتحان المدار في صفحة «أنا»، والمدار الثاني يُفتح على العجلة.</div></Card>
-            )}
-            <div style={{ color: C.muted, fontSize: 12, textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center", gap: 6 }}>
-              <Target size={12} /> بوتيرة {num(profile.minutes)} دقيقة يومياً تكمل المدار الأول في {e.label} ({num(e.days)} يوماً)
-            </div>
+            <PrimaryCard info={info} resuming={Boolean(started)} minutes={profile.minutes} eta={info ? e : null} onOpen={() => onOpenUnit(target)} />
+            <TodayStrip streak={streak} weeklyXp={weeklyXp} freezes={freezes} reviewDue={reviewDue} calm={calm} onReview={onReview} onToast={onToast} />
           </div>
           <DomainGrid progress={progress} onOpenDomain={onOpenDomain} />
         </div>

@@ -76,7 +76,10 @@ export function ErrorState({ message, onRetry, onBack }) {
   );
 }
 
-export function EmptyState({ title, text, action, onAction, spot }) {
+// الأسبوع الأول أجوف: ستّ شاشات تُفتح وخمس منها فارغة. الاعتذار لا يبني ثقة،
+// أما نموذج باهت لما سيظهر هنا فيبيع القيمة قبل أن تصل. sample عقدة كاملة
+// (بطاقة خلاصة حقيقية، رسم بياني، رابط دعوة) نعرضها بلا تفاعل تحت الرسالة.
+export function EmptyState({ title, text, action, onAction, spot, sample }) {
   return (
     <div className="madar-rise" style={{ textAlign: "center", padding: "36px 16px", display: "grid", gap: 8, justifyItems: "center" }}>
       {/* بدون spot نُبقي العلامة القديمة حتى لا تتغيّر الشاشات التي لم تُحدَّث بعد */}
@@ -84,6 +87,35 @@ export function EmptyState({ title, text, action, onAction, spot }) {
       <div style={{ fontWeight: 800, fontSize: 18 }}>{title}</div>
       {text && <div style={{ color: C.muted, fontSize: 14, lineHeight: 1.7, maxWidth: 320 }}>{text}</div>}
       {action && <Btn primary small full={false} onClick={onAction}>{action}</Btn>}
+      {sample && <EmptySample>{sample}</EmptySample>}
+    </div>
+  );
+}
+
+// النموذج مُطفأ بصرياً وخارج شجرة الوصول ومنزوع التفاعل، كي لا يُظن بيانات حقيقية
+function EmptySample({ children }) {
+  return (
+    <div style={{ width: "100%", maxWidth: 420, marginTop: 14, display: "grid", gap: 8, justifyItems: "stretch" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.muted, fontSize: 12 }}>
+        <span style={{ height: 1, flex: 1, background: C.line }} aria-hidden="true" />
+        هكذا ستبدو
+        <span style={{ height: 1, flex: 1, background: C.line }} aria-hidden="true" />
+      </div>
+      <div
+        aria-hidden="true"
+        style={{
+          textAlign: "start",
+          opacity: 0.45,
+          filter: "saturate(.5)",
+          pointerEvents: "none",
+          userSelect: "none",
+          borderRadius: 18,
+          border: `1px dashed ${alpha(C.text, 0.18)}`,
+          padding: 10,
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

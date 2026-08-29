@@ -52,7 +52,7 @@ export default function ProfileScreen({ profile, progress, xp, badges, streak, f
         <ShareSection profile={profile} progress={progress} level={level} st={st} refEl={shareRef} onSave={() => save(shareRef, 360, 640)} onToast={onToast} />
         <CertificateSection profile={profile} st={st} certificate={certificate} date={now.toLocaleDateString("ar", { year: "numeric", month: "long", day: "numeric" })} refEl={certRef} onSave={() => save(certRef, 360, 250)} onExam={onExam} />
         <ReminderToggle enabled={profile.reminders} onChange={onToggleReminders} onToast={onToast} />
-        <AppearanceCard theme={profile.theme} fontScale={profile.fontScale} arabicNums={profile.arabicNums} onChange={onPrefs} />
+        <AppearanceCard calm={profile.calm} theme={profile.theme} fontScale={profile.fontScale} arabicNums={profile.arabicNums} onChange={onPrefs} />
         <BadgeGrid badges={badges} />
         <div style={{ color: C.muted, fontSize: 12, textAlign: "center" }}>{profile.email}</div>
         <Btn onClick={onLogout}>تسجيل الخروج</Btn>

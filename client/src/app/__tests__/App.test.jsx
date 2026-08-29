@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import App from "../App";
 import { ApiError } from "../../shared/utils/api";
@@ -49,7 +49,11 @@ vi.mock("../../features/progress/services/progress.service", () => ({
   }),
 }));
 
-beforeEach(() => { db.user = null; db.state = null; });
+beforeEach(() => {
+  db.user = null; db.state = null;
+  // الجولة التعريفية تُعرض مرة واحدة؛ اختبارات التدفق تخصّ متعلّماً رآها
+  try { localStorage.setItem("madar.tour.v1", "done"); } catch (err) { /* التخزين محجوب */ }
+});
 
 async function registerToMap() {
   render(<App />);
@@ -95,6 +99,19 @@ describe("App flow", () => {
     fireEvent.click(screen.getByText("النتيجة"));
     await waitFor(() => expect(screen.getByText("علامة كاملة")).toBeInTheDocument());
     expect(screen.getByText("+110")).toBeInTheDocument();
+  });
+
+  it("should show the first-run tour to a new learner only once", async () => {
+    try { localStorage.removeItem("madar.tour.v1"); } catch (err) { /* التخزين محجوب */ }
+    db.user = mkUser("سارة", "sara@example.com"); db.state = emptyState();
+    render(<App />);
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText("تخطّي الجولة"));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    cleanup();
+    render(<App />);
+    await screen.findByText("ابدأ الوحدة");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("should resume the session, open the library and log out", async () => {

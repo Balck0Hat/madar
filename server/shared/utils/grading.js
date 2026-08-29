@@ -29,6 +29,19 @@ export function heuristicOpen(q, answer) {
 
 export const isOpen = (q) => q.t === "open";
 
+// النجاح يُحسب من الأسئلة المصحّحة آلياً وحدها (scored). السؤال المفتوح المُقيَّم ذاتياً
+// لا يدخل الحساب: تقييم بالكلمات المفتاحية يُغَشّ بكتابتها، ويظلم من صاغ الفكرة بعبارته.
+// اختبار بلا سؤال مصحَّح واحد (كله مفتوح) لا معنى لرسوبه، فيُعدّ ناجحاً.
+export function scoreOf(graded) {
+  const scored = graded.filter((g) => g.scored);
+  if (!scored.length) return { correct: 1, total: 1 };
+  return { correct: scored.filter((g) => g.ok).length, total: scored.length };
+}
+
+// إشارات الضعف لجدولة المراجعة: خطأ مصحَّح، أو اعتراف المتعلم بأنه لم يفهم
+export const weakQids = (graded) =>
+  graded.filter((g) => (g.scored ? !g.ok : g.selfMark === "unclear")).map((g) => g.qid);
+
 // اختيار n عناصر عشوائية دون تكرار
 export function sample(arr, n) {
   const copy = [...arr];

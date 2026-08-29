@@ -1,8 +1,8 @@
 import Progress from "./progress.model.js";
 import { parseUnitId } from "../../shared/utils/units.js";
 import { applyFinish, applyFreeze, streakFrom, dayKey } from "../../shared/utils/game.js";
-import { checkClosed, isOpen } from "../../shared/utils/grading.js";
-import { gradeOpen } from "../../shared/utils/ai.js";
+import { checkClosed, isOpen, scoreOf, weakQids } from "../../shared/utils/grading.js";
+import { gradeOpen, aiEnabled } from "../../shared/utils/ai.js";
 import { models } from "../../shared/utils/models.js";
 import { badRequest } from "../../shared/utils/AppError.js";
 import { bus, on } from "../../shared/utils/events.js";

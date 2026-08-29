@@ -11,7 +11,8 @@ const body = { fontFamily: READ, fontSize: "1.07em", lineHeight: 1.95 };
 // قابلة للاستخدام (وللاختبار) بمعزل عن ميزة التظليل.
 const plain = (t) => t;
 
-export function SparkPage({ info, content, mark = plain }) {
+// hint: تعليمة التنقّل بالسحب. تُخفى في وضع التمرير لأنها تصف حركة لا وجود لها هناك.
+export function SparkPage({ info, content, mark = plain, hint = true }) {
   const num = useNum();
   return (
     <div>
@@ -26,9 +27,11 @@ export function SparkPage({ info, content, mark = plain }) {
       <div style={{ color: P.muted, fontSize: ".82em", marginTop: 16, display: "flex", alignItems: "center", gap: 6 }}>
         <Clock size={13} />{num(info.minutes)} دقيقة · {num(content.cards.length)} بطاقات · اختبار من {num(content.quiz.length)} أسئلة
       </div>
-      <div style={{ color: P.muted, fontSize: ".75em", marginTop: 24, textAlign: "center", lineHeight: 1.8 }}>
-        اسحب، أو اضغط على يسار الشاشة للمتابعة<br />أو استخدم سهمي لوحة المفاتيح، وEsc للخروج
-      </div>
+      {hint && (
+        <div style={{ color: P.muted, fontSize: ".75em", marginTop: 24, textAlign: "center", lineHeight: 1.8 }}>
+          اسحب، أو اضغط على يسار الشاشة للمتابعة<br />أو استخدم سهمي لوحة المفاتيح، وEsc للخروج
+        </div>
+      )}
     </div>
   );
 }

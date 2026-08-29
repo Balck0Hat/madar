@@ -11,7 +11,7 @@ const EMPTY = { progress: {}, attempts: {}, resume: {}, xp: 0, weeklyXp: 0, badg
 const toProfile = (u) => ({
   id: u.id, name: u.name, email: u.email, handle: u.handle, role: u.role, tier: u.tier,
   minutes: u.settings.minutes, fav: u.settings.fav, arabicNums: u.settings.arabicNums,
-  reminders: u.settings.reminders, theme: u.settings.theme ?? "system", fontScale: u.settings.fontScale ?? 1,
+  reminders: u.settings.reminders, calm: Boolean(u.settings.calm), readMode: u.settings.readMode ?? "cards", theme: u.settings.theme ?? "system", fontScale: u.settings.fontScale ?? 1,
 });
 const quiet = (p) => p.catch(() => null);
 

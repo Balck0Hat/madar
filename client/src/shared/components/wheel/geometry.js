@@ -19,6 +19,19 @@ export const RADII = [[46, 78], [84, 116], [122, 154]];
 // زاوية منتصف القطاع لمجال بترتيب di
 export const sectorMid = (di) => di * 36 + 18;
 
+// مسار قطاع مجال في مدار: pad فجوة الزاوية بين القطاعات، grow توسعة نصف القطر.
+// مصدر واحد للهندسة كي يبقى هدف اللمس مطابقاً للرسم مهما تغيّرت الأرقام.
+export function sectorPath(di, r, pad = 1.3, grow = 0) {
+  const [r0, r1] = RADII[r];
+  return ring(r0 - grow, r1 + grow, di * 36 + pad, (di + 1) * 36 - pad);
+}
+
+// توسعة هدف اللمس: ٣ وحدات تملأ الفجوة بين المدارات بلا تداخل بينها
+export const HIT_GROW = 3;
+
+// نصف قطر هدف لمس الوحدة (~26px قطراً) — النقطة المرسومة أصغر من أن تُلمس
+export const HIT_UNIT = 13;
+
 // موضع نجمة الوحدة على العجلة
 export function starPos(id) {
   const p = parseId(id);
