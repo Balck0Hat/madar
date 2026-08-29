@@ -8,7 +8,7 @@ export async function getMe(userId) {
 }
 
 // مفاتيح تعيش تحت settings؛ ما عداها (name) حقل جذر
-const SETTING_KEYS = ["minutes", "fav", "arabicNums", "reminders", "theme", "fontScale"];
+const SETTING_KEYS = ["minutes", "fav", "arabicNums", "reminders", "theme", "fontScale", "readMode", "calm"];
 
 export async function updateMe(userId, body) {
   const $set = {};

@@ -1,10 +1,23 @@
 import Unit from "./unit.model.js";
 import QuestionStat from "./questionStat.model.js";
-import { notFound } from "../../shared/utils/AppError.js";
+import { notFound, forbidden } from "../../shared/utils/AppError.js";
 import { sample } from "../../shared/utils/grading.js";
+import { unitUnlocked } from "../../shared/utils/unlock.js";
+import { models, plainMap } from "../../shared/utils/models.js";
 import { cleanUnit } from "./unit.clean.js";
 import { snapshotUnit } from "./version.service.js";
 
+// تقدّم المتعلم يُقرأ عبر الوصول المشترك للنماذج (الميزات لا تستورد بعضها)
+async function progressOf(userId) {
+  if (!userId) return {};
+  const doc = await models.Progress().findOne({ user: userId }).select("progress").lean();
+  return plainMap(doc?.progress);
+}
+
+// وحدة مقفلة تُعطى منها الشرارة وأول بطاقة فقط
+function preview(unit) {
+  return { ...unit, locked: true, cards: unit.cards.slice(0, 1), questions: [], tryIt: undefined, deep: undefined, thread: undefined, summary: [] };
+}
 // تاريخ النسخ جزء من واجهة المحتوى: المشرف يمرّ عبر content.service وحده
 export { listVersions, getVersion, restoreVersion, snapshotUnit } from "./version.service.js";
 
@@ -14,15 +27,17 @@ export async function listPublishedIds() {
   return docs.map((d) => d.unitId);
 }
 
-export async function getPublishedUnit(unitId) {
+export async function getPublishedUnit(unitId, userId) {
   const unit = await Unit.findOne({ unitId, published: true });
   if (!unit) throw notFound("الوحدة غير متاحة", "UNIT_NOT_FOUND");
-  return unit.toPublic();
+  const pub = unit.toPublic();
+  return unitUnlocked(await progressOf(userId), unitId) ? pub : preview(pub);
 }
 
 // اختبار الوحدة: n أسئلة عشوائية من البنك (تُعاد مع الإجابات لعرض التغذية الراجعة فوراً)
-export async function pickQuiz(unitId, n = 10) {
-  const unit = await getPublishedUnit(unitId);
+export async function pickQuiz(unitId, n = 10, userId) {
+  if (!unitUnlocked(await progressOf(userId), unitId)) throw forbidden("أكمل المدار السابق في هذا المجال أولاً", "UNIT_LOCKED");
+  const unit = await getPublishedUnit(unitId, userId);
   const questions = sample(unit.questions, n);
   return { unitId, title: unit.title, questions };
 }

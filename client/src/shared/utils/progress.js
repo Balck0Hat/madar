@@ -17,6 +17,22 @@ export function stats(progress) {
   return { units, perfects, centerDone, domainsTouched, sectors, ring1Done, threads, rank, ring1Count };
 }
 
+// فتح رأسي: إتمام مدار في مجال يفتح الذي يليه في المجال نفسه.
+// المدار الأول مفتوح دائماً، فمن يحب الفيزياء يصلها بعد ثماني وحدات لا ثلاث وثمانين.
+export function ringUnlocked(progress, domainId, ring) {
+  if (ring === 0) return true;
+  const dom = DOMAINS.find((d) => d.id === domainId);
+  if (!dom) return false;
+  return dom.rings[ring - 1].every((_, i) => progress[uid(domainId, ring - 1, i)]);
+}
+
+// وحدة مقفلة تُقرأ منها الشرارة وأول بطاقة فقط: نبيع العمق بدل أن نخفيه
+export const unitUnlocked = (progress, unitId) => {
+  if (unitId.startsWith("center")) return true;
+  const [d, r] = unitId.split("-");
+  return ringUnlocked(progress, d, Number(r) - 1);
+};
+
 // الوحدة الموصى بها: المركز أولاً، ثم المجال المفضل، ثم البقية بالترتيب
 export function nextUnit(progress, fav) {
   for (let i = 0; i < CENTER.length; i++) if (!progress[`center-${i + 1}`]) return `center-${i + 1}`;

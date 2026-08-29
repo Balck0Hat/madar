@@ -1,4 +1,5 @@
 import { useState, useEffect, Suspense } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, useParams } from "react-router-dom";
 import { C, P, FONT } from "../shared/constants/theme";
 import { nextUnit } from "../shared/utils/progress";
 import { isCenter } from "../shared/utils/units";
@@ -18,95 +19,139 @@ import { LeagueScreen } from "../features/league";
 import { ProfileScreen } from "../features/profile";
 import { AdminScreen, StatsScreen, FriendsScreen, SearchScreen, LibraryScreen, ExamScreen, VerifyPage, PublicProfile, ReviewScreen, SectorCelebration } from "./lazyScreens";
 import { useGame } from "./useGame";
-import { readRoute, cleanUrl, goHome } from "./routes";
+import { paths, NAV_PATHS, isFocus, readFlags, cleanUrl } from "./routes";
 
-const NAV_SCREENS = ["map", "league", "me", "search", "stats", "friends"];
-// شاشات تملأ العرض بلا شريط جانبي (قراءة، اختبار، صفحات عامة)
-const FOCUS_SCREENS = ["boot", "landing", "auth", "onboarding", "unit", "quiz", "result", "review", "exam", "public", "verify"];
-const route = readRoute();
+const Loading = () => <div style={{ minHeight: "60vh", display: "grid", placeItems: "center" }}><WheelLoader size={150} /></div>;
 
-export default function App() {
+// شاشات المتعلّم تتطلب جلسة؛ الزائر يُعاد إلى الصفحة الأولى
+function Private({ ready, signedIn, children }) {
+  if (!ready) return <Loading />;
+  return signedIn ? children : <Navigate to={paths.home} replace />;
+}
+
+function Shell() {
   const game = useGame();
   const { profile, progress, resume, xp, weeklyXp, badges, threadsNew, streak, freezes, studied, result, authored, reviewDue, certificate, newSector } = game;
-  const [screen, setScreen] = useState(route.publicHandle ? "public" : route.verifyCode ? "verify" : "boot");
-  const [authMode, setAuthMode] = useState("register");
+  const nav = useNavigate();
+  const { pathname } = useLocation();
+  const [ready, setReady] = useState(false);
   const [providers, setProviders] = useState({ google: false });
-  const [cur, setCur] = useState({ domain: "human", ring: 0, unit: null });
   const [toast, setToast] = useState("");
   const [help, setHelp] = useState(false);
 
   useEffect(() => {
-    if (screen !== "boot") return;
+    const flags = readFlags();
     authService.providers().then(setProviders).catch(() => {});
     game.boot().then((ok) => {
-      if (route.authFailed) setToast("تعذّر الدخول بحساب Google");
-      setScreen(ok ? (route.isNew ? "onboarding" : route.screen === "review" ? "review" : "map") : "landing");
+      if (flags.authFailed) setToast("تعذّر الدخول بحساب Google");
+      if (ok && flags.isNew) nav(paths.onboarding, { replace: true });
       cleanUrl();
-    }).catch((err) => { setToast(err.message); setScreen("landing"); });
+    }).catch((err) => setToast(err.message)).finally(() => setReady(true));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (toast) { const t = setTimeout(() => setToast(""), 2800); return () => clearTimeout(t); } }, [toast]);
-  useEffect(() => { window.scrollTo(0, 0); }, [screen]);
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
 
   // كل استدعاء للخادم يمرّ من هنا ليُعرض خطؤه كتنبيه بدل أن يضيع
   const guard = (fn) => async (...args) => { try { return await fn(...args); } catch (err) { setToast(err.message); return undefined; } };
-  const openDomain = (id, r = 0) => { setCur((c) => ({ ...c, domain: id, ring: r })); setScreen("domain"); };
-  const openUnit = (id, page) => { setCur((c) => ({ ...c, unit: id, jump: Number.isInteger(page) ? page : null })); setScreen("unit"); };
-  const openAuth = (mode) => { setAuthMode(mode); setScreen("auth"); };
-  const finish = guard(async (unitId, payload) => { const r = await game.finishUnit(unitId, payload); if (r.gain > 0) setToast(`+${r.gain} XP`); setScreen("result"); });
-  const onAuthed = guard(async (user, isNew) => { await game.signIn(user); setScreen(isNew ? "onboarding" : "map"); });
-  const onOnboarded = guard(async ({ minutes, fav }) => { await game.updateSettings({ minutes, fav }); setScreen("map"); setToast(`أهلاً ${profile.name}، ابدأ من المركز`); });
-  const onLogout = guard(async () => { await game.signOut(); setScreen("landing"); });
+  const openUnit = (id, page) => nav(paths.unit(id), { state: Number.isInteger(page) ? { page } : undefined });
+  const finish = guard(async (unitId, payload) => {
+    const r = await game.finishUnit(unitId, payload);
+    if (r.gain > 0) setToast(`+${r.gain} XP`);
+    nav(paths.result, { replace: true });
+  });
+  const onAuthed = guard(async (user, isNew) => { await game.signIn(user); nav(isNew ? paths.onboarding : paths.home, { replace: true }); });
+  const onOnboarded = guard(async ({ minutes, fav }) => { await game.updateSettings({ minutes, fav }); nav(paths.home, { replace: true }); setToast(`أهلاً ${profile.name}، ابدأ من المركز`); });
+  const onLogout = guard(async () => { await game.signOut(); nav(paths.home, { replace: true }); });
   const onPrefs = guard((fields) => game.updateSettings(fields));
-  const backToMap = () => { game.refresh(); setScreen("map"); };
+  const backToMap = () => { game.refresh(); nav(paths.home); };
 
   const next = profile ? nextUnit(progress, profile.fav) : null;
-  useShortcuts({
-    m: () => setScreen("map"), b: () => setScreen("search"), t: () => setScreen("league"),
-    f: () => setScreen("friends"), a: () => setScreen("me"), r: () => setScreen("review"),
-    Enter: () => { if (screen === "map" && next) openUnit(next); },
-    Escape: () => (help ? setHelp(false) : setScreen("map")),
-    "?": () => setHelp(true), "؟": () => setHelp(true),
-  }, { enabled: Boolean(profile) && ["map", "league", "me", "search", "stats", "friends", "library"].includes(screen) });
-  const paper = screen === "unit" && authored.includes(cur.unit);
-  const focus = FOCUS_SCREENS.includes(screen) || !profile;
+  const focus = isFocus(pathname) || !profile;
   const prefs = { theme: profile?.theme ?? "system", fontScale: profile?.fontScale ?? 1, arabicNums: Boolean(profile?.arabicNums) };
+  const inNav = NAV_PATHS.includes(pathname);
+  useShortcuts({
+    m: () => nav(paths.home), b: () => nav(paths.search), t: () => nav(paths.league),
+    f: () => nav(paths.friends), a: () => nav(paths.me), r: () => nav(paths.review),
+    Enter: () => { if (pathname === paths.home && next) openUnit(next); },
+    Escape: () => (help ? setHelp(false) : nav(-1)),
+    "?": () => setHelp(true), "؟": () => setHelp(true),
+  }, { enabled: Boolean(profile) && inNav });
+
+  const priv = (el) => <Private ready={ready} signedIn={Boolean(profile)}>{el}</Private>;
+  const paper = /^\/u\/[^/]+$/.test(pathname) && authored.includes(pathname.split("/")[2]);
 
   return (
-    <I18nProvider locale={DEFAULT_LOCALE}>
     <PrefsProvider value={prefs}>
       <div className="madar madar-app" dir={LOCALES[DEFAULT_LOCALE].dir} style={{ background: paper ? P.bg : C.bg, color: paper ? P.ink : C.text, fontFamily: FONT, transition: "background .4s" }}>
         <style>{CSS}</style>
-        {!focus && profile && <SideNav tab={screen} onTab={setScreen} name={profile.name} />}
+        {!focus && profile && <SideNav path={pathname} onGo={nav} name={profile.name} />}
         <main className={`madar-main${focus ? " is-focus" : ""}`}>
-          <Suspense fallback={<div style={{ minHeight: "60vh", display: "grid", placeItems: "center" }}><WheelLoader size={150} /></div>}>
-          {screen === "boot" && <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}><WheelLoader size={190} label="نفتح خريطتك…" /></div>}
-          {screen === "public" && <PublicProfile handle={route.publicHandle} onHome={goHome} />}
-          {screen === "verify" && <VerifyPage code={route.verifyCode} onHome={goHome} />}
-          {screen === "landing" && <Landing onStart={() => openAuth("register")} onLogin={() => openAuth("login")} googleUrl={providers.google ? authService.googleUrl() : null} />}
-          {screen === "auth" && <AuthScreen mode={authMode} onBack={() => setScreen("landing")} onAuthed={onAuthed} />}
-          {screen === "onboarding" && profile && <Onboarding name={profile.name} onDone={onOnboarded} />}
-          {screen === "map" && profile && <MapScreen profile={profile} progress={progress} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={openDomain} onOpenUnit={openUnit} onProfile={() => setScreen("me")} onReview={() => setScreen("review")} onToast={setToast} threadsNew={threadsNew} />}
-          {screen === "domain" && <DomainScreen domainId={cur.domain} ringIdx={cur.ring} progress={progress} authored={authored} onBack={() => setScreen("map")} onOpenUnit={openUnit} onRing={(r) => setCur((c) => ({ ...c, ring: r }))} />}
-          {screen === "unit" && <UnitScreen key={cur.unit} unitId={cur.unit} authored={authored.includes(cur.unit)} resumeCard={Number.isInteger(cur.jump) ? cur.jump : resume?.[cur.unit] || 0} onResume={game.saveResume} fontScale={prefs.fontScale} onFontScale={(s) => onPrefs({ fontScale: s })} onBack={() => setScreen(isCenter(cur.unit) ? "map" : "domain")} onStartQuiz={() => setScreen("quiz")} onSimulate={() => finish(cur.unit, { correct: 7 + Math.floor(Math.random() * 4), total: 10, sim: true })} />}
-          {screen === "quiz" && <QuizScreen key={cur.unit} unitId={cur.unit} onBack={() => setScreen("unit")} onFinish={(answers) => finish(cur.unit, { answers })} />}
-          {screen === "result" && result && <ResultScreen key={result.unitId + xp} result={result} xp={xp} progress={progress} hasNext={Boolean(next)} onMap={backToMap} onNext={() => openUnit(next)} />}
-          {screen === "review" && <ReviewScreen onBack={backToMap} onDone={backToMap} />}
-          {screen === "exam" && <ExamScreen onBack={() => { game.refresh(); setScreen("me"); }} onCertified={(c) => game.setCertificate(c)} />}
-          {screen === "library" && <LibraryScreen progress={progress} onBack={() => setScreen("me")} onOpenUnit={openUnit} />}
-          {screen === "admin" && <AdminScreen onBack={() => setScreen("me")} onToast={setToast} onContentChanged={game.refreshAuthored} />}
-          {screen === "search" && <SearchScreen onBack={() => setScreen("map")} onOpenUnit={openUnit} />}
-          {screen === "stats" && <StatsScreen onBack={() => setScreen("map")} />}
-          {screen === "friends" && profile && <FriendsScreen myHandle={profile.handle} onBack={() => setScreen("map")} onToast={setToast} />}
-          {screen === "league" && profile && <LeagueScreen />}
-          {screen === "me" && profile && <ProfileScreen profile={profile} progress={progress} xp={xp} badges={badges} streak={streak} freezes={freezes} studied={studied} certificate={certificate} onPrefs={onPrefs} onToggleReminders={(v) => onPrefs({ reminders: v })} onToast={setToast} onLogout={onLogout} onStats={() => setScreen("stats")} onLibrary={() => setScreen("library")} onExam={() => setScreen("exam")} onAdmin={() => setScreen("admin")} />}
-          {NAV_SCREENS.includes(screen) && <TabBar tab={screen} onTab={setScreen} />}
-          {newSector && <SectorCelebration domainId={newSector} progress={progress} level={xp} onClose={game.clearSector} onShare={() => { game.clearSector(); setScreen("me"); }} />}
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/" element={!ready ? <Loading /> : profile
+                ? <MapScreen profile={profile} progress={progress} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={(id, r) => nav(paths.domain(id, r))} onOpenUnit={openUnit} onProfile={() => nav(paths.me)} onReview={() => nav(paths.review)} onToast={setToast} threadsNew={threadsNew} />
+                : <Landing onStart={() => nav(paths.auth("register"))} onLogin={() => nav(paths.auth("login"))} googleUrl={providers.google ? authService.googleUrl() : null} />} />
+              <Route path="/auth/:mode" element={<AuthRoute onAuthed={onAuthed} onBack={() => nav(paths.home)} />} />
+              <Route path="/welcome" element={priv(profile && <Onboarding name={profile.name} onDone={onOnboarded} />)} />
+              <Route path="/d/:domainId/:ring" element={priv(<DomainRoute progress={progress} authored={authored} onOpenUnit={openUnit} onBack={() => nav(paths.home)} nav={nav} />)} />
+              <Route path="/u/:unitId" element={priv(<UnitRoute game={game} authored={authored} resume={resume} prefs={prefs} onPrefs={onPrefs} finish={finish} nav={nav} />)} />
+              <Route path="/u/:unitId/quiz" element={priv(<QuizRoute finish={finish} nav={nav} />)} />
+              <Route path="/result" element={priv(result ? <ResultScreen key={result.unitId + xp} result={result} xp={xp} progress={progress} hasNext={Boolean(next)} onMap={backToMap} onNext={() => openUnit(next)} /> : <Navigate to={paths.home} replace />)} />
+              <Route path="/review" element={priv(<ReviewScreen onBack={backToMap} onDone={backToMap} />)} />
+              <Route path="/exam" element={priv(<ExamScreen onBack={() => { game.refresh(); nav(paths.me); }} onCertified={(c) => game.setCertificate(c)} />)} />
+              <Route path="/library" element={priv(<LibraryScreen progress={progress} onBack={() => nav(paths.me)} onOpenUnit={openUnit} />)} />
+              <Route path="/search" element={priv(<SearchScreen onBack={() => nav(paths.home)} onOpenUnit={openUnit} />)} />
+              <Route path="/stats" element={priv(<StatsScreen onBack={() => nav(paths.home)} />)} />
+              <Route path="/friends" element={priv(profile && <FriendsScreen myHandle={profile.handle} onBack={() => nav(paths.home)} onToast={setToast} />)} />
+              <Route path="/league" element={priv(<LeagueScreen />)} />
+              <Route path="/me" element={priv(profile && <ProfileScreen profile={profile} progress={progress} xp={xp} badges={badges} streak={streak} freezes={freezes} studied={studied} certificate={certificate} onPrefs={onPrefs} onToggleReminders={(v) => onPrefs({ reminders: v })} onToast={setToast} onLogout={onLogout} onStats={() => nav(paths.stats)} onLibrary={() => nav(paths.library)} onExam={() => nav(paths.exam)} onAdmin={() => nav(paths.admin)} />)} />
+              <Route path="/admin/*" element={priv(<AdminScreen onBack={() => nav(paths.me)} onToast={setToast} onContentChanged={game.refreshAuthored} />)} />
+              <Route path="/p/:handle" element={<PublicRoute onHome={() => nav(paths.home)} />} />
+              <Route path="/verify/:code" element={<VerifyRoute onHome={() => nav(paths.home)} />} />
+              <Route path="*" element={<Navigate to={paths.home} replace />} />
+            </Routes>
           </Suspense>
+          {inNav && profile && <TabBar path={pathname} onGo={nav} />}
+          {newSector && <SectorCelebration domainId={newSector} progress={progress} level={xp} onClose={game.clearSector} onShare={() => { game.clearSector(); nav(paths.me); }} />}
           {help && <ShortcutsHelp onClose={() => setHelp(false)} />}
           <Toast msg={toast} />
         </main>
       </div>
     </PrefsProvider>
+  );
+}
+
+// المسارات التي تقرأ معاملاتها من الرابط
+const AuthRoute = ({ onAuthed, onBack }) => <AuthScreen mode={useParams().mode === "login" ? "login" : "register"} onBack={onBack} onAuthed={onAuthed} />;
+const PublicRoute = ({ onHome }) => <PublicProfile handle={useParams().handle} onHome={onHome} />;
+const VerifyRoute = ({ onHome }) => <VerifyPage code={(useParams().code || "").toUpperCase()} onHome={onHome} />;
+
+function DomainRoute({ progress, authored, onOpenUnit, onBack, nav }) {
+  const { domainId, ring } = useParams();
+  const r = Math.min(2, Math.max(0, Number(ring) - 1 || 0));
+  return <DomainScreen domainId={domainId} ringIdx={r} progress={progress} authored={authored} onBack={onBack} onOpenUnit={onOpenUnit} onRing={(i) => nav(paths.domain(domainId, i), { replace: true })} />;
+}
+
+function UnitRoute({ game, authored, resume, prefs, onPrefs, finish, nav }) {
+  const { unitId } = useParams();
+  const jump = useLocation().state?.page;
+  return <UnitScreen key={unitId} unitId={unitId} authored={authored.includes(unitId)}
+    resumeCard={Number.isInteger(jump) ? jump : resume?.[unitId] || 0} onResume={game.saveResume}
+    fontScale={prefs.fontScale} onFontScale={(s) => onPrefs({ fontScale: s })}
+    onBack={() => nav(isCenter(unitId) ? paths.home : paths.domain(unitId.split("-")[0], Number(unitId.split("-")[1]) - 1))}
+    onStartQuiz={() => nav(paths.quiz(unitId))}
+    onSimulate={() => finish(unitId, { correct: 7 + Math.floor(Math.random() * 4), total: 10, sim: true })} />;
+}
+
+function QuizRoute({ finish, nav }) {
+  const { unitId } = useParams();
+  return <QuizScreen key={unitId} unitId={unitId} onBack={() => nav(paths.unit(unitId))} onFinish={(answers) => finish(unitId, { answers })} />;
+}
+
+export default function App() {
+  return (
+    <I18nProvider locale={DEFAULT_LOCALE}>
+      <BrowserRouter><Shell /></BrowserRouter>
     </I18nProvider>
   );
 }

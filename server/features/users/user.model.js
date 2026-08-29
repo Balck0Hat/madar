@@ -17,6 +17,10 @@ const settingsSchema = new mongoose.Schema(
     theme: { type: String, enum: ["system", "dark", "light"], default: "system" },
     // مقياس الخط: يوسّع النص للقارئ المسنّ دون كسر التخطيط
     fontScale: { type: Number, default: 1, min: 0.9, max: 1.4 },
+    // شكل قراءة الدرس: بطاقات بالنقر أو عمود واحد للتمرير والمسح السريع
+    readMode: { type: String, enum: ["cards", "scroll"], default: "cards" },
+    // وضع الهدوء: يطفئ الدوري والتحدي وضغط السلسلة وإشعار المساء
+    calm: { type: Boolean, default: false },
   },
   { _id: false },
 );

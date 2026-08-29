@@ -12,4 +12,6 @@ window.scrollTo = vi.fn();
 window.requestAnimationFrame = (cb) => setTimeout(cb, 0);
 window.cancelAnimationFrame = (id) => clearTimeout(id);
 
-afterEach(() => cleanup());
+// المسارات صارت حقيقية، وjsdom يحتفظ بالعنوان بين الاختبارات:
+// نعيده إلى الجذر كي يبدأ كل اختبار من صفحة البداية
+afterEach(() => { cleanup(); window.history.replaceState(null, "", "/"); });

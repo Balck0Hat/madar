@@ -11,6 +11,8 @@ export const updateMeSchema = {
       reminders: z.boolean().optional(),
       theme: z.enum(["system", "dark", "light"]).optional(),
       fontScale: z.number().min(0.9).max(1.4).optional(),
+      readMode: z.enum(["cards", "scroll"]).optional(),
+      calm: z.boolean().optional(),
     })
     .strict(),
 };
