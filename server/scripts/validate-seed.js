@@ -4,11 +4,13 @@ import { unitBody } from "../features/content/content.validation.js";
 import { isValidUnitId, parseUnitId } from "../shared/utils/units.js";
 import { titleOf } from "../shared/data/tree.js";
 
-const MIN_Q = 24, MIN_CARDS = 7, MAX_WORDS = 130;
+const LIMITS = { 0: { q: 24, c: 7, w: 135 }, 1: { q: 30, c: 11, w: 155 }, 2: { q: 32, c: 13, w: 165 } };
 const words = (s) => (s || "").trim().split(/\s+/).filter(Boolean).length;
 
 function checkUnit(u) {
   const errs = [];
+  const ring = u.unitId.startsWith("center") ? 0 : Number(u.unitId.split("-")[1]) - 1;
+  const { q: MIN_Q, c: MIN_CARDS, w: MAX_WORDS } = LIMITS[ring] || LIMITS[0];
   if (!isValidUnitId(u.unitId)) errs.push("معرّف غير صالح");
   if (!titleOf(u.unitId)) errs.push("لا عنوان في الشجرة");
   const parsed = unitBody.strict().safeParse((({ unitId, ...rest }) => rest)(u));
@@ -31,7 +33,6 @@ function checkUnit(u) {
   if (u.thread) {
     const p = parseUnitId(u.thread.to), me = parseUnitId(u.unitId);
     if (!p) errs.push("thread.to غير صالح");
-    else if (p.ring !== 0 && !p.center) errs.push("thread.to يجب أن يكون في المدار الأول");
     else if (!p.center && !me.center && p.domain === me.domain) errs.push("thread.to في المجال نفسه");
     if (!(u.thread.a >= 0 && u.thread.a < (u.thread.opts || []).length)) errs.push("thread.a خارج الخيارات");
   } else errs.push("لا خيط");

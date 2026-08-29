@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { C, P, FONT } from "../shared/constants/theme";
 import { nextUnit } from "../shared/utils/progress";
 import { isCenter } from "../shared/utils/units";
 import { PrefsProvider } from "../shared/context/PrefsContext";
 import { CSS } from "../shared/styles/global";
-import { TabBar, SideNav, Toast } from "../shared/components/ui";
+import { TabBar, SideNav, Toast, ShortcutsHelp } from "../shared/components/ui";
+import { useShortcuts } from "../shared/hooks/useShortcuts";
 import WheelLoader from "../shared/components/wheel/WheelLoader";
 import { Landing, Onboarding } from "../features/onboarding";
 import { AuthScreen, authService } from "../features/auth";
@@ -14,15 +15,7 @@ import { UnitScreen } from "../features/unit";
 import { QuizScreen, ResultScreen } from "../features/quiz";
 import { LeagueScreen } from "../features/league";
 import { ProfileScreen } from "../features/profile";
-import { ReviewScreen } from "../features/review";
-import { ExamScreen, VerifyPage } from "../features/exam";
-import { LibraryScreen } from "../features/library";
-import { PublicProfile } from "../features/public";
-import { AdminScreen } from "../features/admin";
-import { SearchScreen } from "../features/search";
-import { StatsScreen } from "../features/stats";
-import { FriendsScreen } from "../features/friends";
-import { SectorCelebration } from "../features/celebrate";
+import { AdminScreen, StatsScreen, FriendsScreen, SearchScreen, LibraryScreen, ExamScreen, VerifyPage, PublicProfile, ReviewScreen, SectorCelebration } from "./lazyScreens";
 import { useGame } from "./useGame";
 import { readRoute, cleanUrl, goHome } from "./routes";
 
@@ -39,6 +32,7 @@ export default function App() {
   const [providers, setProviders] = useState({ google: false });
   const [cur, setCur] = useState({ domain: "human", ring: 0, unit: null });
   const [toast, setToast] = useState("");
+  const [help, setHelp] = useState(false);
 
   useEffect(() => {
     if (screen !== "boot") return;
@@ -65,6 +59,13 @@ export default function App() {
   const backToMap = () => { game.refresh(); setScreen("map"); };
 
   const next = profile ? nextUnit(progress, profile.fav) : null;
+  useShortcuts({
+    m: () => setScreen("map"), b: () => setScreen("search"), t: () => setScreen("league"),
+    f: () => setScreen("friends"), a: () => setScreen("me"), r: () => setScreen("review"),
+    Enter: () => { if (screen === "map" && next) openUnit(next); },
+    Escape: () => (help ? setHelp(false) : setScreen("map")),
+    "?": () => setHelp(true), "؟": () => setHelp(true),
+  }, { enabled: Boolean(profile) && ["map", "league", "me", "search", "stats", "friends", "library"].includes(screen) });
   const paper = screen === "unit" && authored.includes(cur.unit);
   const focus = FOCUS_SCREENS.includes(screen) || !profile;
   const prefs = { theme: profile?.theme ?? "system", fontScale: profile?.fontScale ?? 1, arabicNums: Boolean(profile?.arabicNums) };
@@ -75,6 +76,7 @@ export default function App() {
         <style>{CSS}</style>
         {!focus && profile && <SideNav tab={screen} onTab={setScreen} name={profile.name} />}
         <main className={`madar-main${focus ? " is-focus" : ""}`}>
+          <Suspense fallback={<div style={{ minHeight: "60vh", display: "grid", placeItems: "center" }}><WheelLoader size={150} /></div>}>
           {screen === "boot" && <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}><WheelLoader size={190} label="نفتح خريطتك…" /></div>}
           {screen === "public" && <PublicProfile handle={route.publicHandle} onHome={goHome} />}
           {screen === "verify" && <VerifyPage code={route.verifyCode} onHome={goHome} />}
@@ -97,6 +99,8 @@ export default function App() {
           {screen === "me" && profile && <ProfileScreen profile={profile} progress={progress} xp={xp} badges={badges} streak={streak} freezes={freezes} studied={studied} certificate={certificate} onPrefs={onPrefs} onToggleReminders={(v) => onPrefs({ reminders: v })} onToast={setToast} onLogout={onLogout} onStats={() => setScreen("stats")} onLibrary={() => setScreen("library")} onExam={() => setScreen("exam")} onAdmin={() => setScreen("admin")} />}
           {NAV_SCREENS.includes(screen) && <TabBar tab={screen} onTab={setScreen} />}
           {newSector && <SectorCelebration domainId={newSector} progress={progress} level={xp} onClose={game.clearSector} onShare={() => { game.clearSector(); setScreen("me"); }} />}
+          </Suspense>
+          {help && <ShortcutsHelp onClose={() => setHelp(false)} />}
           <Toast msg={toast} />
         </main>
       </div>

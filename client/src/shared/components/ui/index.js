@@ -8,3 +8,4 @@ export { default as Confetti } from "./Confetti";
 export { default as OrbitMark } from "./OrbitMark";
 export { TabBar, SideNav, NAV } from "./NavBar";
 export { Skeleton, ErrorState, EmptyState } from "./LoadState";
+export { default as ShortcutsHelp } from "./ShortcutsHelp";
