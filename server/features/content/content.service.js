@@ -61,6 +61,7 @@ export const deleteUnit = async (unitId) => {
   const r = await Unit.deleteOne({ unitId });
   if (!r.deletedCount) throw notFound("الوحدة غير موجودة", "UNIT_NOT_FOUND");
 };
-export async function seedUnits(units) {
-  for (const u of units) await Unit.updateOne({ unitId: u.unitId }, { $setOnInsert: u }, { upsert: true });
+// عند الإقلاع: إدراج الناقص فقط (تعديلات المشرف لا تُمس)؛ force يستبدل بنسخة الملف
+export async function seedUnits(units, { force = false } = {}) {
+  for (const u of units) await Unit.updateOne({ unitId: u.unitId }, force ? { $set: u } : { $setOnInsert: u }, { upsert: true });
 }

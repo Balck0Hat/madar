@@ -1,21 +1,33 @@
-import { sleepUnit } from "./sleep.js";
-import { learningUnit } from "./learning.js";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { titleOf } from "../tree.js";
 
-// كلمات مفتاحية للأسئلة المفتوحة (للتصحيح التقريبي عند غياب الذكاء الاصطناعي)
+const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "units");
+
+// كلمات مفتاحية إضافية للأسئلة المفتوحة القديمة (التصحيح التقريبي)
 const KEYWORDS = {
   "human-1-3": { q10: ["تنظيف", "ينظف", "ذاكرة", "تثبيت", "يثبت", "إصلاح", "يصلح", "يرمم", "ترميم", "راحة", "الدماغ", "ينمو", "نمو"] },
   "center-1": { q5: ["استرجاع", "يثبت", "تثبيت", "نتذكر", "تذكر", "الذاكرة", "ننسى", "النسيان"] },
 };
 
-const withMeta = (unitId, title, unit) => ({
-  unitId,
-  title,
-  ...unit,
-  questions: unit.questions.map((q) => (KEYWORDS[unitId]?.[q.qid] ? { ...q, keywords: KEYWORDS[unitId][q.qid] } : q)),
-  published: true,
-});
+// يحمّل كل ملفات seed/units/*.js تلقائياً ويضبط العنوان من الشجرة والمعرّفات
+export async function loadSeedUnits() {
+  const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".js")).sort() : [];
+  const units = [];
+  for (const f of files) {
+    const mod = await import(pathToFileURL(path.join(dir, f)).href);
+    const u = mod.default;
+    const unitId = u.unitId || f.replace(/\.js$/, "");
+    units.push({
+      ...u,
+      unitId,
+      title: titleOf(unitId) || u.title,
+      questions: (u.questions || []).map((q, i) => ({ qid: q.qid || `q${i + 1}`, ...q, ...(KEYWORDS[unitId]?.[q.qid] ? { keywords: KEYWORDS[unitId][q.qid] } : {}) })),
+      published: u.published !== false,
+    });
+  }
+  return units;
+}
 
-export const SEED_UNITS = [
-  withMeta("human-1-3", "النوم: لماذا ننام، وكم، وماذا يحدث حين لا ننام", sleepUnit),
-  withMeta("center-1", "كيف يتعلم دماغك، وكيف يعمل مدار", learningUnit),
-];
+export const SEED_UNITS = await loadSeedUnits();

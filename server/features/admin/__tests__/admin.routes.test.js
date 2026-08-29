@@ -21,18 +21,18 @@ describe("admin routes", () => {
     const admin = await asAdmin();
     const res = await request(app).get("/api/v1/admin/overview").set("Cookie", admin);
     expect(res.status).toBe(200);
-    expect(res.body.data.published).toBe(2);
+    expect(res.body.data.published).toBe(SEED_UNITS.length);
     expect(res.body.data.integrations).toHaveProperty("ai");
   });
 
   it("should validate and upsert a unit, then serve it publicly once published", async () => {
     const admin = await asAdmin();
-    const bad = await request(app).put("/api/v1/admin/units/earth-1-1").set("Cookie", admin).send({ title: "x", questions: [{ qid: "q1", t: "mcq", q: "سؤال؟", opts: ["أ"], a: 5 }] });
+    const bad = await request(app).put("/api/v1/admin/units/earth-2-2").set("Cookie", admin).send({ title: "x", questions: [{ qid: "q1", t: "mcq", q: "سؤال؟", opts: ["أ"], a: 5 }] });
     expect(bad.status).toBe(400);
     const body = { title: "الأرض تتحرك", spark: "لماذا يتعاقب الليل والنهار؟", cards: [{ h: "الدوران", p: "تدور الأرض حول محورها." }], summary: ["الأرض تدور."], questions: [{ qid: "q1", t: "tf", q: "الأرض تدور حول محورها.", a: true, why: "نعم." }], published: true };
-    const ok = await request(app).put("/api/v1/admin/units/earth-1-1").set("Cookie", admin).send(body);
+    const ok = await request(app).put("/api/v1/admin/units/earth-2-2").set("Cookie", admin).send(body);
     expect(ok.status).toBe(200);
-    const pub = await request(app).get("/api/v1/content/units/earth-1-1");
+    const pub = await request(app).get("/api/v1/content/units/earth-2-2");
     expect(pub.status).toBe(200);
     expect(pub.body.data.unit.title).toBe("الأرض تتحرك");
   });
