@@ -4,8 +4,9 @@ import { TopBar } from "../../../shared/components/ui";
 import StatsPanel from "./StatsPanel";
 import UnitList from "./UnitList";
 import UnitEditor from "./UnitEditor";
+import ImportExportPanel from "./ImportExportPanel";
 
-const TABS = [["stats", "الإحصاءات"], ["units", "الوحدات"]];
+const TABS = [["stats", "الإحصاءات"], ["units", "الوحدات"], ["io", "استيراد وتصدير"]];
 
 // لوحة المشرف: إحصاءات + محرّر المحتوى
 export default function AdminScreen({ onBack, onToast, onContentChanged }) {
@@ -20,7 +21,8 @@ export default function AdminScreen({ onBack, onToast, onContentChanged }) {
           {TABS.map(([k, l]) => <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} style={{ flex: 1, background: tab === k ? C.goldSoft : C.surface, border: `1px solid ${tab === k ? C.gold : C.line}`, color: tab === k ? C.gold : C.text, borderRadius: 12, padding: "9px 6px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>{l}</button>)}
         </div>
         {tab === "stats" && <StatsPanel />}
-        {tab === "units" && <UnitList onEdit={(unitId) => setEditing({ unitId, isNew: false })} onCreate={(unitId) => setEditing({ unitId, isNew: true })} />}
+        {tab === "units" && <UnitList onEdit={(unitId) => setEditing({ unitId, isNew: false })} onCreate={(unitId) => setEditing({ unitId, isNew: true })} onToast={onToast} />}
+        {tab === "io" && <ImportExportPanel onToast={onToast} onContentChanged={onContentChanged} />}
       </div>
     </div>
   );

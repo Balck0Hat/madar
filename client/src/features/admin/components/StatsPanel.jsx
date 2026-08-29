@@ -3,8 +3,9 @@ import { useNum } from "../../../shared/context/NumContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Card, Pill, Bar, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
 import { getOverview } from "../services/admin.service";
+import FunnelPanel from "./FunnelPanel";
 
-// لوحة الإحصاءات: أرقام عامة، تكاملات، وأكثر الأسئلة خطأً
+// لوحة الإحصاءات: أرقام عامة، تكاملات، أين يتوقف المتعلمون، وأكثر الأسئلة خطأً
 export default function StatsPanel() {
   const num = useNum();
   const { data, loading, error, reload } = useAsync(getOverview, []);
@@ -22,6 +23,7 @@ export default function StatsPanel() {
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{integ.map(([l, on]) => <Pill key={l} color={on ? C.green : C.muted}>{l}: {on ? "مفعّل" : "معطّل"}</Pill>)}</div>
         <div style={{ color: C.muted, fontSize: 12, marginTop: 8 }}>تُضبط من ملف .env على الخادم. مسودات: {num(data.drafts)}.</div>
       </Card>
+      <FunnelPanel />
       <Card>
         <div style={{ fontWeight: 800, marginBottom: 4 }}>أسئلة يُخطئ فيها المتعلمون</div>
         <div style={{ color: C.muted, fontSize: 12, marginBottom: 10 }}>مرتبة بعدد الأخطاء؛ الأسئلة المعروضة 3 مرات على الأقل.</div>

@@ -2,6 +2,9 @@ import { describe, it, expect, beforeEach } from "vitest";
 import * as content from "../content.service.js";
 import { SEED_UNITS } from "../../../shared/data/seed/index.js";
 
+// معرّف يُضبط داخل الاختبار نفسه، فلا يتأثر بما يُضاف لاحقاً إلى ملفات الزرع
+const DRAFT = "earth-3-8";
+
 beforeEach(async () => { await content.seedUnits(SEED_UNITS); });
 
 describe("content.service", () => {
@@ -18,7 +21,11 @@ describe("content.service", () => {
   });
 
   it("should 404 on an unpublished or unknown unit", async () => {
-    await expect(content.getPublishedUnit("earth-2-1")).rejects.toMatchObject({ statusCode: 404 });
+    // نُجبر الحالة بدل الاعتماد على غياب الوحدة من ملفات الزرع (تتغيّر مع نمو المحتوى)
+    await content.upsertUnit(DRAFT, { title: "مسودة", published: false }, null);
+    await expect(content.getPublishedUnit(DRAFT)).rejects.toMatchObject({ statusCode: 404 });
+    await content.deleteUnit(DRAFT);
+    await expect(content.getPublishedUnit(DRAFT)).rejects.toMatchObject({ statusCode: 404 });
   });
 
   it("should pick n random questions for the quiz", async () => {
@@ -28,7 +35,8 @@ describe("content.service", () => {
   });
 
   it("should return summaries only for published units", async () => {
-    const s = await content.summaries(["center-1", "earth-2-1"]);
+    await content.upsertUnit(DRAFT, { title: "مسودة", published: false }, null);
+    const s = await content.summaries(["center-1", DRAFT]);
     expect(s).toHaveLength(1);
     expect(s[0].summary.length).toBeGreaterThan(0);
   });

@@ -1,14 +1,25 @@
 import { useState } from "react";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Download } from "lucide-react";
 import { C, MONO, inputStyle } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Btn, Card, Pill, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
-import { listUnits } from "../services/admin.service";
+import { listUnits, exportUnit } from "../services/admin.service";
 import { ALL_UNIT_IDS } from "../utils/editor.utils";
+import { downloadJson } from "../utils/io.utils";
 
 // قائمة الوحدات المكتوبة + إنشاء وحدة من الشجرة
-export default function UnitList({ onEdit, onCreate }) {
+export default function UnitList({ onEdit, onCreate, onToast }) {
+  // التنزيل داخل بطاقة قابلة للنقر: نوقف الحدث حتى لا يفتح المحرّر معه
+  const download = async (e, unitId) => {
+    e.stopPropagation();
+    try {
+      downloadJson(`${unitId}.json`, await exportUnit(unitId));
+      onToast?.(`نُزّلت ${unitId}`);
+    } catch (err) {
+      onToast?.(err.message);
+    }
+  };
   const { data, loading, error, reload } = useAsync(listUnits, []);
   const [pick, setPick] = useState("");
   const [filter, setFilter] = useState("");
@@ -40,6 +51,7 @@ export default function UnitList({ onEdit, onCreate }) {
                 <div style={{ color: C.muted, fontSize: 12, marginTop: 2, fontFamily: MONO }}>{u.unitId} · {u.questionCount} سؤال · {new Date(u.updatedAt).toLocaleDateString("ar")}</div>
               </div>
               <Pill color={u.published ? C.green : C.muted}>{u.published ? "منشورة" : "مسودة"}</Pill>
+              <button type="button" aria-label={`تنزيل ${u.unitId}`} onClick={(e) => download(e, u.unitId)} style={{ background: "transparent", border: "none", color: C.muted, cursor: "pointer", padding: 4, display: "inline-flex" }}><Download size={16} /></button>
               <Pencil size={16} color={C.muted} />
             </div>
           </Card>

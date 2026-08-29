@@ -85,7 +85,7 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, on
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
         <div role="region" aria-live="polite" aria-label={`صفحة ${page + 1} من ${pages.length}`} style={{ flex: 1, padding: "8px 20px 10px" }}>
           <div key={page} className="madar-slide madar-read" onClick={tap} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ userSelect: "none", WebkitUserSelect: "none" }}>
-            <PageBody p={p} index={page} content={content} info={info} quizCount={quizCount} />
+            <PageBody p={p} index={page} content={content} info={info} quizCount={quizCount} unitId={unitId} />
           </div>
         </div>
         <ReaderTools font={font} />

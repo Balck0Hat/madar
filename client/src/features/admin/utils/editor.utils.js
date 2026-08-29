@@ -28,6 +28,10 @@ export const emptyUnit = (unitId) => ({
   published: false,
 });
 
+// وحدة قادمة من الخادم (استعادة نسخة مثلاً) إلى شكل النموذج: استبدال كامل لا دمج،
+// وإلا بقيت حقول اختيارية من الحالة السابقة بعد استعادة نسخة لا تحملها
+export const toFormUnit = (unit) => ({ hero: { num: "", label: "" }, tryIt: { title: "", text: "" }, deep: { title: "", why: "" }, goals: [], cards: [], summary: [], questions: [], spark: "", ...unit });
+
 // يهيّئ الجسم للإرسال: يحذف الحقول الفارغة الاختيارية ويضبط أنواع الإجابات
 export function normalizeUnit(u) {
   const clean = { ...u };

@@ -10,6 +10,9 @@ const reviewSchema = new mongoose.Schema(
     lastAnswered: Date,
     correctCount: { type: Number, default: 0 },
     wrongCount: { type: Number, default: 0 },
+    // معرّفات الأسئلة التي أخطأ فيها هذا المتعلم في هذه الوحدة، الأحدث أولاً ومقيّدة بسقف:
+    // منها تُنتقى أسئلة المراجعة كي يراجع ضعفه هو لا أسئلة عشوائية
+    wrongQids: { type: [String], default: [] },
   },
   { timestamps: true },
 );

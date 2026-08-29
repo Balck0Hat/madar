@@ -6,5 +6,5 @@ export const due = asyncHandler(async (req, res) => {
 });
 
 export const answer = asyncHandler(async (req, res) => {
-  res.json({ success: true, data: await reviews.answer(req.user.id, req.params.unitId, req.body.correct) });
+  res.json({ success: true, data: await reviews.answer(req.user.id, req.params.unitId, req.body.correct, req.body.qid) });
 });

@@ -49,7 +49,7 @@ export default function App() {
   // كل استدعاء للخادم يمرّ من هنا ليُعرض خطؤه كتنبيه بدل أن يضيع
   const guard = (fn) => async (...args) => { try { return await fn(...args); } catch (err) { setToast(err.message); return undefined; } };
   const openDomain = (id, r = 0) => { setCur((c) => ({ ...c, domain: id, ring: r })); setScreen("domain"); };
-  const openUnit = (id) => { setCur((c) => ({ ...c, unit: id })); setScreen("unit"); };
+  const openUnit = (id, page) => { setCur((c) => ({ ...c, unit: id, jump: Number.isInteger(page) ? page : null })); setScreen("unit"); };
   const openAuth = (mode) => { setAuthMode(mode); setScreen("auth"); };
   const finish = guard(async (unitId, payload) => { const r = await game.finishUnit(unitId, payload); if (r.gain > 0) setToast(`+${r.gain} XP`); setScreen("result"); });
   const onAuthed = guard(async (user, isNew) => { await game.signIn(user); setScreen(isNew ? "onboarding" : "map"); });
@@ -85,7 +85,7 @@ export default function App() {
           {screen === "onboarding" && profile && <Onboarding name={profile.name} onDone={onOnboarded} />}
           {screen === "map" && profile && <MapScreen profile={profile} progress={progress} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={openDomain} onOpenUnit={openUnit} onProfile={() => setScreen("me")} onReview={() => setScreen("review")} onToast={setToast} threadsNew={threadsNew} />}
           {screen === "domain" && <DomainScreen domainId={cur.domain} ringIdx={cur.ring} progress={progress} authored={authored} onBack={() => setScreen("map")} onOpenUnit={openUnit} onRing={(r) => setCur((c) => ({ ...c, ring: r }))} />}
-          {screen === "unit" && <UnitScreen key={cur.unit} unitId={cur.unit} authored={authored.includes(cur.unit)} resumeCard={resume?.[cur.unit] || 0} onResume={game.saveResume} fontScale={prefs.fontScale} onFontScale={(s) => onPrefs({ fontScale: s })} onBack={() => setScreen(isCenter(cur.unit) ? "map" : "domain")} onStartQuiz={() => setScreen("quiz")} onSimulate={() => finish(cur.unit, { correct: 7 + Math.floor(Math.random() * 4), total: 10, sim: true })} />}
+          {screen === "unit" && <UnitScreen key={cur.unit} unitId={cur.unit} authored={authored.includes(cur.unit)} resumeCard={Number.isInteger(cur.jump) ? cur.jump : resume?.[cur.unit] || 0} onResume={game.saveResume} fontScale={prefs.fontScale} onFontScale={(s) => onPrefs({ fontScale: s })} onBack={() => setScreen(isCenter(cur.unit) ? "map" : "domain")} onStartQuiz={() => setScreen("quiz")} onSimulate={() => finish(cur.unit, { correct: 7 + Math.floor(Math.random() * 4), total: 10, sim: true })} />}
           {screen === "quiz" && <QuizScreen key={cur.unit} unitId={cur.unit} onBack={() => setScreen("unit")} onFinish={(answers) => finish(cur.unit, { answers })} />}
           {screen === "result" && result && <ResultScreen key={result.unitId + xp} result={result} xp={xp} progress={progress} hasNext={Boolean(next)} onMap={backToMap} onNext={() => openUnit(next)} />}
           {screen === "review" && <ReviewScreen onBack={backToMap} onDone={backToMap} />}

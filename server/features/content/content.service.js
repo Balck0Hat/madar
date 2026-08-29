@@ -2,6 +2,11 @@ import Unit from "./unit.model.js";
 import QuestionStat from "./questionStat.model.js";
 import { notFound } from "../../shared/utils/AppError.js";
 import { sample } from "../../shared/utils/grading.js";
+import { cleanUnit } from "./unit.clean.js";
+import { snapshotUnit } from "./version.service.js";
+
+// تاريخ النسخ جزء من واجهة المحتوى: المشرف يمرّ عبر content.service وحده
+export { listVersions, getVersion, restoreVersion, snapshotUnit } from "./version.service.js";
 
 // معرّفات الوحدات المنشورة (لتمييز "جاهزة" من "محاكاة" في الواجهة)
 export async function listPublishedIds() {
@@ -55,8 +60,14 @@ export const getUnitForEdit = async (unitId) => {
   if (!unit) throw notFound("الوحدة غير موجودة", "UNIT_NOT_FOUND");
   return unit;
 };
-export const upsertUnit = (unitId, body, userId) =>
-  Unit.findOneAndUpdate({ unitId }, { $set: { ...body, unitId, updatedBy: userId } }, { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }).lean();
+// الحفظ يكتب فوق الوحدة، فنلتقط الحالة السابقة أولاً ليبقى التراجع ممكناً
+export const upsertUnit = async (unitId, body, userId, note = "") => {
+  await snapshotUnit(unitId, userId, note);
+  return Unit.findOneAndUpdate({ unitId }, { $set: { ...body, unitId, updatedBy: userId } }, { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }).lean();
+};
+// تصدير نظيف: نفس الشكل الذي يقبله الاستيراد، بلا حقول مونغو الداخلية
+export const exportUnit = async (unitId) => cleanUnit(await getUnitForEdit(unitId));
+export const exportAllUnits = async () => (await Unit.find().sort("unitId").lean()).map(cleanUnit);
 export const deleteUnit = async (unitId) => {
   const r = await Unit.deleteOne({ unitId });
   if (!r.deletedCount) throw notFound("الوحدة غير موجودة", "UNIT_NOT_FOUND");

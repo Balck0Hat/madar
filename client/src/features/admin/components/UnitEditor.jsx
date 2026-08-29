@@ -4,9 +4,10 @@ import { C, inputStyle, alpha } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Btn, TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
 import { getUnit, saveUnit } from "../services/admin.service";
-import { emptyUnit, emptyQuestion, normalizeUnit, toLines, fromLines } from "../utils/editor.utils";
+import { emptyUnit, emptyQuestion, normalizeUnit, toFormUnit, toLines, fromLines } from "../utils/editor.utils";
 import CardsEditor from "./CardsEditor";
 import QuestionEditor from "./QuestionEditor";
+import VersionsPanel from "./VersionsPanel";
 
 const small = { ...inputStyle, padding: "9px 12px", fontSize: 14 };
 const Section = ({ title, children }) => <div style={{ display: "grid", gap: 8 }}><div style={{ fontWeight: 800, color: C.gold, fontSize: 14 }}>{title}</div>{children}</div>;
@@ -16,10 +17,10 @@ const Lines = ({ label, value, onChange, rows = 3 }) => <div><div style={{ fontS
 export default function UnitEditor({ unitId, isNew, onBack, onSaved, onToast }) {
   const { data, loading, error, reload } = useAsync(() => (isNew ? Promise.resolve(emptyUnit(unitId)) : getUnit(unitId)), [unitId, isNew]);
   if (loading || error) return <Shell unitId={unitId} onBack={onBack}>{error ? <ErrorState message={error.message} onRetry={reload} onBack={onBack} /> : <Skeleton lines={6} />}</Shell>;
-  return <Shell unitId={unitId} onBack={onBack}><Form initial={data} unitId={unitId} onSaved={onSaved} onToast={onToast} /></Shell>;
+  return <Shell unitId={unitId} onBack={onBack}><Form initial={data} unitId={unitId} isNew={isNew} onSaved={onSaved} onToast={onToast} /></Shell>;
 }
 
-function Form({ initial, unitId, onSaved, onToast }) {
+function Form({ initial, unitId, isNew, onSaved, onToast }) {
   const [u, setU] = useState(initial);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -58,6 +59,7 @@ function Form({ initial, unitId, onSaved, onToast }) {
         {u.questions.map((q, k) => <QuestionEditor key={k} q={q} index={k} onChange={(nq) => set({ questions: u.questions.map((x, j) => (j === k ? nq : x)) })} onRemove={() => set({ questions: u.questions.filter((_, j) => j !== k) })} />)}
         <Btn small full={false} onClick={() => set({ questions: [...u.questions, emptyQuestion(u.questions.length + 1)] })}><span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Plus size={14} />سؤال جديد</span></Btn>
       </Section>
+      {!isNew && <VersionsPanel unitId={unitId} current={u} onToast={onToast} onRestored={(unit) => { setU(toFormUnit(unit)); onSaved(); }} />}
       {err && <div role="alert" style={{ color: C.red, fontSize: 13, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: 12, padding: 10 }}>{err}</div>}
       <div style={{ display: "flex", gap: 8, position: "sticky", bottom: 12 }}>
         <Btn disabled={busy} onClick={() => save(false)}>حفظ كمسودة</Btn>
