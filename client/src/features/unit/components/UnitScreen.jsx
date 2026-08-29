@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { C, P, MONO } from "../../../shared/constants/theme";
+import { C, P, MONO, alpha } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
@@ -75,9 +75,9 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, on
   const quizCount = Math.min(10, content.questions?.length || 0);
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: P.bg, color: P.ink, transition: "background .4s" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: P.bg, color: P.ink, transition: "background .4s", "--unit-color": info.color, backgroundImage: `radial-gradient(140% 60% at 50% 0%, ${alpha(info.color, 0.07)}, transparent 60%)` }}>
       <div style={{ padding: "12px 12px 0", display: "flex", gap: 3 }}>
-        {pages.map((_, i) => <div key={i} style={{ flex: 1, height: 3, borderRadius: 99, background: i <= page ? C.gold : P.line, transition: "background .3s" }} />)}
+        {pages.map((_, i) => <div key={i} style={{ flex: 1, height: 3, borderRadius: 99, background: i <= page ? info.color : P.line, transition: "background .3s" }} />)}
       </div>
       <TopBar paper onBack={onBack}
         title={<span style={{ fontSize: 15 }}>{info.domainName} <span style={{ color: P.muted, fontWeight: 400 }}>· {LABEL[p.t]}</span></span>}
@@ -97,7 +97,7 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, on
       </div>
       <div style={{ padding: "8px 16px 22px", display: "flex", gap: 8, alignItems: "center" }}>
         <Btn ghost paper full={false} small onClick={() => (page > 0 ? prev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>
-        <Btn primary color={last ? C.gold : P.ink} style={last ? {} : { color: P.bg }} onClick={() => (last ? onStartQuiz() : next())}>
+        <Btn primary color={last ? C.gold : info.color} style={{ color: "var(--bg)" }} onClick={() => (last ? onStartQuiz() : next())}>
           {last ? `ابدأ الاختبار (${num(quizCount)} أسئلة)` : "التالي"}
         </Btn>
       </div>

@@ -46,6 +46,14 @@ html { -webkit-text-size-adjust: 100%; }
 }
 
 /* حركات */
+@keyframes madarTrace{from{stroke-dashoffset:1;opacity:0}20%{opacity:1}to{stroke-dashoffset:0;opacity:1}}
+.madar-trace{stroke-dasharray:1;animation:madarTrace 1s ease-out both}
+@keyframes madarFlash{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+.madar-flash{animation:madarFlash .5s ease-out}
+.madar-lift{transition:transform .16s ease, box-shadow .16s ease}
+@media (hover:hover){.madar-lift:hover{transform:translateY(-2px);box-shadow:var(--shadow)}}
+@keyframes madarFadeIn{from{opacity:0}to{opacity:1}}
+.madar-fade{animation:madarFadeIn .3s ease-out}
 @keyframes madarPulse{0%,100%{opacity:.25}50%{opacity:1}}
 .madar-pulse{animation:madarPulse 2.2s ease-in-out infinite}
 @keyframes madarDraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
@@ -75,6 +83,6 @@ html { -webkit-text-size-adjust: 100%; }
 .madar-press{transition:transform .12s ease}
 .madar-press:active{transform:scale(.97)}
 @media (prefers-reduced-motion:reduce){
-  .madar-pulse,.madar-draw,.madar-spin,.madar-in,.madar-tw,.madar-shake,.madar-conf,.madar-pop,.madar-slide,.madar-rise,.madar-stagger > *,.madar-press{animation:none;transition:none}
+  .madar-pulse,.madar-draw,.madar-spin,.madar-in,.madar-tw,.madar-shake,.madar-conf,.madar-pop,.madar-slide,.madar-trace,.madar-flash,.madar-fade,.madar-rise,.madar-stagger > *,.madar-press{animation:none;transition:none}
 }
 `;

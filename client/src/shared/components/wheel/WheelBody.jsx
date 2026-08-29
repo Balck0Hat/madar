@@ -21,11 +21,13 @@ function Sector({ d, di, r, progress, locked, recommended, highlight, onSelect, 
   const a0 = di * 36 + 1.3, a1 = (di + 1) * 36 - 1.3;
   const isRec = recommended && recommended.startsWith(d.id + "-") && r === 0;
   const isHi = highlight && highlight.di === di && highlight.r === r;
+  const ghost = !locked && frac === 0;
   const path = ring(r0, r1, a0, a1);
   return (
     <g onClick={() => onSelect && onSelect(d.id, r, di)} style={{ cursor: onSelect ? "pointer" : "default" }}>
       <path d={path} fill={d.color} fillOpacity={locked ? 0.07 : 0.12 + 0.78 * frac} stroke={p.bg} strokeWidth="1.5" />
       {(frac === 1 || isHi) && <path d={path} fill="none" stroke={isHi ? p.gold : d.color} strokeWidth="1.4" filter="url(#glow)" />}
+      {ghost && <path d={path} fill="none" stroke={d.color} strokeWidth="0.8" strokeOpacity="0.5" strokeDasharray="2 4" />}
       {isRec && <path className="madar-pulse" d={path} fill="none" stroke={p.gold} strokeWidth="2" />}
     </g>
   );

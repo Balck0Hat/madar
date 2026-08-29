@@ -4,7 +4,8 @@ import { nextUnit } from "../shared/utils/progress";
 import { isCenter } from "../shared/utils/units";
 import { PrefsProvider } from "../shared/context/PrefsContext";
 import { CSS } from "../shared/styles/global";
-import { TabBar, SideNav, Toast, OrbitMark } from "../shared/components/ui";
+import { TabBar, SideNav, Toast } from "../shared/components/ui";
+import WheelLoader from "../shared/components/wheel/WheelLoader";
 import { Landing, Onboarding } from "../features/onboarding";
 import { AuthScreen, authService } from "../features/auth";
 import { MapScreen } from "../features/map";
@@ -74,7 +75,7 @@ export default function App() {
         <style>{CSS}</style>
         {!focus && profile && <SideNav tab={screen} onTab={setScreen} name={profile.name} />}
         <main className={`madar-main${focus ? " is-focus" : ""}`}>
-          {screen === "boot" && <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}><OrbitMark size={80} /></div>}
+          {screen === "boot" && <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}><WheelLoader size={190} label="نفتح خريطتك…" /></div>}
           {screen === "public" && <PublicProfile handle={route.publicHandle} onHome={goHome} />}
           {screen === "verify" && <VerifyPage code={route.verifyCode} onHome={goHome} />}
           {screen === "landing" && <Landing onStart={() => openAuth("register")} onLogin={() => openAuth("login")} googleUrl={providers.google ? authService.googleUrl() : null} />}

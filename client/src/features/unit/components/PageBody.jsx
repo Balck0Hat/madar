@@ -6,8 +6,8 @@ export default function PageBody({ p, index, content, info, quizCount }) {
   switch (p?.t) {
     case "spark": return <SparkPage info={info} content={{ ...content, quiz: { length: quizCount } }} />;
     case "goals": return <GoalsPage goals={content.goals} />;
-    case "card": return <CardPage card={p.c} index={index - 1} total={content.cards.length} />;
-    case "try": return <TryPage tryIt={content.tryIt} />;
+    case "card": return <CardPage card={p.c} index={index - 1} total={content.cards.length} color={info.color} />;
+    case "try": return <TryPage tryIt={content.tryIt} color={info.color} />;
     case "deep": return <DeepPage deep={content.deep} />;
     case "thread": return <ThreadPage thread={content.thread} />;
     case "end": return <EndPage summary={content.summary} />;

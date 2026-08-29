@@ -1,31 +1,57 @@
 import { HEX_DARK as C, FONT, MONO } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
+import { GoldDefs, GeoPattern, Seal, Corner, Rule, Lozenge } from "./CardArt";
 
-// شهادة الثقافة العامة (SVG قابل للتصدير كصورة)
+// شهادة الثقافة العامة (SVG قابل للتصدير كصورة PNG — ألوان حرفية فقط)
 export default function Certificate({ name, earned, code, date, refEl }) {
   const num = useNum();
   return (
     <svg ref={refEl} viewBox="0 0 360 250" width="100%" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", borderRadius: 14 }} direction="rtl">
       <defs>
-        <pattern id="geo" width="18" height="18" patternUnits="userSpaceOnUse">
-          <g fill="none" stroke={C.gold} strokeWidth="0.9" opacity="0.85">
-            <rect x="4" y="4" width="10" height="10" transform="rotate(45 9 9)" /><rect x="4" y="4" width="10" height="10" /><circle cx="9" cy="9" r="1.2" fill={C.gold} stroke="none" />
-          </g>
-        </pattern>
-        <linearGradient id="gold" x1="0" x2="1"><stop offset="0" stopColor="#F2B544" /><stop offset=".5" stopColor="#FFE39A" /><stop offset="1" stopColor="#D9982A" /></linearGradient>
+        <GoldDefs />
+        <GeoPattern />
+        <radialGradient id="cg-paper" cx=".5" cy=".4" r=".82">
+          <stop offset="0" stopColor="#19244D" /><stop offset=".55" stopColor="#101833" /><stop offset="1" stopColor="#070B18" />
+        </radialGradient>
       </defs>
+
+      {/* الأرضية والإطار */}
       <rect width="360" height="250" fill={C.bg} />
-      <path d="M8 8h344v234H8z M26 26h308v198H26z" fill="url(#geo)" fillRule="evenodd" />
-      <rect x="26" y="26" width="308" height="198" fill="none" stroke="url(#gold)" strokeWidth="1.5" />
-      <text x="180" y="62" textAnchor="middle" fill="url(#gold)" fontFamily={FONT} fontSize="9">منصة مدار</text>
-      <text x="180" y="88" textAnchor="middle" fill={C.text} fontFamily={FONT} fontSize="19" fontWeight="800">شهادة الثقافة العامة</text>
-      <text x="180" y="110" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="9.5">تشهد منصة مدار بأن</text>
-      <text x="180" y="140" textAnchor="middle" fill="url(#gold)" fontFamily={FONT} fontSize="24" fontWeight="900">{name}</text>
-      <text x="180" y="162" textAnchor="middle" fill={C.text} fontFamily={FONT} fontSize="9.5">أكمل المدار الأول: عشرة مجالات، ثلاث وثمانون وحدة، واجتاز امتحان المدار</text>
-      <text x="70" y="206" textAnchor="middle" fill={C.muted} fontFamily={MONO} fontSize="8">{code}</text>
-      <text x="290" y="206" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="8">{num(date)}</text>
-      <circle cx="180" cy="200" r="13" fill="none" stroke="url(#gold)" strokeWidth="1.2" /><circle cx="180" cy="200" r="8" fill="none" stroke="url(#gold)" strokeWidth="0.8" /><circle cx="180" cy="200" r="2.5" fill="url(#gold)" />
-      {!earned && <text x="180" y="132" textAnchor="middle" fill={C.text} fillOpacity="0.14" fontFamily={FONT} fontSize="54" fontWeight="900" transform="rotate(-14 180 132)">معاينة</text>}
+      <rect width="360" height="250" fill="url(#cg-paper)" />
+      <rect x="8" y="8" width="344" height="234" rx="7" fill="none" stroke="url(#cg-gold)" strokeWidth="1" strokeOpacity=".8" />
+      <path d="M12,12h336v226H12z M30,30h300v190H30z" fill="url(#cg-geo)" fillRule="evenodd" />
+      <rect x="30" y="30" width="300" height="190" fill="none" stroke="url(#cg-gold)" strokeWidth="1.3" />
+      <rect x="33.5" y="33.5" width="293" height="183" fill="none" stroke={C.gold} strokeWidth="0.4" strokeOpacity=".4" />
+      <Corner x={30} y={30} /><Corner x={330} y={30} sx={-1} /><Corner x={30} y={220} sy={-1} /><Corner x={330} y={220} sx={-1} sy={-1} />
+
+      {/* سطر المنصة بين خطين شعريين */}
+      <Rule x={104} y={49} w={44} h={0.7} /><Rule x={212} y={49} w={44} h={0.7} />
+      <text x="180" y="53" textAnchor="middle" fill="url(#cg-gold)" fontFamily={FONT} fontSize="9.5" fontWeight="700">منصة مدار</text>
+
+      {/* العنوان ثم صيغة الإشهاد */}
+      <text x="180" y="78" textAnchor="middle" fill={C.text} fontFamily={FONT} fontSize="19" fontWeight="800">شهادة الثقافة العامة</text>
+      <Rule x={126} y={89} w={44} h={0.7} /><Lozenge cx={180} cy={89.4} r={2.6} /><Rule x={190} y={89} w={44} h={0.7} />
+      <text x="180" y="106" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="9.5">تشهد منصة مدار بأن</text>
+
+      {/* الاسم: أكبر سطر، ذهب معدني بظل خفيف يمنحه بروزاً */}
+      <text x="180" y="135.2" textAnchor="middle" fill="#05070F" fillOpacity=".55" fontFamily={FONT} fontSize="26" fontWeight="900">{name}</text>
+      <text x="180" y="134" textAnchor="middle" fill="url(#cg-gold)" fontFamily={FONT} fontSize="26" fontWeight="900">{name}</text>
+      <Rule x={92} y={143.5} w={176} /><Lozenge cx={180} cy={143.9} r={2.4} />
+
+      {/* سطرا الإنجاز */}
+      <text x="180" y="159" textAnchor="middle" fill={C.text} fillOpacity=".92" fontFamily={FONT} fontSize="9">أكمل المدار الأول: عشرة مجالات، ثلاث وثمانون وحدة</text>
+      <text x="180" y="172" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="8.5">واجتاز امتحان المدار</text>
+
+      {/* الختم، ورمز التحقق يساراً والتاريخ يميناً */}
+      <Seal cx={180} cy={197} r={17} />
+      <text x="72" y="190" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="7">رمز التحقق</text>
+      <text x="72" y="203" textAnchor="middle" fill={C.text} fontFamily={MONO} fontSize="8.5" fontWeight="700" direction="ltr">{code}</text>
+      <Rule x={38} y={208} w={68} h={0.6} />
+      <text x="288" y="190" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="7">تاريخ الإصدار</text>
+      <text x="288" y="203" textAnchor="middle" fill={C.text} fontFamily={FONT} fontSize="8.5" fontWeight="700">{num(date)}</text>
+      <Rule x={254} y={208} w={68} h={0.6} />
+
+      {!earned && <text x="180" y="130" textAnchor="middle" fill={C.text} fillOpacity="0.16" fontFamily={FONT} fontSize="56" fontWeight="900" transform="rotate(-14 180 130)">معاينة</text>}
     </svg>
   );
 }

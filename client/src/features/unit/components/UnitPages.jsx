@@ -13,12 +13,12 @@ export function SparkPage({ info, content }) {
     <div>
       {content.hero && (
         <div style={{ textAlign: "center", margin: "18px 0 10px" }}>
-          <div style={{ fontFamily: MONO, fontSize: "5.2em", fontWeight: 800, color: P.gold, lineHeight: 1, letterSpacing: "-0.03em" }}>{num(content.hero.num)}</div>
+          <div style={{ fontFamily: MONO, fontSize: "5.2em", fontWeight: 800, color: info.color, lineHeight: 1, letterSpacing: "-0.03em" }}>{num(content.hero.num)}</div>
           <div style={{ color: P.muted, fontSize: ".88em", marginTop: 6 }}>{content.hero.label}</div>
         </div>
       )}
       <div style={{ fontSize: "1.44em", fontWeight: 800, margin: "18px 0 14px", lineHeight: 1.4 }}>{info.title}</div>
-      <div style={{ ...body, fontSize: "1.1em", borderInlineStart: `3px solid ${P.gold}`, paddingInlineStart: 14 }}>{content.spark}</div>
+      <div style={{ ...body, fontSize: "1.1em", borderInlineStart: `3px solid ${info.color}`, paddingInlineStart: 14 }}>{content.spark}</div>
       <div style={{ color: P.muted, fontSize: ".82em", marginTop: 16, display: "flex", alignItems: "center", gap: 6 }}>
         <Clock size={13} />{num(info.minutes)} دقيقة · {num(content.cards.length)} بطاقات · اختبار من {num(content.quiz.length)} أسئلة
       </div>
@@ -46,22 +46,22 @@ export function GoalsPage({ goals }) {
   );
 }
 
-export function CardPage({ card, index, total }) {
+export function CardPage({ card, index, total, color }) {
   const num = useNum();
   return (
     <div>
-      <Art k={card.art} />
-      <div style={{ color: P.gold, fontSize: ".75em", fontWeight: 700, marginTop: 14 }}>البطاقة {num(index)} من {num(total)}</div>
+      <Art k={card.art} color={color} />
+      <div style={{ color: color || P.gold, fontSize: ".75em", fontWeight: 700, marginTop: 14 }}>البطاقة {num(index)} من {num(total)}</div>
       <div style={{ fontSize: "1.38em", fontWeight: 800, margin: "4px 0 10px", lineHeight: 1.4 }}>{card.h}</div>
       <div style={body}>{card.p}</div>
     </div>
   );
 }
 
-export function TryPage({ tryIt }) {
+export function TryPage({ tryIt, color }) {
   return (
     <div>
-      <Art k="wheel" height={110} />
+      <Art k="wheel" height={110} color={color} />
       <div style={{ fontSize: "1.38em", fontWeight: 800, margin: "16px 0 10px" }}>{tryIt.title}</div>
       <div style={{ ...body, fontSize: "1.03em" }}>{tryIt.text}</div>
     </div>

@@ -4,6 +4,7 @@ export default function Card({ children, style = {}, onClick, accent }) {
   return (
     <div
       onClick={onClick}
+      className={onClick ? "madar-lift madar-press" : undefined}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e); } } : undefined}
