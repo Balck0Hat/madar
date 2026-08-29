@@ -1,7 +1,7 @@
 import { C } from "../../../shared/constants/theme";
 import { Btn, OrbitMark } from "../../../shared/components/ui";
 
-export default function Landing({ onStart }) {
+export default function Landing({ onStart, onLogin }) {
   return (
     <div className="madar-in" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "56px 24px 32px" }}>
       <div />
@@ -13,9 +13,8 @@ export default function Landing({ onStart }) {
       </div>
       <div style={{ display: "grid", gap: 10, marginTop: 32 }}>
         <Btn primary onClick={onStart}>ابدأ الرحلة</Btn>
-        <Btn onClick={onStart}>المتابعة بحساب Google</Btn>
-        <Btn onClick={onStart}>المتابعة بحساب Apple</Btn>
-        <div style={{ color: C.muted, fontSize: 12, textAlign: "center", marginTop: 4 }}>نموذج أولي: التسجيل تجريبي ولا تُحفظ البيانات بعد إغلاق الصفحة.</div>
+        <Btn onClick={onLogin}>لديّ حساب</Btn>
+        <div style={{ color: C.muted, fontSize: 12, textAlign: "center", marginTop: 4 }}>نموذج أولي: يُحفظ تقدمك على حسابك. وحدتان مكتوبتان بالكامل والبقية تُحاكى.</div>
       </div>
     </div>
   );

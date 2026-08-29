@@ -3,7 +3,7 @@ import { C, MONO } from "../../../shared/constants/theme";
 import { stats } from "../../../shared/utils/progress";
 import { levelProgress, levelTitle } from "../../../shared/utils/level";
 import { useNum } from "../../../shared/context/NumContext";
-import { Bar, Card, Pill, TopBar } from "../../../shared/components/ui";
+import { Bar, Btn, Card, Pill, TopBar } from "../../../shared/components/ui";
 import StudyCalendar from "./StudyCalendar";
 import BadgeGrid from "./BadgeGrid";
 import { ShareSection, CertificateSection, NumToggle, ImagePreview } from "./ProfileCards";
@@ -11,7 +11,7 @@ import { svgToPng } from "../utils/svgToPng";
 
 const certCode = (name, year) => `MDR-${year}-${(name.length * 7919 + 4242).toString(36).toUpperCase().slice(0, 5)}`;
 
-export default function ProfileScreen({ profile, progress, xp, badges, streak, studied, arabicNums, onToggleNums, onToast }) {
+export default function ProfileScreen({ profile, progress, xp, badges, streak, studied, arabicNums, onToggleNums, onToast, onLogout }) {
   const num = useNum();
   const { level, cur, need } = levelProgress(xp);
   const st = stats(progress);
@@ -54,6 +54,8 @@ export default function ProfileScreen({ profile, progress, xp, badges, streak, s
         <CertificateSection profile={profile} st={st} code={certCode(profile.name, now.getFullYear())} date={now.toLocaleDateString("ar", { year: "numeric", month: "long", day: "numeric" })} refEl={certRef} onSave={() => save(certRef, 360, 250)} />
         <NumToggle arabicNums={arabicNums} onToggle={onToggleNums} />
         <BadgeGrid badges={badges} />
+        <div style={{ color: C.muted, fontSize: 12, textAlign: "center" }}>{profile.email}</div>
+        <Btn onClick={onLogout}>تسجيل الخروج</Btn>
       </div>
       <ImagePreview src={preview} onClose={() => setPreview(null)} />
     </div>

@@ -1,0 +1,13 @@
+import { Router } from "express";
+import { requireAuth } from "../../shared/middleware/auth.js";
+import { validate } from "../../shared/middleware/validate.js";
+import { finishSchema } from "./progress.validation.js";
+import * as ctrl from "./progress.controller.js";
+
+export const prefix = "/progress";
+const router = Router();
+
+router.get("/", requireAuth, ctrl.getState);
+router.post("/units/:unitId/finish", requireAuth, validate(finishSchema), ctrl.finishUnit);
+
+export default router;
