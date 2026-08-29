@@ -94,7 +94,8 @@ describe("reviews adaptive scheduling", () => {
   it("should draw the review questions from the qids the learner actually got wrong", async () => {
     const user = uid();
     const unitId = "human-1-3";
-    const closed = (await content.questionBank(unitId)).filter((q) => q.t === "mcq" || q.t === "tf");
+    // أسئلة الامتحان المحجوزة لا تصل المتعلم أصلاً، فلا يمكن أن تكون بين أخطائه
+    const closed = (await content.questionBank(unitId)).filter((q) => q.examOnly !== true && (q.t === "mcq" || q.t === "tf"));
     const weak = [closed[closed.length - 1].qid, closed[closed.length - 2].qid];
     await reviews.schedule(user, unitId);
     await Review.updateOne({ user, unitId }, { $set: { due: new Date(Date.now() - 1000), wrongQids: weak } });

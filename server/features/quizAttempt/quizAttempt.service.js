@@ -25,7 +25,7 @@ function forLearner(q) {
 async function draw(unitId, n) {
   const unit = await models.Unit().findOne({ unitId, published: true }).select("questions").lean();
   if (!unit?.questions?.length) throw badRequest("هذه الوحدة لا تملك اختباراً بعد", "NO_QUIZ");
-  return sample(unit.questions, n).map(forLearner);
+  return sample(unit.questions.filter((q) => q.examOnly !== true), n).map(forLearner);
 }
 
 const expired = (attempt) => Date.now() - new Date(attempt.startedAt).getTime() >= ATTEMPT_TTL_MS;

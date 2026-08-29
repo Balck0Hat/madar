@@ -2,7 +2,9 @@ import { HEX_DARK as C, FONT, MONO } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { GoldDefs, GeoPattern, Seal, Corner, Rule, Lozenge } from "./CardArt";
 
-// شهادة الثقافة العامة (SVG قابل للتصدير كصورة PNG — ألوان حرفية فقط)
+// شهادة إتمام (SVG قابل للتصدير كصورة PNG — ألوان حرفية فقط، لا متغيرات CSS).
+// النص يقول بالضبط ما تشهد به: إتمام وحدات المدار الأول واجتياز امتحان غير مراقَب.
+// «شهادة إتمام» لا «شهادة خبرة»: الادعاء الأكبر من ذلك يجعل الورقة كاذبة.
 export default function Certificate({ name, earned, code, date, refEl }) {
   const num = useNum();
   return (
@@ -29,21 +31,23 @@ export default function Certificate({ name, earned, code, date, refEl }) {
       <text x="180" y="53" textAnchor="middle" fill="url(#cg-gold)" fontFamily={FONT} fontSize="9.5" fontWeight="700">منصة مدار</text>
 
       {/* العنوان ثم صيغة الإشهاد */}
-      <text x="180" y="78" textAnchor="middle" fill={C.text} fontFamily={FONT} fontSize="19" fontWeight="800">شهادة الثقافة العامة</text>
-      <Rule x={126} y={89} w={44} h={0.7} /><Lozenge cx={180} cy={89.4} r={2.6} /><Rule x={190} y={89} w={44} h={0.7} />
-      <text x="180" y="106" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="9.5">تشهد منصة مدار بأن</text>
+      <text x="180" y="76" textAnchor="middle" fill={C.text} fontFamily={FONT} fontSize="19" fontWeight="800">شهادة إتمام</text>
+      <text x="180" y="87" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="8">المدار الأول</text>
+      <Rule x={126} y={94} w={44} h={0.7} /><Lozenge cx={180} cy={94.4} r={2.6} /><Rule x={190} y={94} w={44} h={0.7} />
+      <text x="180" y="109" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="9.5">تشهد منصة مدار بأن</text>
 
       {/* الاسم: أكبر سطر، ذهب معدني بظل خفيف يمنحه بروزاً */}
       <text x="180" y="135.2" textAnchor="middle" fill="#05070F" fillOpacity=".55" fontFamily={FONT} fontSize="26" fontWeight="900">{name}</text>
       <text x="180" y="134" textAnchor="middle" fill="url(#cg-gold)" fontFamily={FONT} fontSize="26" fontWeight="900">{name}</text>
       <Rule x={92} y={143.5} w={176} /><Lozenge cx={180} cy={143.9} r={2.4} />
 
-      {/* سطرا الإنجاز */}
-      <text x="180" y="159" textAnchor="middle" fill={C.text} fillOpacity=".92" fontFamily={FONT} fontSize="9">أكمل المدار الأول: عشرة مجالات، ثلاث وثمانون وحدة</text>
-      <text x="180" y="172" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="8.5">واجتاز امتحان المدار</text>
+      {/* ما تشهد به الورقة، بلا مبالغة: وحدات مكتملة وامتحان غير مراقَب */}
+      <text x="180" y="156" textAnchor="middle" fill={C.text} fillOpacity=".92" fontFamily={FONT} fontSize="9">أتمّ وحدات المدار الأول الثلاث والثمانين في عشرة مجالات</text>
+      <text x="180" y="167" textAnchor="middle" fill={C.text} fillOpacity=".82" fontFamily={FONT} fontSize="8.2">واجتاز امتحان إتمام من أربعين سؤالاً بنسبة ثمانين بالمئة فأعلى</text>
+      <text x="180" y="177.5" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="7">امتحان غير مراقَب · شهادة إتمام لا شهادة خبرة أو تأهيل مهني</text>
 
       {/* الختم، ورمز التحقق يساراً والتاريخ يميناً */}
-      <Seal cx={180} cy={197} r={17} />
+      <Seal cx={180} cy={199} r={15.5} />
       <text x="72" y="190" textAnchor="middle" fill={C.muted} fontFamily={FONT} fontSize="7">رمز التحقق</text>
       <text x="72" y="203" textAnchor="middle" fill={C.text} fontFamily={MONO} fontSize="8.5" fontWeight="700" direction="ltr">{code}</text>
       <Rule x={38} y={208} w={68} h={0.6} />

@@ -1,15 +1,20 @@
 import { useState } from "react";
-import { Award } from "lucide-react";
+import { Award, Timer } from "lucide-react";
 import { C, MONO, inputStyle, alpha } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useNum } from "../../../shared/context/NumContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
-import { Btn, Card, Bar, TopBar, Skeleton, ErrorState, Confetti } from "../../../shared/components/ui";
+import { Btn, Bar, TopBar, Skeleton, ErrorState, Confetti } from "../../../shared/components/ui";
 import OrderQuestion from "../../quiz/components/OrderQuestion";
 import { isReady } from "../../quiz/utils/quiz.utils";
+import { useExamTimer, clock } from "../hooks/useExamTimer";
+import ExamIntro from "./ExamIntro";
 import { getStatus, startExam, submitExam } from "../services/exam.service";
 
-// امتحان المدار الأول: 30 سؤالاً بلا تغذية راجعة، النجاح 80% يمنح الشهادة
+const arDate = (d) => new Date(d).toLocaleDateString("ar", { year: "numeric", month: "long", day: "numeric" });
+
+// امتحان إتمام المدار الأول: أسئلة محجوزة لم تظهر في التمارين، مهلة محدودة،
+// ومحاولة واحدة كل ثلاثين يوماً. النجاح 80% يمنح شهادة إتمام (امتحان غير مراقَب).
 export default function ExamScreen({ onBack, onCertified }) {
   const num = useNum();
   const { data: status, loading, error, reload } = useAsync(getStatus, []);
@@ -20,6 +25,7 @@ export default function ExamScreen({ onBack, onCertified }) {
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const left = useExamTimer(attempt && !result ? attempt.endsAt : null);
 
   const run = async (fn) => { setBusy(true); setErr(""); try { return await fn(); } catch (e) { setErr(e.message); return null; } finally { setBusy(false); } };
   const begin = () => run(async () => setAttempt(await startExam()));
@@ -31,9 +37,16 @@ export default function ExamScreen({ onBack, onCertified }) {
     else run(async () => { const r = await submitExam(attempt.attemptId, next); setResult(r); if (r.certificate) onCertified(r.certificate); });
   };
 
+  // العدّاد يحمرّ في الدقائق الخمس الأخيرة: تنبيه قبل أن يرفض الخادم التسليم المتأخر
+  const timer = attempt && !result && (
+    <span style={{ display: "inline-flex", gap: 8, alignItems: "center", fontFamily: MONO, fontSize: 12, color: left <= 300 ? C.red : C.muted }}>
+      <span style={{ display: "inline-flex", gap: 3, alignItems: "center" }}><Timer size={12} />{num(clock(left))}</span>
+      <span>{num(i + 1)}/{num(attempt.total)}</span>
+    </span>
+  );
   const shell = (children) => (
     <div className="madar-in" style={{ minHeight: "100vh" }}>
-      <TopBar title="امتحان المدار الأول" onBack={onBack} right={attempt && !result ? <span style={{ fontFamily: MONO, color: C.muted, fontSize: 12 }}>{num(i + 1)}/{num(attempt.total)}</span> : null} />
+      <TopBar title="امتحان الإتمام" onBack={onBack} right={timer} />
       <div style={{ padding: "8px 18px 30px" }}>{children}</div>
     </div>
   );
@@ -44,30 +57,19 @@ export default function ExamScreen({ onBack, onCertified }) {
       <div style={{ textAlign: "center", paddingTop: 20 }}>
         {result.passed && <Confetti color={C.gold} />}
         <Award size={48} color={result.passed ? C.gold : C.muted} />
-        <div style={{ fontSize: 26, fontWeight: 900, marginTop: 10 }}>{result.passed ? "مبارك، أنت مثقف" : "لم تكتمل بعد"}</div>
+        <div style={{ fontSize: 26, fontWeight: 900, marginTop: 10 }}>{result.passed ? "اجتزت امتحان الإتمام" : "لم تجتز هذه المرة"}</div>
         <div style={{ fontFamily: MONO, fontSize: 22, color: result.passed ? C.gold : C.red, marginTop: 6 }}>{num(result.score)}/{num(result.total)}</div>
-        <div style={{ color: C.muted, marginTop: 8, lineHeight: 1.7 }}>{result.passed ? `رمز شهادتك: ${result.certificate.code}` : "النجاح يحتاج 80%. راجع الوحدات التي أخطأت فيها وعد."}</div>
+        <div style={{ color: C.muted, marginTop: 8, lineHeight: 1.7 }}>
+          {result.passed
+            ? `رمز شهادتك: ${result.certificate.code} — شهادة إتمام، والامتحان غير مراقَب.`
+            : `النجاح يحتاج ثمانين بالمئة. المحاولة القادمة تُفتح في ${arDate(result.reopensAt)}؛ راجع الوحدات حتى ذلك الحين.`}
+        </div>
         <div style={{ marginTop: 20 }}><Btn primary onClick={onBack}>{result.passed ? "اعرض الشهادة" : "العودة"}</Btn></div>
       </div>,
     );
   }
 
-  if (!attempt) {
-    return shell(
-      <Card>
-        {status.certificate ? (
-          <><div style={{ fontWeight: 800 }}>لديك شهادة بالفعل</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>الرمز {status.certificate.code}</div></>
-        ) : (
-          <>
-            <div style={{ fontWeight: 800, fontSize: 18 }}>{status.eligible ? "أنت جاهز" : "لم يُفتح بعد"}</div>
-            <div style={{ color: C.muted, fontSize: 14, lineHeight: 1.7, marginTop: 6 }}>{status.eligible ? "30 سؤالاً من وحدات المدار الأول، بلا تغذية راجعة أثناء الامتحان. النجاح 80%." : "يُفتح الامتحان بعد إكمال وحدات المركز الثلاث والمجالات العشرة كلها."}</div>
-            {err && <div role="alert" style={{ color: C.red, fontSize: 13, marginTop: 8 }}>{err}</div>}
-            <div style={{ marginTop: 14 }}><Btn primary disabled={!status.eligible || busy} onClick={begin}>{busy ? "لحظة..." : "ابدأ الامتحان"}</Btn></div>
-          </>
-        )}
-      </Card>,
-    );
-  }
+  if (!attempt) return shell(<ExamIntro status={status} num={num} err={err} busy={busy} onBegin={begin} />);
 
   const q = attempt.questions[i], info = unitInfo(q.unitId);
   const optBtn = (label, v) => <button key={String(v)} type="button" onClick={() => setSel(v)} aria-pressed={sel === v} style={{ background: sel === v ? alpha(info.color, 0.15) : C.surface, border: `1px solid ${sel === v ? info.color : C.line}`, borderRadius: 14, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: 15 }}>{label}</button>;

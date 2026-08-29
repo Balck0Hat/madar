@@ -44,11 +44,16 @@ describe("server-side quiz grading", () => {
     const quiz = await request(app).get("/api/v1/content/units/center-1/quiz?n=5").set("Cookie", user);
     expect(quiz.status).toBe(200);
     expect(quiz.body.data.questions).toHaveLength(5);
-    const answers = quiz.body.data.questions.map((q) => ({ qid: q.qid, answer: q.t === "open" ? "لأن الاسترجاع يثبت المعلومة في الذاكرة" : q.a }));
+    const answers = quiz.body.data.questions.map((q) => (q.t === "open"
+      ? { qid: q.qid, answer: "لأن الاسترجاع يثبت المعلومة في الذاكرة", selfMark: "got" }
+      : { qid: q.qid, answer: q.a }));
+    const open = quiz.body.data.questions.filter((q) => q.t === "open").length;
     const fin = await request(app).post("/api/v1/progress/units/center-1/finish").set("Cookie", user).send({ answers });
     expect(fin.status).toBe(200);
-    expect(fin.body.data.result.correct).toBe(5);
+    // كل سؤال يُعاد في graded، لكن المفتوح يُقيَّم ذاتياً فلا يدخل في العلامة
     expect(fin.body.data.result.graded).toHaveLength(5);
+    expect(fin.body.data.result.total).toBe(5 - open);
+    expect(fin.body.data.result.correct).toBe(5 - open);
     expect(fin.body.data.result.gain).toBe(110);
   });
 

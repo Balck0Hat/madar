@@ -1,8 +1,9 @@
 process.env.NODE_ENV = "test";
 process.env.JWT_ACCESS_SECRET ||= "test-access-secret-test-access-secret-0000";
 process.env.JWT_REFRESH_SECRET ||= "test-refresh-secret-test-refresh-secret-00";
-// قاعدة اختبار خاصة بكل عملية: تشغيل متوازٍ لا يمسح بيانات تشغيل آخر
-process.env.MONGO_URI_TEST ||= `mongodb://127.0.0.1:27017/madar_test_${process.pid}`;
+// قاعدة اختبار خاصة بكل عملية. الإسناد قسري لا ||= لأن vitest يحمّل .env قبل هذا الملف،
+// فالمتغير موجود سلفاً وتشغيلان متوازيان كانا يمسحان بيانات بعضهما.
+process.env.MONGO_URI_TEST = process.env.MONGO_URI_TEST_OVERRIDE || `mongodb://127.0.0.1:27017/madar_test_${process.pid}`;
 process.env.CLIENT_DIST = "";
 
 import mongoose from "mongoose";

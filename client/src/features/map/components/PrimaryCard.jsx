@@ -15,7 +15,7 @@ export default function PrimaryCard({ info, resuming = false, minutes, eta, onOp
       <Card>
         <div style={{ fontWeight: 800 }}>أنهيت المدار الأول</div>
         <div style={{ color: C.muted, fontSize: 13, marginTop: 4, lineHeight: 1.7 }}>
-          امتحان المدار في صفحة «أنا»، والمدار الثاني يُفتح على العجلة.
+          امتحان الإتمام في صفحة «أنا»، والمدار الثاني يُفتح على العجلة.
         </div>
       </Card>
     );

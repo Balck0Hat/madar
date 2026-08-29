@@ -1,9 +1,15 @@
 import { describe, it, expect } from "vitest";
 import mongoose from "mongoose";
 import * as progress from "../progress.service.js";
+import Unit from "../../content/unit.model.js";
+import "../../content/questionStat.model.js";
 import { applyFinish, streakFrom, dayKey } from "../../../shared/utils/game.js";
 
 const userId = () => new mongoose.Types.ObjectId();
+
+const mcq = (n, a = 1) => ({ qid: `c${n}`, t: "mcq", q: `سؤال ${n}؟`, opts: ["أ", "ب", "ج", "د"], a, why: "لأن هذا هو الجواب." });
+const openQ = (n) => ({ qid: `o${n}`, t: "open", q: `اشرح الفكرة ${n}.`, keywords: ["الميل", "المحور", "الزاوية"], why: "الميل يغيّر زاوية الأشعة." });
+const seed = (questions, unitId = "earth-1-1") => Unit.create({ unitId, title: "وحدة اختبار", cards: [], questions, published: true });
 
 describe("progress.service getState", () => {
   it("should create an empty state for a new user", async () => {
@@ -61,6 +67,42 @@ describe("progress.service finishUnit", () => {
 
   it("should reject an invalid unit id", async () => {
     await expect(progress.finishUnit(userId(), "nope-9-9", { correct: 1, total: 1 })).rejects.toMatchObject({ statusCode: 400 });
+  });
+});
+
+// بلا مفتاح ذكاء اصطناعي في بيئة الاختبار، السؤال المفتوح يُقيَّم ذاتياً ولا يُحتسب
+describe("progress.service open questions are not scored", () => {
+  it("should count closed questions only and ignore the open one in the score", async () => {
+    await seed([mcq(1), mcq(2), mcq(3), mcq(4), openQ(1)]);
+    const answers = [
+      { qid: "c1", answer: 1 }, { qid: "c2", answer: 1 }, { qid: "c3", answer: 1 }, { qid: "c4", answer: 1 },
+      { qid: "o1", answer: "كلمة", selfMark: "unclear" },
+    ];
+    const { result } = await progress.finishUnit(userId(), "earth-1-1", { answers });
+    expect(result.total).toBe(4);
+    expect(result.correct).toBe(4);
+    expect(result.passed).toBe(true);
+    const open = result.graded.find((g) => g.qid === "o1");
+    expect(open).toMatchObject({ open: true, scored: false, selfMark: "unclear" });
+    expect(open.ok).toBeUndefined();
+  });
+
+  it("should not let keyword stuffing in an open answer rescue a failing score", async () => {
+    await seed([mcq(1), mcq(2), mcq(3), mcq(4), openQ(1)]);
+    const answers = [
+      { qid: "c1", answer: 1 }, { qid: "c2", answer: 0 }, { qid: "c3", answer: 0 }, { qid: "c4", answer: 0 },
+      { qid: "o1", answer: "الميل المحور الزاوية", selfMark: "got" },
+    ];
+    const { result } = await progress.finishUnit(userId(), "earth-1-1", { answers });
+    expect(result).toMatchObject({ correct: 1, total: 4, passed: false });
+  });
+
+  it("should treat an all-open quiz as passed rather than divide by zero", async () => {
+    await seed([openQ(1), openQ(2)]);
+    const { result } = await progress.finishUnit(userId(), "earth-1-1", { answers: [{ qid: "o1", answer: "شرح", selfMark: "got" }, { qid: "o2", answer: "شرح", selfMark: "unclear" }] });
+    expect(result.passed).toBe(true);
+    expect(result.total).toBe(1);
+    expect(result.graded.every((g) => g.scored === false)).toBe(true);
   });
 });
 

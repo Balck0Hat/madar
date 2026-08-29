@@ -14,6 +14,8 @@ const questionSchema = new Schema(
     a: { type: Schema.Types.Mixed },
     why: { type: String, trim: true },
     keywords: [String],
+    // محجوز للامتحان: لا يظهر في اختبارات الوحدات، فيبقى الامتحان قياساً لما لم يُتمرَّن عليه
+    examOnly: { type: Boolean },
   },
   { _id: false },
 );
@@ -47,12 +49,14 @@ unitSchema.index(
   { name: "unit_text", default_language: "none", weights: { title: 10, "cards.h": 4, summary: 3, spark: 2, "cards.p": 1 } },
 );
 
-// الأسئلة المعروضة للمتعلم لا تحمل الكلمات المفتاحية
+// الأسئلة المعروضة للمتعلم لا تحمل الكلمات المفتاحية.
+// وأسئلة examOnly تُحجب هنا كلياً: هذا المسار يعيد الإجابات مع الأسئلة، فلو مرّت
+// لأمكن قراءة بنك الامتحان كاملاً من نقطة الوحدة قبل دخوله.
 unitSchema.methods.toPublic = function toPublic() {
   const o = this.toObject({ versionKey: false });
   delete o._id;
   delete o.updatedBy;
-  o.questions = (o.questions || []).map(({ keywords, ...q }) => q);
+  o.questions = (o.questions || []).filter((q) => q.examOnly !== true).map(({ keywords, examOnly, ...q }) => q);
   return o;
 };
 

@@ -81,6 +81,7 @@ describe("quiz attempt routes", () => {
   });
 
   it("should carry a TTL index so an abandoned attempt expires after 24h", async () => {
+    await QuizAttempt.init();
     const idx = await QuizAttempt.collection.indexes();
     const ttl = idx.find((i) => i.expireAfterSeconds !== undefined);
     expect(ttl.expireAfterSeconds).toBe(ATTEMPT_TTL_SECONDS);
@@ -109,14 +110,14 @@ describe("quiz attempt routes", () => {
     expect(await until(async () => (await QuizAttempt.countDocuments({})) === 0)).toBe(true);
   });
 
-  it("should keep one learner's attempt invisible to another", async () => {
+  it("should keep each learner's attempt separate", async () => {
     const mine = await asUser("mine@example.com");
     const other = await asUser("other@example.com");
     const first = await start(mine);
-    const theirs = await start(other);
+    await start(other);
     expect(await QuizAttempt.countDocuments({})).toBe(2);
-    expect((await request(app).patch("/api/v1/quiz-attempts/earth-1-1").set("Cookie", other).send({ qid: qids(first)[0], answer: 1 })).status).toBe(
-      qids(theirs).includes(qids(first)[0]) ? 200 : 400,
-    );
+    await request(app).patch("/api/v1/quiz-attempts/earth-1-1").set("Cookie", mine).send({ qid: qids(first)[0], answer: 1 });
+    expect((await start(other)).body.data.answers).toEqual([]);
+    expect((await start(mine)).body.data.answers).toHaveLength(1);
   });
 });

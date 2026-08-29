@@ -20,13 +20,14 @@ function hash(str) {
 // وحدة واحدة ثم سؤال مغلق واحد منها، كلاهما مشتق من مفتاح اليوم (لا عشوائية)
 export async function questionOfDay(day = dayKey()) {
   const Unit = models.Unit();
-  const hasClosed = { published: true, questions: { $elemMatch: { t: { $ne: "open" } } } };
+  // الشرط نفسه المطبَّق أدناه: لولا استثناء المحجوز هنا لاختيرت وحدة كل مغلقاتها امتحانية فتخرج قائمة فارغة
+  const hasClosed = { published: true, questions: { $elemMatch: { t: { $ne: "open" }, examOnly: { $ne: true } } } };
   // نجلب المعرّفات وحدها أولاً: تحميل بنوك الأسئلة كلها في كل طلب مكلف بلا داعٍ
   const ids = await Unit.find(hasClosed).select("unitId").sort("unitId").lean();
   if (!ids.length) return null;
   const { unitId } = ids[hash(day) % ids.length];
   const unit = await Unit.findOne({ unitId }).select("unitId title questions").lean();
-  const closed = unit.questions.filter((q) => q.t !== "open").sort((a, b) => a.qid.localeCompare(b.qid));
+  const closed = unit.questions.filter((q) => q.t !== "open" && q.examOnly !== true).sort((a, b) => a.qid.localeCompare(b.qid));
   const question = closed[hash(`${day}:${unitId}`) % closed.length];
   return { day, unitId, unitTitle: unit.title, question };
 }

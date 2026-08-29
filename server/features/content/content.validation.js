@@ -14,8 +14,11 @@ const question = z
     a: z.any().optional(),
     why: z.string().trim().max(600).optional(),
     keywords: z.array(z.string().trim().min(1).max(40)).max(20).optional(),
+    examOnly: z.boolean().optional(),
   })
   .superRefine((q, ctx) => {
+    // الامتحان يُصحَّح آلياً بلا تدخل بشري، فلا يقبل سؤالاً مفتوحاً في بنكه المحجوز
+    if (q.examOnly && q.t === "open") ctx.addIssue({ code: "custom", message: "السؤال المفتوح لا يصلح لبنك الامتحان", path: ["examOnly"] });
     if (q.t === "mcq" && !(q.opts?.length >= 2 && Number.isInteger(q.a) && q.a >= 0 && q.a < q.opts.length)) ctx.addIssue({ code: "custom", message: "mcq يحتاج خيارات ومؤشر إجابة صحيح", path: ["a"] });
     if (q.t === "tf" && typeof q.a !== "boolean") ctx.addIssue({ code: "custom", message: "tf يحتاج إجابة صح/خطأ", path: ["a"] });
     if (q.t === "fill" && !(Array.isArray(q.a) && q.a.length)) ctx.addIssue({ code: "custom", message: "fill يحتاج قائمة إجابات مقبولة", path: ["a"] });
@@ -42,6 +45,10 @@ export const unitBody = z.object({
 // زود يتحقق من الأنواع والحدود العليا؛ هذه تتحقق من الاكتمال: وحدة تمر بزود
 // وهي ناقصة (3 بطاقات، بلا خيط) لا تصلح للنشر. الحدود الدنيا تختلف بحسب المدار.
 const RING_LIMITS = { 0: { questions: 24, cards: 7 }, 1: { questions: 30, cards: 11 }, 2: { questions: 32, cards: 13 } };
+
+// عدد الأسئلة المحجوزة للامتحان في كل وحدة (scripts/mark-exam-questions.js يعلّمها)
+export const EXAM_RESERVE = 6;
+export const isPractice = (q) => q.examOnly !== true;
 
 const isPermutation = (arr, n) => Array.isArray(arr) && arr.length === n && new Set(arr).size === n && arr.every((x) => Number.isInteger(x) && x >= 0 && x < n);
 
@@ -82,7 +89,10 @@ export function checkStructure(unit) {
     seen.add(q.qid);
     errs.push(...questionErrors(q));
   }
-  const count = (t) => qs.filter((q) => q.t === t).length;
+  // البنك يُقرأ مرتين: كله يفي بالحد الأدنى، وما يبقى بعد حجز الامتحان يكفي للتمرين
+  const practice = qs.filter(isPractice);
+  if (practice.length < MIN_Q - EXAM_RESERVE) errs.push(`أسئلة التمرين ${practice.length} < ${MIN_Q - EXAM_RESERVE}`);
+  const count = (t) => practice.filter((q) => q.t === t).length;
   if (count("mcq") < 10) errs.push(`أسئلة الاختيار ${count("mcq")} < 10`);
   if (!count("open")) errs.push("لا سؤال مفتوح");
   if (count("open") > 3) errs.push("أكثر من 3 أسئلة مفتوحة");

@@ -27,6 +27,17 @@ vi.mock("../../features/content/services/content.service", () => ({
   getSummaries: vi.fn(async () => []),
 }));
 
+// محاولة الاختبار تعيش على الخادم: الأسئلة تُسحب مرة واحدة وتُستأنف كما هي.
+// السؤال المفتوح يأتي بعلامة self لأن بيئة الاختبار بلا مفتاح ذكاء اصطناعي، فيُقيّمه المتعلم نفسه.
+vi.mock("../../features/quiz/services/quizAttempt.service", () => ({
+  startAttempt: vi.fn(async () => ({
+    unitId: "center-1",
+    questions: learningUnit.questions.map((q) => (q.t === "open" ? { ...q, self: true, keywords: ["الاسترجاع", "التثبيت"] } : q)),
+    answers: [],
+  })),
+  saveAnswer: vi.fn(async () => ({ answered: 1 })),
+}));
+
 vi.mock("../../features/review/services/review.service", () => ({ getDue: vi.fn(async () => ({ items: [], totalDue: 0 })), answerReview: vi.fn() }));
 vi.mock("../../features/challenge/services/challenge.service", () => ({
   getChallenge: vi.fn(async () => ({ question: null, answeredToday: true, correctToday: false, streak: 0, totalAnswered: 0 })),
@@ -95,7 +106,10 @@ describe("App flow", () => {
     fireEvent.click(screen.getByText("تحقق")); fireEvent.click(screen.getByText("التالي"));
     fireEvent.change(screen.getByPlaceholderText("جملة واحدة تكفي"), { target: { value: "لأن الاسترجاع يثبت المعلومة أكثر" } });
     fireEvent.click(screen.getByText("تحقق"));
-    expect(screen.getByText(/سُجّلت إجابتك/)).toBeInTheDocument();
+    // السؤال المفتوح يكشف الإجابة النموذجية ويطلب حكم المتعلم على نفسه بدل درجة آلية
+    expect(screen.getByText("الإجابة النموذجية")).toBeInTheDocument();
+    expect(screen.getByText("النقاط التي كنا نبحث عنها")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("فهمتها"));
     fireEvent.click(screen.getByText("النتيجة"));
     await waitFor(() => expect(screen.getByText("علامة كاملة")).toBeInTheDocument());
     expect(screen.getByText("+110")).toBeInTheDocument();

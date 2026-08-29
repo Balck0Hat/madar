@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-// شهادة الثقافة العامة: تُمنح باجتياز امتحان المدار الأول
+// شهادة إتمام المدار الأول: تُمنح باجتياز امتحان الإتمام (غير مراقَب)، وليست شهادة خبرة
 const certificateSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, unique: true },

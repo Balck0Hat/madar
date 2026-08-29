@@ -33,7 +33,7 @@ export async function dueList(userId) {
       unitId: d.unitId,
       title: byId[d.unitId].title,
       stage: d.stage,
-      questions: pickReview(byId[d.unitId].questions.filter((q) => q.t === "mcq" || q.t === "tf"), d.wrongQids, QUESTIONS_PER_UNIT),
+      questions: pickReview(byId[d.unitId].questions.filter((q) => q.examOnly !== true && (q.t === "mcq" || q.t === "tf")), d.wrongQids, QUESTIONS_PER_UNIT),
     }));
   const totalDue = await Review.countDocuments({ user: userId, due: { $lte: new Date() } });
   return { items, totalDue };

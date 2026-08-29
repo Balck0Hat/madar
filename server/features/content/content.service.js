@@ -38,7 +38,7 @@ export async function getPublishedUnit(unitId, userId) {
 export async function pickQuiz(unitId, n = 10, userId) {
   if (!unitUnlocked(await progressOf(userId), unitId)) throw forbidden("أكمل المدار السابق في هذا المجال أولاً", "UNIT_LOCKED");
   const unit = await getPublishedUnit(unitId, userId);
-  const questions = sample(unit.questions, n);
+  const questions = sample(unit.questions.filter((q) => q.examOnly !== true), n);
   return { unitId, title: unit.title, questions };
 }
 

@@ -30,6 +30,7 @@ export function ShareSection({ profile, progress, level, st, refEl, onSave, onTo
   );
 }
 
+// «شهادة إتمام» لا «موثقة»: التحقق يثبت أن الشهادة صادرة عن مدار، لا أن حاملها خبير
 export function CertificateSection({ profile, st, certificate, date, refEl, onSave, onExam }) {
   const earned = Boolean(certificate);
   const code = certificate?.code || "MDR-····-·····";
@@ -37,15 +38,18 @@ export function CertificateSection({ profile, st, certificate, date, refEl, onSa
   return (
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-        <div style={{ fontWeight: 800 }}>الشهادة</div>
-        <Pill color={earned ? C.green : C.muted}>{earned ? "موثقة" : "معاينة"}</Pill>
+        <div style={{ fontWeight: 800 }}>شهادة الإتمام</div>
+        <Pill color={earned ? C.green : C.muted}>{earned ? "مسجّلة" : "معاينة"}</Pill>
       </div>
       <Certificate name={profile.name} earned={earned} code={code} date={issued} refEl={refEl} />
       <div style={{ color: C.muted, fontSize: 12, margin: "10px 0", lineHeight: 1.7 }}>
-        {earned ? <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><ShieldCheck size={13} color={C.green} />رابط التحقق: <span style={{ fontFamily: MONO }}>{window.location.origin}/verify/{code}</span></span> : st.ring1Done ? "أكملت المدار الأول. اجتز الامتحان لتُمنح الشهادة." : "تُمنح بعد إكمال المدار الأول واجتياز امتحانه."}
+        {earned ? <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}><ShieldCheck size={13} color={C.green} />رابط التحقق: <span style={{ fontFamily: MONO }}>{window.location.origin}/verify/{code}</span></span> : st.ring1Done ? "أتممت المدار الأول. يبقى امتحان الإتمام: أربعون سؤالاً في خمس وأربعين دقيقة، والنجاح ثمانون بالمئة." : "تُمنح بعد إتمام وحدات المدار الأول الثلاث والثمانين واجتياز امتحان إتمام من أربعين سؤالاً."}
+      </div>
+      <div style={{ color: C.muted, fontSize: 11, marginBottom: 10, lineHeight: 1.7 }}>
+        تشهد هذه الورقة بإتمام الوحدات واجتياز امتحان <b>غير مراقَب</b>، ولا تشهد بخبرة أو تأهيل مهني. محاولة واحدة كل ثلاثين يوماً.
       </div>
       <div style={{ display: "flex", gap: 8 }}>
-        {!earned && <Btn small primary disabled={!st.ring1Done} onClick={onExam}><span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Award size={14} />امتحان المدار</span></Btn>}
+        {!earned && <Btn small primary disabled={!st.ring1Done} onClick={onExam}><span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Award size={14} />امتحان الإتمام</span></Btn>}
         <Btn small onClick={onSave}>إنشاء صورة</Btn>
       </div>
     </Card>
