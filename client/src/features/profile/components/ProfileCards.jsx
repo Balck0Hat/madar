@@ -1,4 +1,4 @@
-import { Award, Share2, BookOpen, ShieldCheck } from "lucide-react";
+import { Award, Share2, BookOpen, ShieldCheck, BarChart3, Users } from "lucide-react";
 import { C, MONO } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Btn, Card, Pill } from "../../../shared/components/ui";
@@ -73,3 +73,17 @@ export function ImagePreview({ src, onClose }) {
     </div>
   );
 }
+
+// روابط تُفتح من صفحة «أنا»: على الهاتف لا يتسع الشريط السفلي لكل الأقسام
+export function NavLinkCard({ icon: Icon, label, hint, onOpen }) {
+  return (
+    <Card onClick={onOpen}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}><Icon size={16} color={C.gold} />{label}</div>
+        {hint && <span style={{ color: C.muted, fontSize: 12 }}>{hint}</span>}
+      </div>
+    </Card>
+  );
+}
+export const StatsIcon = BarChart3;
+export const FriendsIcon = Users;

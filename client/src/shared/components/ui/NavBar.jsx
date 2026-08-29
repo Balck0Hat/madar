@@ -2,23 +2,26 @@ import { Map as MapIcon, Trophy, User, Search, BarChart3, Users } from "lucide-r
 import { C, FONT, alpha } from "../../constants/theme";
 import OrbitMark from "./OrbitMark";
 
-// عناصر التنقل: الثلاثة الأولى تظهر على الهاتف، والبقية في الشريط الجانبي
+// ترتيب التنقل. mobile: يظهر في الشريط السفلي (خمسة أقسام كحد أقصى)،
+// والإحصاءات تُفتح من صفحة «أنا» على الهاتف كي لا يزدحم الشريط.
 export const NAV = [
   { k: "map", label: "الخريطة", Icon: MapIcon, mobile: true },
+  { k: "search", label: "بحث", Icon: Search, mobile: true },
   { k: "league", label: "الترتيب", Icon: Trophy, mobile: true },
+  { k: "friends", label: "الأصدقاء", Icon: Users, mobile: true },
   { k: "me", label: "أنا", Icon: User, mobile: true },
-  { k: "search", label: "بحث", Icon: Search },
   { k: "stats", label: "إحصاءاتي", Icon: BarChart3 },
-  { k: "friends", label: "الأصدقاء", Icon: Users },
 ];
+
+const MOBILE = NAV.filter((n) => n.mobile);
 
 // شريط سفلي للهاتف
 export function TabBar({ tab, onTab }) {
   return (
     <nav aria-label="التنقل الرئيسي" className="madar-hide-lg" style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: alpha(C.bg, 0.92), backdropFilter: "blur(10px)", borderTop: `1px solid ${C.line}`, display: "flex", zIndex: 20 }}>
-      {NAV.filter((n) => n.mobile).map(({ k, label, Icon }) => (
-        <button key={k} type="button" onClick={() => onTab(k)} aria-current={tab === k ? "page" : undefined} style={{ flex: 1, background: "transparent", border: "none", padding: "10px 0 14px", color: tab === k ? C.gold : C.muted, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, fontFamily: FONT, fontSize: 12, fontWeight: tab === k ? 800 : 500 }}>
-          <Icon size={22} />{label}
+      {MOBILE.map(({ k, label, Icon }) => (
+        <button key={k} type="button" onClick={() => onTab(k)} aria-current={tab === k ? "page" : undefined} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", padding: "9px 2px 12px", color: tab === k ? C.gold : C.muted, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: FONT, fontSize: 10.5, fontWeight: tab === k ? 800 : 500 }}>
+          <Icon size={20} /><span style={{ whiteSpace: "nowrap" }}>{label}</span>
         </button>
       ))}
     </nav>

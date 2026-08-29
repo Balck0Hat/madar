@@ -8,11 +8,11 @@ import { Bar, Btn, Card, Pill, TopBar } from "../../../shared/components/ui";
 import StudyCalendar from "./StudyCalendar";
 import BadgeGrid from "./BadgeGrid";
 import ReminderToggle from "./ReminderToggle";
-import { ShareSection, CertificateSection, LibraryLink, ImagePreview } from "./ProfileCards";
+import { ShareSection, CertificateSection, LibraryLink, NavLinkCard, StatsIcon, ImagePreview } from "./ProfileCards";
 import AppearanceCard from "./AppearanceCard";
 import { svgToPng } from "../utils/svgToPng";
 
-export default function ProfileScreen({ profile, progress, xp, badges, streak, freezes = 0, studied, certificate, onPrefs, onToggleReminders, onToast, onLogout, onLibrary, onExam, onAdmin }) {
+export default function ProfileScreen({ profile, progress, xp, badges, streak, freezes = 0, studied, certificate, onPrefs, onStats, onToggleReminders, onToast, onLogout, onLibrary, onExam, onAdmin }) {
   const num = useNum();
   const { level, cur, need } = levelProgress(xp);
   const st = stats(progress);
@@ -47,6 +47,7 @@ export default function ProfileScreen({ profile, progress, xp, badges, streak, f
           ))}
         </div>
         <LibraryLink count={st.units} onOpen={onLibrary} />
+        <NavLinkCard icon={StatsIcon} label="إحصاءاتي" hint="تقدّمك أسبوعاً بأسبوع" onOpen={onStats} />
         <StudyCalendar studied={studied} />
         <ShareSection profile={profile} progress={progress} level={level} st={st} refEl={shareRef} onSave={() => save(shareRef, 360, 640)} onToast={onToast} />
         <CertificateSection profile={profile} st={st} certificate={certificate} date={now.toLocaleDateString("ar", { year: "numeric", month: "long", day: "numeric" })} refEl={certRef} onSave={() => save(certRef, 360, 250)} onExam={onExam} />

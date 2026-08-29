@@ -93,7 +93,7 @@ export default function App() {
           {screen === "stats" && <StatsScreen onBack={() => setScreen("map")} />}
           {screen === "friends" && profile && <FriendsScreen myHandle={profile.handle} onBack={() => setScreen("map")} onToast={setToast} />}
           {screen === "league" && profile && <LeagueScreen />}
-          {screen === "me" && profile && <ProfileScreen profile={profile} progress={progress} xp={xp} badges={badges} streak={streak} freezes={freezes} studied={studied} certificate={certificate} onPrefs={onPrefs} onToggleReminders={(v) => onPrefs({ reminders: v })} onToast={setToast} onLogout={onLogout} onLibrary={() => setScreen("library")} onExam={() => setScreen("exam")} onAdmin={() => setScreen("admin")} />}
+          {screen === "me" && profile && <ProfileScreen profile={profile} progress={progress} xp={xp} badges={badges} streak={streak} freezes={freezes} studied={studied} certificate={certificate} onPrefs={onPrefs} onToggleReminders={(v) => onPrefs({ reminders: v })} onToast={setToast} onLogout={onLogout} onStats={() => setScreen("stats")} onLibrary={() => setScreen("library")} onExam={() => setScreen("exam")} onAdmin={() => setScreen("admin")} />}
           {NAV_SCREENS.includes(screen) && <TabBar tab={screen} onTab={setScreen} />}
           {newSector && <SectorCelebration domainId={newSector} progress={progress} level={xp} onClose={game.clearSector} onShare={() => { game.clearSector(); setScreen("me"); }} />}
           <Toast msg={toast} />
