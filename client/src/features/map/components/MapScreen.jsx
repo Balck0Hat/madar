@@ -54,7 +54,7 @@ export default function MapScreen({
           {/* العجلة size="100%" فنحدّ حاضنتها بـ520px ونتوسّطها كي لا تتضخّم على سطح المكتب؛ على الهاتف العرض أقل فلا أثر للحد */}
           <div style={{ padding: "6px 10px 0", touchAction: "manipulation", maxWidth: 520, marginInline: "auto" }} {...tilt}>
             <div style={{ transformOrigin: zoom ? `${zoom.ox}% ${zoom.oy}%` : "50% 50%", transform: zoom ? "scale(2.8)" : "none", opacity: zoom ? 0.15 : 1, transition: "transform .42s cubic-bezier(.4,0,.2,1), opacity .42s ease" }}>
-              <Wheel progress={progress} level={level} recommended={next} onSelect={select} onCenter={onCenter} size="100%" threadsNew={threadsNew} />
+              <Wheel progress={progress} level={level} recommended={next} onSelect={select} onSelectUnit={onOpenUnit} onCenter={onCenter} size="100%" threadsNew={threadsNew} />
             </div>
           </div>
         </div>

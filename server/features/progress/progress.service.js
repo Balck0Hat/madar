@@ -46,20 +46,27 @@ export async function setResume(userId, unitId, card) {
   return { unitId, card };
 }
 
-// يصحّح الإجابات من بنك الأسئلة (المغلقة حتمياً والمفتوحة بالذكاء الاصطناعي)
+// السؤال المفتوح: يُصحَّح بالنموذج إن توفّر، وإلا يُقيّمه المتعلم نفسه ولا يدخل النجاح
+function gradeOpenEntry(q, answer, selfMark) {
+  if (!aiEnabled()) return { qid: q.qid, open: true, scored: false, selfMark: selfMark ?? null };
+  return gradeOpen(q, String(answer ?? "")).then((r) => ({ qid: q.qid, open: true, scored: true, ok: r.ok, feedback: r.feedback, source: r.source }));
+}
+
+// يصحّح الإجابات من بنك الأسئلة؛ scored يميّز ما يدخل في العلامة عمّا هو إشارة فقط
 async function grade(unitId, answers) {
   const bank = await models.Unit().findOne({ unitId, published: true }).select("questions").lean();
   if (!bank) throw badRequest("هذه الوحدة لا تملك اختباراً بعد", "NO_QUIZ");
   const byId = new Map(bank.questions.map((q) => [q.qid, q]));
   const graded = [];
-  for (const { qid, answer } of answers) {
+  for (const { qid, answer, selfMark } of answers) {
     const q = byId.get(qid);
     if (!q) continue;
-    if (isOpen(q)) { const r = await gradeOpen(q, String(answer ?? "")); graded.push({ qid, ok: r.ok, feedback: r.feedback, source: r.source }); }
-    else graded.push({ qid, ok: checkClosed(q, answer) });
+    graded.push(isOpen(q) ? await gradeOpenEntry(q, answer, selfMark) : { qid, scored: true, ok: checkClosed(q, answer) });
   }
   if (!graded.length) throw badRequest("لا إجابات صالحة", "NO_ANSWERS");
-  models.QuestionStat().bulkWrite(graded.map(({ qid, ok }) => ({ updateOne: { filter: { unitId, qid }, update: { $inc: { asked: 1, wrong: ok ? 0 : 1 } }, upsert: true } }))).catch((err) => console.error("[stats]", err.message));
+  // إحصاءات صعوبة السؤال تُبنى على ما صُحّح فعلاً؛ التقييم الذاتي ليس حكماً موضوعياً
+  const scored = graded.filter((g) => g.scored);
+  if (scored.length) models.QuestionStat().bulkWrite(scored.map(({ qid, ok }) => ({ updateOne: { filter: { unitId, qid }, update: { $inc: { asked: 1, wrong: ok ? 0 : 1 } }, upsert: true } }))).catch((err) => console.error("[stats]", err.message));
   return graded;
 }
 
@@ -67,7 +74,7 @@ export async function finishUnit(userId, unitId, { answers, correct, total, sim 
   const parsed = parseUnitId(unitId);
   if (!parsed) throw badRequest("معرّف وحدة غير صالح", "BAD_UNIT");
   let graded = null;
-  if (answers) { graded = await grade(unitId, answers); correct = graded.filter((g) => g.ok).length; total = graded.length; }
+  if (answers) { graded = await grade(unitId, answers); ({ correct, total } = scoreOf(graded)); }
   const doc = await loadDoc(userId);
   const { next, result } = applyFinish(doc.toState(), { unitId, ring: parsed.ring, correct, total, sim });
   Object.assign(doc, { xp: next.xp, weeklyXp: next.weeklyXp, badges: next.badges, studied: next.studied, streak: next.streak, freezes: next.freezes });
@@ -77,7 +84,13 @@ export async function finishUnit(userId, unitId, { answers, correct, total, sim 
   // الوحدة اجتُيزت: لم يعد لموضع القراءة معنى
   if (result.passed) doc.resume.delete(unitId);
   await doc.save();
-  if (result.passed && result.fresh) bus.emit("unit.passed", { userId: String(userId), unitId });
+  // المحاولة المخزَّنة استُهلكت؛ ميزة المحاولات تلتقط الحدث وتحذفها (الميزات لا تستورد بعضها)
+  bus.emit("unit.finished", { userId: String(userId), unitId });
+  // "لم أفهمها" ضعفٌ حقيقي وإن لم يُحتسب في العلامة: يمرّ مع الأخطاء ليقرّب موعد المراجعة
+  if (result.passed && result.fresh) {
+    const perf = graded ? { score: correct / total, wrongQids: weakQids(graded) } : {};
+    bus.emit("unit.passed", { userId: String(userId), unitId, ...perf });
+  }
   return { state: doc.toState(), result: { ...result, graded } };
 }
 

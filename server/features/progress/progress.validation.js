@@ -2,7 +2,8 @@ import { z } from "zod";
 import { isValidUnitId } from "../../shared/utils/units.js";
 
 const unitId = z.string().refine(isValidUnitId, "معرّف وحدة غير صالح");
-const answer = z.object({ qid: z.string().max(24), answer: z.any() });
+// selfMark: التقييم الذاتي للسؤال المفتوح — إشارة للمراجعة لا علامة في الاختبار
+const answer = z.object({ qid: z.string().max(24), answer: z.any(), selfMark: z.enum(["got", "unclear"]).optional() });
 
 // إما إجابات تُصحَّح على الخادم (وحدة مكتوبة) أو عدّ مباشر (محاكاة)
 export const finishSchema = {
