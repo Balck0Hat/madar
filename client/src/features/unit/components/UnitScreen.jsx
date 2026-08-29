@@ -1,15 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { C, P, MONO, alpha } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
-import { useSpeech } from "../../../shared/hooks/useSpeech";
 import { Btn, TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
 import { contentService } from "../../content";
 import { useResume } from "../hooks/useResume";
 import { useFontScale } from "../hooks/useFontScale";
 import { usePageKeys } from "../hooks/usePageKeys";
-import { pageText } from "../utils/pageText";
 import UnitPlaceholder from "./UnitPlaceholder";
 import ResumeBar from "./ResumeBar";
 import ReaderTools from "./ReaderTools";
@@ -37,12 +35,9 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, on
   const go = (d) => setPage((i) => (i + d >= 0 && i + d < pages.length ? i + d : i));
   const next = () => go(1);
   const prev = () => go(-1);
-
-  const speech = useSpeech();
   const font = useFontScale(fontScale, onFontScale);
   useResume(unitId, page, onResume);
   usePageKeys({ next, prev, exit: onBack });
-  useEffect(() => { speech.stop(); }, [page]); // لا تُكمل القراءة الصوتية على صفحة أخرى
 
   if (!authored) return <UnitPlaceholder info={info} onBack={onBack} onSimulate={onSimulate} />;
   if (loading || error) {
@@ -93,7 +88,7 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, on
             <PageBody p={p} index={page} content={content} info={info} quizCount={quizCount} />
           </div>
         </div>
-        <ReaderTools font={font} speech={speech} onSpeak={() => speech.speak(pageText(p, content, info))} />
+        <ReaderTools font={font} />
       </div>
       <div style={{ padding: "8px 16px 22px", display: "flex", gap: 8, alignItems: "center" }}>
         <Btn ghost paper full={false} small onClick={() => (page > 0 ? prev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>
