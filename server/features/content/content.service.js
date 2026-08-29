@@ -1,0 +1,66 @@
+import Unit from "./unit.model.js";
+import QuestionStat from "./questionStat.model.js";
+import { notFound } from "../../shared/utils/AppError.js";
+import { sample } from "../../shared/utils/grading.js";
+
+// معرّفات الوحدات المنشورة (لتمييز "جاهزة" من "محاكاة" في الواجهة)
+export async function listPublishedIds() {
+  const docs = await Unit.find({ published: true }).select("unitId").lean();
+  return docs.map((d) => d.unitId);
+}
+
+export async function getPublishedUnit(unitId) {
+  const unit = await Unit.findOne({ unitId, published: true });
+  if (!unit) throw notFound("الوحدة غير متاحة", "UNIT_NOT_FOUND");
+  return unit.toPublic();
+}
+
+// اختبار الوحدة: n أسئلة عشوائية من البنك (تُعاد مع الإجابات لعرض التغذية الراجعة فوراً)
+export async function pickQuiz(unitId, n = 10) {
+  const unit = await getPublishedUnit(unitId);
+  const questions = sample(unit.questions, n);
+  return { unitId, title: unit.title, questions };
+}
+
+// بنك الأسئلة الكامل (للتصحيح على الخادم؛ يحمل الكلمات المفتاحية)
+export async function questionBank(unitId) {
+  const unit = await Unit.findOne({ unitId, published: true }).select("questions").lean();
+  return unit ? unit.questions : [];
+}
+
+export async function summaries(ids) {
+  const docs = await Unit.find({ unitId: { $in: ids }, published: true }).select("unitId title summary").lean();
+  return docs.map(({ unitId, title, summary }) => ({ unitId, title, summary }));
+}
+
+// أسئلة مغلقة من عدة وحدات (للمراجعة والامتحان)
+export async function closedQuestions(unitIds, perUnit) {
+  const docs = await Unit.find({ unitId: { $in: unitIds }, published: true }).select("unitId questions").lean();
+  return docs.flatMap((d) => sample(d.questions.filter((q) => q.t !== "open"), perUnit).map((q) => ({ ...q, unitId: d.unitId })));
+}
+
+export async function recordQuestionResults(unitId, results) {
+  if (!results.length) return;
+  await QuestionStat.bulkWrite(
+    results.map(({ qid, ok }) => ({
+      updateOne: { filter: { unitId, qid }, update: { $inc: { asked: 1, wrong: ok ? 0 : 1 } }, upsert: true },
+    })),
+  );
+}
+
+// ── إدارة ──
+export const listAllUnits = () => Unit.find().select("unitId title published updatedAt questions.qid").sort("unitId").lean();
+export const getUnitForEdit = async (unitId) => {
+  const unit = await Unit.findOne({ unitId }).lean();
+  if (!unit) throw notFound("الوحدة غير موجودة", "UNIT_NOT_FOUND");
+  return unit;
+};
+export const upsertUnit = (unitId, body, userId) =>
+  Unit.findOneAndUpdate({ unitId }, { $set: { ...body, unitId, updatedBy: userId } }, { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }).lean();
+export const deleteUnit = async (unitId) => {
+  const r = await Unit.deleteOne({ unitId });
+  if (!r.deletedCount) throw notFound("الوحدة غير موجودة", "UNIT_NOT_FOUND");
+};
+export async function seedUnits(units) {
+  for (const u of units) await Unit.updateOne({ unitId: u.unitId }, { $setOnInsert: u }, { upsert: true });
+}

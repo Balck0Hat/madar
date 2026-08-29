@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, Clock, Target } from "lucide-react";
+import { Play, Clock, Target, Snowflake, RotateCcw } from "lucide-react";
 import { C } from "../../../shared/constants/theme";
 import { RING_NAMES, XP_LESSON, XP_QUIZ } from "../../../shared/data/curriculum";
 import { unitInfo, isCenter } from "../../../shared/utils/units";
@@ -13,7 +13,7 @@ import { polar, RADII, sectorMid } from "../../../shared/components/wheel/geomet
 import StatsRow from "./StatsRow";
 import DomainGrid from "./DomainGrid";
 
-export default function MapScreen({ profile, progress, xp, streak, weeklyXp, onOpenDomain, onOpenUnit, onProfile, threadsNew }) {
+export default function MapScreen({ profile, progress, xp, streak, freezes = 0, weeklyXp, reviewDue = 0, onOpenDomain, onOpenUnit, onProfile, onReview, threadsNew }) {
   const num = useNum();
   const level = levelFromXp(xp);
   const st = stats(progress);
@@ -47,7 +47,16 @@ export default function MapScreen({ profile, progress, xp, streak, weeklyXp, onO
         </div>
       </div>
       <StatsRow streak={streak} weeklyXp={weeklyXp} rank={st.rank} />
-      <div style={{ padding: "14px 16px 0" }}>
+      {freezes > 0 && <div style={{ padding: "8px 16px 0", color: C.muted, fontSize: 12, display: "flex", gap: 6, alignItems: "center" }}><Snowflake size={13} color="#52B8E8" />لديك {num(freezes)} تجميد للسلسلة: يحفظها إذا فاتك يوم.</div>}
+      <div style={{ padding: "14px 16px 0", display: "grid", gap: 10 }}>
+        {reviewDue > 0 && (
+          <Card accent={C.gold} onClick={onReview}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div><div style={{ fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}><RotateCcw size={16} color={C.gold} />مراجعة الصباح</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>{num(reviewDue)} وحدات مستحقة · 3 دقائق تثبّت ما تعلمته</div></div>
+              <Pill>+{num(10)} لكل وحدة</Pill>
+            </div>
+          </Card>
+        )}
         {info ? (
           <Card accent={info.color}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -58,9 +67,9 @@ export default function MapScreen({ profile, progress, xp, streak, weeklyXp, onO
             <Btn primary onClick={() => onOpenUnit(next)}><span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}><Play size={16} />ابدأ الوحدة</span></Btn>
           </Card>
         ) : (
-          <Card><div style={{ fontWeight: 800 }}>أنهيت المدار الأول</div><div style={{ color: C.muted, fontSize: 13 }}>المدار الثاني يُفتح الآن على العجلة.</div></Card>
+          <Card><div style={{ fontWeight: 800 }}>أنهيت المدار الأول</div><div style={{ color: C.muted, fontSize: 13 }}>امتحان المدار في صفحة «أنا»، والمدار الثاني يُفتح على العجلة.</div></Card>
         )}
-        <div style={{ color: C.muted, fontSize: 12, marginTop: 10, textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center", gap: 6 }}>
+        <div style={{ color: C.muted, fontSize: 12, textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center", gap: 6 }}>
           <Target size={12} /> بوتيرة {num(profile.minutes)} دقيقة يومياً تكمل المدار الأول في {e.label} ({num(e.days)} يوماً)
         </div>
       </div>

@@ -1,9 +1,13 @@
 import { useState, useCallback } from "react";
 import { authService } from "../features/auth";
 import { progressService } from "../features/progress";
+import { contentService } from "../features/content";
+import { reviewService } from "../features/review";
+import { examService } from "../features/exam";
 
-const EMPTY = { progress: {}, attempts: {}, xp: 0, weeklyXp: 0, badges: [], studied: [], streak: 0 };
-const toProfile = (user) => ({ id: user.id, name: user.name, email: user.email, minutes: user.settings.minutes, fav: user.settings.fav, arabicNums: user.settings.arabicNums });
+const EMPTY = { progress: {}, attempts: {}, xp: 0, weeklyXp: 0, badges: [], studied: [], frozenDays: [], freezes: 0, streak: 0, lastLeague: null };
+const toProfile = (u) => ({ id: u.id, name: u.name, email: u.email, handle: u.handle, role: u.role, tier: u.tier, minutes: u.settings.minutes, fav: u.settings.fav, arabicNums: u.settings.arabicNums, reminders: u.settings.reminders });
+const quiet = (p) => p.catch(() => null);
 
 // حالة اللعبة المخزَّنة على الخادم؛ هذا الملف هو الوحيد الذي يستدعي خدمات الحساب والتقدم
 export function useGame() {
@@ -11,45 +15,49 @@ export function useGame() {
   const [state, setState] = useState(EMPTY);
   const [result, setResult] = useState(null);
   const [threadsNew, setThreadsNew] = useState([]);
+  const [authored, setAuthored] = useState([]);
+  const [reviewDue, setReviewDue] = useState(0);
+  const [certificate, setCertificate] = useState(null);
 
-  // عند فتح التطبيق: هل توجد جلسة؟
+  // ما يُحمَّل مع كل جلسة: التقدم، الوحدات المكتوبة، المراجعات المستحقة، الشهادة
+  const hydrate = useCallback(async () => {
+    const [st, ids, due, exam] = await Promise.all([progressService.getState(), quiet(contentService.listAuthoredIds()), quiet(reviewService.getDue()), quiet(examService.getStatus())]);
+    setState(st);
+    if (ids) setAuthored(ids);
+    if (due) setReviewDue(due.totalDue);
+    if (exam) setCertificate(exam.certificate);
+  }, []);
+
   const boot = useCallback(async () => {
     try {
       const user = await authService.me();
-      const st = await progressService.getState();
       setProfile(toProfile(user));
-      setState(st);
+      await hydrate();
       return true;
     } catch (err) {
       if (err.status === 401 || err.status === 0) return false;
       throw err;
     }
-  }, []);
+  }, [hydrate]);
 
-  const signIn = useCallback(async (user) => {
-    setProfile(toProfile(user));
-    setState(await progressService.getState());
-  }, []);
+  const signIn = useCallback(async (user) => { setProfile(toProfile(user)); await hydrate(); }, [hydrate]);
 
   const signOut = useCallback(async () => {
     await authService.logout();
-    setProfile(null); setState(EMPTY); setResult(null); setThreadsNew([]);
+    setProfile(null); setState(EMPTY); setResult(null); setThreadsNew([]); setReviewDue(0); setCertificate(null);
   }, []);
 
-  const updateSettings = useCallback(async (fields) => {
-    const user = await authService.updateMe(fields);
-    setProfile(toProfile(user));
-  }, []);
+  const updateSettings = useCallback(async (fields) => { setProfile(toProfile(await authService.updateMe(fields))); }, []);
 
-  const finishUnit = useCallback(async (unitId, correct, total, sim = false) => {
-    const { state: st, result: r } = await progressService.finishUnit(unitId, { correct, total, sim });
-    setState(st);
-    setThreadsNew(r.newThreads);
-    setResult(r);
+  const finishUnit = useCallback(async (unitId, payload) => {
+    const { state: st, result: r } = await progressService.finishUnit(unitId, payload);
+    setState(st); setThreadsNew(r.newThreads); setResult(r);
     return r;
   }, []);
 
-  const simulate = useCallback((unitId) => finishUnit(unitId, 7 + Math.floor(Math.random() * 4), 10, true), [finishUnit]);
+  const simulate = useCallback((unitId) => finishUnit(unitId, { correct: 7 + Math.floor(Math.random() * 4), total: 10, sim: true }), [finishUnit]);
+  const refreshAuthored = useCallback(async () => { const ids = await quiet(contentService.listAuthoredIds()); if (ids) setAuthored(ids); }, []);
+  const refresh = useCallback(() => quiet(hydrate()), [hydrate]);
 
-  return { profile, ...state, result, threadsNew, boot, signIn, signOut, updateSettings, finishUnit, simulate };
+  return { profile, ...state, result, threadsNew, authored, reviewDue, certificate, setCertificate, boot, signIn, signOut, updateSettings, finishUnit, simulate, refresh, refreshAuthored };
 }

@@ -1,0 +1,17 @@
+{
+  "name": "مدار — افهم كل شيء. خطوة خطوة.",
+  "short_name": "مدار",
+  "description": "خريطة واحدة لكل المعرفة: 10 مجالات، 3 مدارات، 243 وحدة.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B1020",
+  "theme_color": "#0B1020",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

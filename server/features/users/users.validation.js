@@ -8,6 +8,7 @@ export const updateMeSchema = {
       minutes: z.union([z.literal(15), z.literal(30), z.literal(60)]).optional(),
       fav: z.enum(DOMAIN_IDS).optional(),
       arabicNums: z.boolean().optional(),
+      reminders: z.boolean().optional(),
     })
     .strict(),
 };

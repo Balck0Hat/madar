@@ -3,28 +3,45 @@ import { C, MONO, inputStyle } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { vibrate } from "../../../shared/utils/text";
 import { useNum } from "../../../shared/context/NumContext";
-import { Btn, Bar, TopBar } from "../../../shared/components/ui";
+import { useAsync } from "../../../shared/hooks/useAsync";
+import { Btn, Bar, TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
+import { contentService } from "../../content";
 import OrderQuestion from "./OrderQuestion";
 import { PROMPT, isReady, checkAnswer } from "../utils/quiz.utils";
 
-export default function QuizScreen({ unitId, questions, onFinish, onBack }) {
+// الاختبار: 10 أسئلة عشوائية من بنك الوحدة؛ التغذية الراجعة فورية والتصحيح النهائي على الخادم
+export default function QuizScreen({ unitId, onFinish, onBack }) {
   const num = useNum();
   const info = unitInfo(unitId);
+  const { data, loading, error, reload } = useAsync(() => contentService.getQuiz(unitId), [unitId]);
   const [i, setI] = useState(0);
   const [sel, setSel] = useState(null);
   const [checked, setChecked] = useState(null);
-  const [correct, setCorrect] = useState(0);
-  const q = questions[i], total = questions.length;
+  const [answers, setAnswers] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  if (loading || error) {
+    return (
+      <div style={{ minHeight: "100vh" }}>
+        <TopBar title="الاختبار" onBack={onBack} />
+        <div style={{ padding: "8px 18px" }}>{error ? <ErrorState message={error.message} onRetry={reload} onBack={onBack} /> : <Skeleton lines={5} />}</div>
+      </div>
+    );
+  }
+  const questions = data.questions, total = questions.length, q = questions[i];
   const locked = checked !== null;
+  const isOpen = q.t === "open";
 
   const check = () => {
-    const ok = checkAnswer(q, sel);
-    setChecked(ok);
-    if (ok) setCorrect((c) => c + 1);
-    vibrate(ok ? [20] : [40, 30, 40]);
+    const ok = isOpen ? null : checkAnswer(q, sel);
+    setChecked(isOpen ? "pending" : ok);
+    setAnswers((a) => [...a, { qid: q.qid, answer: sel }]);
+    if (!isOpen) vibrate(ok ? [20] : [40, 30, 40]);
   };
-  const next = () => {
-    if (i + 1 < total) { setI(i + 1); setSel(null); setChecked(null); } else onFinish(correct, total);
+  const next = async () => {
+    if (i + 1 < total) { setI(i + 1); setSel(null); setChecked(null); return; }
+    setSubmitting(true);
+    try { await onFinish(answers); } finally { setSubmitting(false); }
   };
 
   const opt = (label, key, isCorrect, isSel, onPick) => {
@@ -36,6 +53,8 @@ export default function QuizScreen({ unitId, questions, onFinish, onBack }) {
       </button>
     );
   };
+  const verdictColor = checked === true ? C.green : checked === false ? C.red : C.gold;
+  const verdict = checked === true ? "صحيح" : checked === false ? "ليست الإجابة" : "سُجّلت إجابتك، وتُقيَّم مع النتيجة";
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -48,18 +67,18 @@ export default function QuizScreen({ unitId, questions, onFinish, onBack }) {
           {q.t === "mcq" && q.opts.map((o, k) => opt(o, k, k === q.a, sel === k, () => setSel(k)))}
           {q.t === "tf" && [["صح", true], ["خطأ", false]].map(([l, v]) => opt(l, l, v === q.a, sel === v, () => setSel(v)))}
           {q.t === "fill" && <input aria-label="إجابتك" value={sel || ""} onChange={(e) => !locked && setSel(e.target.value)} placeholder="اكتب إجابتك" style={inputStyle} />}
-          {q.t === "open" && <textarea aria-label="إجابتك" value={sel || ""} onChange={(e) => !locked && setSel(e.target.value)} placeholder="جملة واحدة تكفي" rows={3} style={{ ...inputStyle, resize: "none", lineHeight: 1.7 }} />}
+          {isOpen && <textarea aria-label="إجابتك" value={sel || ""} onChange={(e) => !locked && setSel(e.target.value)} placeholder="جملة واحدة تكفي" rows={3} style={{ ...inputStyle, resize: "none", lineHeight: 1.7 }} />}
           {q.t === "order" && <OrderQuestion items={q.items} sel={sel} color={info.color} locked={locked} onChange={setSel} />}
         </div>
         {locked && (
-          <div className="madar-in" role="status" style={{ marginTop: 16, background: (checked ? C.green : C.red) + "1f", border: `1px solid ${checked ? C.green : C.red}66`, borderRadius: 14, padding: "12px 14px" }}>
-            <div style={{ fontWeight: 800, color: checked ? C.green : C.red, marginBottom: 4 }}>{checked ? "صحيح" : q.t === "open" ? "قصيرة جداً" : "ليست الإجابة"}</div>
-            <div style={{ fontSize: 14, lineHeight: 1.7 }}>{q.why}</div>
+          <div className="madar-in" role="status" style={{ marginTop: 16, background: verdictColor + "1f", border: `1px solid ${verdictColor}66`, borderRadius: 14, padding: "12px 14px" }}>
+            <div style={{ fontWeight: 800, color: verdictColor, marginBottom: 4 }}>{verdict}</div>
+            {!isOpen && <div style={{ fontSize: 14, lineHeight: 1.7 }}>{q.why}</div>}
           </div>
         )}
       </div>
       <div style={{ padding: "8px 16px 22px" }}>
-        {!locked ? <Btn primary color={info.color} disabled={!isReady(q, sel)} onClick={check}>تحقق</Btn> : <Btn primary onClick={next}>{i + 1 < total ? "التالي" : "النتيجة"}</Btn>}
+        {!locked ? <Btn primary color={info.color} disabled={!isReady(q, sel)} onClick={check}>تحقق</Btn> : <Btn primary disabled={submitting} onClick={next}>{submitting ? "يُصحَّح..." : i + 1 < total ? "التالي" : "النتيجة"}</Btn>}
       </div>
     </div>
   );

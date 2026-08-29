@@ -70,6 +70,13 @@ export default function ResultScreen({ result, xp, progress, onMap, onNext, hasN
           </div>
           <Bar value={cur / need} />
         </Card>
+        {(result.graded || []).filter((g) => g.feedback).map((g) => (
+          <Card key={g.qid} accent={g.ok ? C.green : C.red}>
+            <div style={{ fontWeight: 800, color: g.ok ? C.green : C.red, fontSize: 13 }}>{g.ok ? "إجابتك المفتوحة مقبولة" : "إجابتك المفتوحة لم تُقبل"}{g.source === "ai" && <span style={{ color: C.muted, fontWeight: 400 }}> · صحّحها المرشد الذكي</span>}</div>
+            <div style={{ fontSize: 14, lineHeight: 1.7, marginTop: 4 }}>{g.feedback}</div>
+          </Card>
+        ))}
+        {result.earnedFreeze && <Card accent={C.gold}><div style={{ fontWeight: 800 }}>❄ حصلت على تجميد للسلسلة</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>سبعة أيام متتالية. التجميد يحفظ سلسلتك إذا فاتك يوم.</div></Card>}
         {result.newThreads.length > 0 && <Card accent={C.gold}><div style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 800 }}><Link2 size={16} color={C.gold} />خيط معرفة اكتمل</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>رُسم خط ضوئي جديد على عجلتك بين مجالين.</div></Card>}
         {result.newBadges.map((id) => { const b = BADGES.find((x) => x.id === id); return <Card key={id} accent={C.gold}><div style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 800 }}><Award size={16} color={C.gold} />وسام جديد: {b.name}</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>{b.desc}</div></Card>; })}
       </div>

@@ -2,7 +2,6 @@ import { Lock } from "lucide-react";
 import { C, MONO } from "../../../shared/constants/theme";
 import { DOMAINS } from "../../../shared/data/domains";
 import { RING_NAMES, RING_MIN, XP_LESSON, XP_QUIZ } from "../../../shared/data/curriculum";
-import { hasContent } from "../../../shared/data/content";
 import { uid } from "../../../shared/utils/units";
 import { stats, domainDone } from "../../../shared/utils/progress";
 import { useNum } from "../../../shared/context/NumContext";
@@ -10,7 +9,7 @@ import { Bar, TopBar } from "../../../shared/components/ui";
 import { Icon, PatternBand } from "../../../shared/components/icons/Icon";
 import UnitRow from "./UnitRow";
 
-export default function DomainScreen({ domainId, ringIdx, progress, onBack, onOpenUnit, onRing }) {
+export default function DomainScreen({ domainId, ringIdx, progress, authored = [], onBack, onOpenUnit, onRing }) {
   const num = useNum();
   const d = DOMAINS.find((x) => x.id === domainId);
   const st = stats(progress);
@@ -46,7 +45,7 @@ export default function DomainScreen({ domainId, ringIdx, progress, onBack, onOp
         <div style={{ display: "grid", gap: 8, marginTop: 14 }}>
           {d.rings[ringIdx].map((title, i) => {
             const id = uid(d.id, ringIdx, i);
-            return <UnitRow key={id} index={i} title={title} color={d.color} done={progress[id]} authored={hasContent(id)} locked={locked} onOpen={() => onOpenUnit(id)} />;
+            return <UnitRow key={id} index={i} title={title} color={d.color} done={progress[id]} authored={authored.includes(id)} locked={locked} onOpen={() => onOpenUnit(id)} />;
           })}
         </div>
       </div>

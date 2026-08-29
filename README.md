@@ -1,55 +1,49 @@
 # مدار — افهم كل شيء. خطوة خطوة.
 
-منصة ثقافة عامة بالعربية: عجلة من 10 مجالات × 3 مدارات × 8 وحدات، مع نقاط خبرة وخيوط معرفة وأوسمة ودوري أسبوعي وشهادة. MERN: React (Vite) + Express + MongoDB.
+منصة ثقافة عامة بالعربية: عجلة من 10 مجالات × 3 مدارات × 8 وحدات، مع نقاط خبرة وخيوط معرفة وأوسمة ومراجعة متباعدة ودوري أسبوعي وشهادة موثقة. MERN: React (Vite, PWA) + Express + MongoDB.
 
 ## التشغيل
 
 ```bash
-# الخادم (يقدّم الـ API وواجهة React المبنية معاً)
-cd server && cp .env.example .env   # عدّل الأسرار
-npm install && npm start            # http://localhost:3105
-
-# الواجهة في التطوير (مع proxy لـ /api → 3105)
-cd client && npm install && npm run dev   # http://localhost:5173
-
-# الاختبارات
-cd server && npm test   # Vitest + Supertest على قاعدة madar_test الحقيقية
-cd client && npm test   # Vitest + React Testing Library
-
-# نشر
-cd client && npm run build
-cd server && pm2 start server.js --name madar && pm2 save
+cd server && cp .env.example .env         # عدّل الأسرار ثم:
+npm install && npm start                  # يزرع الوحدات المكتوبة تلقائياً ويقدّم الواجهة والـ API على 3105
+cd client && npm install && npm run dev   # واجهة التطوير على 5173 (proxy لـ /api)
+npm test                                  # في server/ (Supertest على قاعدة madar_test) وفي client/ (RTL)
+cd client && npm run build && cd ../server && pm2 start server.js --name madar && pm2 save
 ```
 
-## API (`/api/v1`)
+## الميزات
 
-| المسار | الوصف |
+| المجال | ما يعمل |
 |---|---|
-| `POST /auth/register` `{name,email,password}` | حساب جديد، يضبط كوكيز httpOnly (وصول 15د + تحديث 7أيام) |
-| `POST /auth/login` · `POST /auth/refresh` · `POST /auth/logout` | دخول · تدوير رمز التحديث (إعادة استخدام رمز قديم تُنهي كل الجلسات) · خروج |
-| `GET /users/me` · `PATCH /users/me` `{name,minutes,fav,arabicNums}` | الملف والإعدادات |
-| `GET /progress` | حالة اللعبة كاملة |
-| `POST /progress/units/:unitId/finish` `{correct,total,sim}` | الخادم يحسب النقاط والخيوط والأوسمة والسلسلة ويعيد `{state,result}` |
+| **المحتوى** | الوحدات في MongoDB · محرّر أدمن كامل (بطاقات، خيط، بنك أسئلة حتى 60) · الاختبار 10 أسئلة عشوائية من البنك، والتصحيح على الخادم · الأسئلة المفتوحة: Claude API إن وُضع `ANTHROPIC_API_KEY`، وإلا تصحيح تقريبي بالكلمات المفتاحية |
+| **التعلّم** | مراجعة متباعدة (1 → 3 → 7 → 30 → 90 يوماً) مع «مراجعة الصباح» · مكتبة الخلاصات · امتحان المدار (30 سؤالاً، 80%) يمنح شهادة برمز تحقق عام `/verify/:code` |
+| **التحفيز** | دوري حقيقي بين المستخدمين بطبقات (صعود 7 / هبوط 5 عند 12 متعلماً) يتدوّر كل اثنين · تجميد السلسلة (يُكسب كل 7 أيام، حد 2) · تذكيرات Web Push (8:00 مراجعة، 20:00 سلسلة) · صفحة عامة `/u/:handle` |
+| **الحساب** | بريد + كلمة مرور، أو Google (عند ضبط `GOOGLE_CLIENT_ID/SECRET`) · JWT في كوكيز httpOnly مع تدوير رمز التحديث · أدوار (`ADMIN_EMAILS`) |
+| **التطبيق** | PWA قابل للتثبيت، يقرأ الوحدات المفتوحة دون اتصال · لوحة مشرف: إحصاءات، تكاملات، أكثر الأسئلة خطأً |
 
-الاستجابة دائماً `{ success, data }` أو `{ success:false, error:{message,code} }`. تحديد المعدل: 100/15د عام، 5/15د على التسجيل والدخول.
+## API (`/api/v1`) — أهم المسارات
 
-## البنية (feature-based)
+`auth/{register,login,refresh,logout,providers,google}` · `users/me` · `progress` · `progress/units/:id/finish` `{answers}` أو `{correct,total,sim}` · `content/units[/:id[/quiz]]` · `content/summaries` · `reviews/due` · `reviews/:id/answer` · `exam/{status,start,submit}` · `exam/verify/:code` · `league` · `push/{key,subscribe,unsubscribe}` · `public/users/:handle` · `admin/{overview,users,units}`.
+
+الاستجابة دائماً `{ success, data }` أو `{ success:false, error:{message,code} }`.
+
+## البنية (feature-based، كل ملف تحت 150 سطراً)
 
 ```
-client/src/
-├── app/            App.jsx (الشاشات) · useGame.js (حالة اللعبة من الخادم)
-├── features/       onboarding · auth · map · domain · unit · quiz · league · profile · progress
-└── shared/         components (ui, wheel, art, icons) · data (المنهج والمحتوى) · utils · context · constants
-server/
-├── features/       auth · users · progress   (routes · controller · service · model · validation · __tests__)
-├── shared/         config · database · middleware (auth, validate, rateLimiter, errorHandler) · utils (game, tokens, cookies)
-├── app.js          helmet → cors → json(10kb) → mongoSanitize → cookies → rateLimiter → اكتشاف المسارات تلقائياً → static
-└── server.js
+client/src/app         App.jsx · useGame.js (الحالة من الخادم) · routes.js (المسارات العامة)
+client/src/features    onboarding · auth · map · domain · unit · quiz · review · exam · library · league · public · admin · profile · progress · content · push
+client/src/shared      components (ui, wheel, art, icons) · hooks (useAsync, useTilt) · data · utils · context · constants
+client/public          manifest.webmanifest · sw.js · icon.svg
+server/features        auth · users · content · progress · reviews · exam · league · push · public · admin
+server/shared          config · database · middleware · utils (game, grading, ai, events, models, week) · jobs/scheduler.js · data/seed
 ```
 
-## الحالة الحالية
+الميزات لا تستورد بعضها: التواصل عبر `shared/utils/events.js` (مثل `unit.passed` → جدولة مراجعة، `xp.grant`) و`shared/utils/models.js` للوصول الكسول إلى النماذج من المهام المشتركة.
 
-- وحدتان مكتوبتان بالكامل: **النوم** (`human-1-3`) و**كيف يتعلم دماغك** (`center-1`). بقية الوحدات تُحاكى من الواجهة (`sim:true`).
-- الحسابات والتقدم محفوظة في MongoDB. لا OAuth بعد.
-- `COOKIE_SECURE=false` مطلوب عند التقديم عبر HTTP مباشر؛ اجعلها `true` خلف TLS.
-- التالي المنطقي: نطاق + HTTPS (Caddy/Nginx)، محرّر محتوى للوحدات، مراجعة متباعدة حقيقية، دوري حقيقي بين المستخدمين.
+## الإعداد الاختياري
+
+- `ANTHROPIC_API_KEY` — تصحيح ذكي للأسئلة المفتوحة (فوترة مستقلة عن اشتراك Claude.ai). معطّل افتراضياً.
+- `GOOGLE_CLIENT_ID/SECRET` — زر Google يظهر تلقائياً. Redirect URI: `{APP_URL}/api/v1/auth/google/callback`.
+- `VAPID_*` — `npx web-push generate-vapid-keys`. الإشعارات تحتاج HTTPS على الأجهزة الفعلية (تعمل على localhost).
+- `COOKIE_SECURE=true` خلف TLS.

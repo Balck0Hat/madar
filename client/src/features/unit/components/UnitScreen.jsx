@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
 import { C, P, MONO } from "../../../shared/constants/theme";
-import { CONTENT } from "../../../shared/data/content";
 import { unitInfo } from "../../../shared/utils/units";
 import { useNum } from "../../../shared/context/NumContext";
-import { Btn, TopBar } from "../../../shared/components/ui";
+import { useAsync } from "../../../shared/hooks/useAsync";
+import { Btn, TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
+import { contentService } from "../../content";
 import UnitPlaceholder from "./UnitPlaceholder";
 import ThreadPage from "./ThreadPage";
 import { SparkPage, GoalsPage, CardPage, TryPage, DeepPage, EndPage } from "./UnitPages";
@@ -13,17 +14,26 @@ const LABEL = { spark: "الشرارة", goals: "الأهداف", card: "الد�
 const buildPages = (content) => [
   { t: "spark" }, { t: "goals" },
   ...content.cards.map((c) => ({ t: "card", c })),
-  { t: "try" }, { t: "deep" }, { t: "thread" }, { t: "end" },
+  ...(content.tryIt ? [{ t: "try" }] : []), ...(content.deep ? [{ t: "deep" }] : []), ...(content.thread ? [{ t: "thread" }] : []),
+  { t: "end" },
 ];
 
 // الدرس: بطاقات كقصص على ورق، تنقّل بالسحب أو النقر على جانبي الشاشة
-export default function UnitScreen({ unitId, onBack, onStartQuiz, onSimulate }) {
+export default function UnitScreen({ unitId, authored, onBack, onStartQuiz, onSimulate }) {
   const num = useNum();
   const info = unitInfo(unitId);
-  const content = CONTENT[unitId];
   const [page, setPage] = useState(0);
   const touch = useRef(null);
-  if (!content) return <UnitPlaceholder info={info} onBack={onBack} onSimulate={onSimulate} />;
+  const { data: content, loading, error, reload } = useAsync(() => contentService.getUnit(unitId), [unitId], { enabled: authored });
+  if (!authored) return <UnitPlaceholder info={info} onBack={onBack} onSimulate={onSimulate} />;
+  if (loading || error) {
+    return (
+      <div style={{ minHeight: "100vh", background: P.bg, color: P.ink }}>
+        <TopBar paper title={info.domainName} onBack={onBack} />
+        <div style={{ padding: "8px 20px" }}>{error ? <ErrorState message={error.message} onRetry={reload} onBack={onBack} /> : <Skeleton paper lines={6} />}</div>
+      </div>
+    );
+  }
 
   const pages = buildPages(content);
   const p = pages[page];
@@ -43,6 +53,7 @@ export default function UnitScreen({ unitId, onBack, onStartQuiz, onSimulate }) 
     touch.current = null;
     if (dx > 55) next(); else if (dx < -55) prev();
   };
+  const quizCount = Math.min(10, content.questions?.length || 0);
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: P.bg, color: P.ink, transition: "background .4s" }}>
@@ -53,18 +64,18 @@ export default function UnitScreen({ unitId, onBack, onStartQuiz, onSimulate }) 
         title={<span style={{ fontSize: 15 }}>{info.domainName} <span style={{ color: P.muted, fontWeight: 400 }}>· {LABEL[p.t]}</span></span>}
         right={<span style={{ fontFamily: MONO, color: P.muted, fontSize: 12 }}>{num(page + 1)}/{num(pages.length)}</span>} />
       <div key={page} className="madar-slide" onClick={tap} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ flex: 1, padding: "8px 20px 16px", userSelect: "none", WebkitUserSelect: "none" }}>
-        {p.t === "spark" && <SparkPage info={info} content={content} />}
+        {p.t === "spark" && <SparkPage info={info} content={{ ...content, quiz: { length: quizCount } }} />}
         {p.t === "goals" && <GoalsPage goals={content.goals} />}
         {p.t === "card" && <CardPage card={p.c} index={page - 1} total={content.cards.length} />}
         {p.t === "try" && <TryPage tryIt={content.tryIt} />}
         {p.t === "deep" && <DeepPage deep={content.deep} />}
-        {p.t === "thread" && content.thread && <ThreadPage thread={content.thread} />}
+        {p.t === "thread" && <ThreadPage thread={content.thread} />}
         {p.t === "end" && <EndPage summary={content.summary} />}
       </div>
       <div style={{ padding: "8px 16px 22px", display: "flex", gap: 8, alignItems: "center" }}>
         <Btn ghost paper full={false} small onClick={() => (page > 0 ? prev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>
         <Btn primary color={last ? C.gold : P.ink} style={last ? {} : { color: P.bg }} onClick={() => (last ? onStartQuiz() : next())}>
-          {last ? `ابدأ الاختبار (${num(content.quiz.length)} أسئلة)` : "التالي"}
+          {last ? `ابدأ الاختبار (${num(quizCount)} أسئلة)` : "التالي"}
         </Btn>
       </div>
     </div>
