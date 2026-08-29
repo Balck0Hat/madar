@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { C, inputStyle } from "../../../shared/constants/theme";
+import { C, inputStyle, alpha } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Btn, TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
 import { getUnit, saveUnit } from "../services/admin.service";
@@ -58,7 +58,7 @@ function Form({ initial, unitId, onSaved, onToast }) {
         {u.questions.map((q, k) => <QuestionEditor key={k} q={q} index={k} onChange={(nq) => set({ questions: u.questions.map((x, j) => (j === k ? nq : x)) })} onRemove={() => set({ questions: u.questions.filter((_, j) => j !== k) })} />)}
         <Btn small full={false} onClick={() => set({ questions: [...u.questions, emptyQuestion(u.questions.length + 1)] })}><span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Plus size={14} />سؤال جديد</span></Btn>
       </Section>
-      {err && <div role="alert" style={{ color: C.red, fontSize: 13, background: C.red + "1f", border: `1px solid ${C.red}66`, borderRadius: 12, padding: 10 }}>{err}</div>}
+      {err && <div role="alert" style={{ color: C.red, fontSize: 13, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: 12, padding: 10 }}>{err}</div>}
       <div style={{ display: "flex", gap: 8, position: "sticky", bottom: 12 }}>
         <Btn disabled={busy} onClick={() => save(false)}>حفظ كمسودة</Btn>
         <Btn primary disabled={busy} onClick={() => save(true)}>{busy ? "لحظة..." : "نشر"}</Btn>

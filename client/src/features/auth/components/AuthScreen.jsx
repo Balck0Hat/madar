@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C, inputStyle } from "../../../shared/constants/theme";
+import { C, inputStyle, alpha } from "../../../shared/constants/theme";
 import { Btn, TopBar } from "../../../shared/components/ui";
 import { register, login } from "../services/auth.service";
 
@@ -60,7 +60,7 @@ export default function AuthScreen({ mode: initialMode = "register", onBack, onA
         {isRegister && <Field id="name" label="الاسم" value={form.name} onChange={set("name")} onBlur={() => setErrors((x) => ({ ...x, ...(form.name.trim() ? { name: undefined } : {}) }))} error={errors.name} autoComplete="name" autoFocus />}
         <Field id="email" label="البريد الإلكتروني" type="email" dir="ltr" value={form.email} onChange={set("email")} error={errors.email} autoComplete="email" autoFocus={!isRegister} />
         <Field id="password" label="كلمة المرور" type="password" dir="ltr" value={form.password} onChange={set("password")} error={errors.password} autoComplete={isRegister ? "new-password" : "current-password"} />
-        {topError && <div role="alert" style={{ background: C.red + "1f", border: `1px solid ${C.red}66`, borderRadius: 12, padding: "10px 12px", fontSize: 13 }}>{topError}</div>}
+        {topError && <div role="alert" style={{ background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: 12, padding: "10px 12px", fontSize: 13 }}>{topError}</div>}
         <Btn primary disabled={busy} onClick={submit}>{busy ? "لحظة..." : isRegister ? "أنشئ الحساب" : "ادخل"}</Btn>
         <Btn ghost onClick={() => { setMode(isRegister ? "login" : "register"); setErrors({}); setTopError(""); }}>
           {isRegister ? "لديّ حساب، أريد الدخول" : "ليس لديّ حساب"}

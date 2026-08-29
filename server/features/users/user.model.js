@@ -13,6 +13,10 @@ const settingsSchema = new mongoose.Schema(
     fav: { type: String, default: "human", trim: true },
     arabicNums: { type: Boolean, default: false },
     reminders: { type: Boolean, default: true },
+    // تفضيلات العرض: تُقرأ عند الإقلاع قبل أول رسم لتفادي وميض الثيم
+    theme: { type: String, enum: ["system", "dark", "light"], default: "system" },
+    // مقياس الخط: يوسّع النص للقارئ المسنّ دون كسر التخطيط
+    fontScale: { type: Number, default: 1, min: 0.9, max: 1.4 },
   },
   { _id: false },
 );

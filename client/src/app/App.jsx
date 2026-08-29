@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { C, P, FONT } from "../shared/constants/theme";
 import { nextUnit } from "../shared/utils/progress";
 import { isCenter } from "../shared/utils/units";
-import { NumCtx } from "../shared/context/NumContext";
+import { PrefsProvider } from "../shared/context/PrefsContext";
 import { CSS } from "../shared/styles/global";
-import { TabBar, Toast, OrbitMark } from "../shared/components/ui";
+import { TabBar, SideNav, Toast, OrbitMark } from "../shared/components/ui";
 import { Landing, Onboarding } from "../features/onboarding";
 import { AuthScreen, authService } from "../features/auth";
 import { MapScreen } from "../features/map";
@@ -18,15 +18,21 @@ import { ExamScreen, VerifyPage } from "../features/exam";
 import { LibraryScreen } from "../features/library";
 import { PublicProfile } from "../features/public";
 import { AdminScreen } from "../features/admin";
+import { SearchScreen } from "../features/search";
+import { StatsScreen } from "../features/stats";
+import { FriendsScreen } from "../features/friends";
+import { SectorCelebration } from "../features/celebrate";
 import { useGame } from "./useGame";
 import { readRoute, cleanUrl, goHome } from "./routes";
 
-const TABS = ["map", "league", "me"];
+const NAV_SCREENS = ["map", "league", "me", "search", "stats", "friends"];
+// شاشات تملأ العرض بلا شريط جانبي (قراءة، اختبار، صفحات عامة)
+const FOCUS_SCREENS = ["boot", "landing", "auth", "onboarding", "unit", "quiz", "result", "review", "exam", "public", "verify"];
 const route = readRoute();
 
 export default function App() {
   const game = useGame();
-  const { profile, progress, xp, weeklyXp, badges, threadsNew, streak, freezes, studied, result, authored, reviewDue, certificate } = game;
+  const { profile, progress, resume, xp, weeklyXp, badges, threadsNew, streak, freezes, studied, result, authored, reviewDue, certificate, newSector } = game;
   const [screen, setScreen] = useState(route.publicHandle ? "public" : route.verifyCode ? "verify" : "boot");
   const [authMode, setAuthMode] = useState("register");
   const [providers, setProviders] = useState({ google: false });
@@ -54,37 +60,45 @@ export default function App() {
   const onAuthed = guard(async (user, isNew) => { await game.signIn(user); setScreen(isNew ? "onboarding" : "map"); });
   const onOnboarded = guard(async ({ minutes, fav }) => { await game.updateSettings({ minutes, fav }); setScreen("map"); setToast(`أهلاً ${profile.name}، ابدأ من المركز`); });
   const onLogout = guard(async () => { await game.signOut(); setScreen("landing"); });
+  const onPrefs = guard((fields) => game.updateSettings(fields));
   const backToMap = () => { game.refresh(); setScreen("map"); };
 
   const next = profile ? nextUnit(progress, profile.fav) : null;
   const paper = screen === "unit" && authored.includes(cur.unit);
+  const focus = FOCUS_SCREENS.includes(screen) || !profile;
+  const prefs = { theme: profile?.theme ?? "system", fontScale: profile?.fontScale ?? 1, arabicNums: Boolean(profile?.arabicNums) };
 
   return (
-    <NumCtx.Provider value={Boolean(profile?.arabicNums)}>
-      <div className="madar" dir="rtl" style={{ minHeight: "100vh", background: paper ? P.bg : C.bg, color: paper ? P.ink : C.text, fontFamily: FONT, display: "flex", justifyContent: "center", transition: "background .4s" }}>
+    <PrefsProvider value={prefs}>
+      <div className="madar madar-app" dir="rtl" style={{ background: paper ? P.bg : C.bg, color: paper ? P.ink : C.text, fontFamily: FONT, transition: "background .4s" }}>
         <style>{CSS}</style>
-        <main style={{ width: "100%", maxWidth: 430, minHeight: "100vh", position: "relative" }}>
+        {!focus && profile && <SideNav tab={screen} onTab={setScreen} name={profile.name} />}
+        <main className={`madar-main${focus ? " is-focus" : ""}`}>
           {screen === "boot" && <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}><OrbitMark size={80} /></div>}
           {screen === "public" && <PublicProfile handle={route.publicHandle} onHome={goHome} />}
           {screen === "verify" && <VerifyPage code={route.verifyCode} onHome={goHome} />}
           {screen === "landing" && <Landing onStart={() => openAuth("register")} onLogin={() => openAuth("login")} googleUrl={providers.google ? authService.googleUrl() : null} />}
           {screen === "auth" && <AuthScreen mode={authMode} onBack={() => setScreen("landing")} onAuthed={onAuthed} />}
           {screen === "onboarding" && profile && <Onboarding name={profile.name} onDone={onOnboarded} />}
-          {screen === "map" && profile && <MapScreen profile={profile} progress={progress} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={openDomain} onOpenUnit={openUnit} onProfile={() => setScreen("me")} onReview={() => setScreen("review")} threadsNew={threadsNew} />}
+          {screen === "map" && profile && <MapScreen profile={profile} progress={progress} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={openDomain} onOpenUnit={openUnit} onProfile={() => setScreen("me")} onReview={() => setScreen("review")} onToast={setToast} threadsNew={threadsNew} />}
           {screen === "domain" && <DomainScreen domainId={cur.domain} ringIdx={cur.ring} progress={progress} authored={authored} onBack={() => setScreen("map")} onOpenUnit={openUnit} onRing={(r) => setCur((c) => ({ ...c, ring: r }))} />}
-          {screen === "unit" && <UnitScreen key={cur.unit} unitId={cur.unit} authored={authored.includes(cur.unit)} onBack={() => setScreen(isCenter(cur.unit) ? "map" : "domain")} onStartQuiz={() => setScreen("quiz")} onSimulate={() => finish(cur.unit, { correct: 7 + Math.floor(Math.random() * 4), total: 10, sim: true })} />}
+          {screen === "unit" && <UnitScreen key={cur.unit} unitId={cur.unit} authored={authored.includes(cur.unit)} resumeCard={resume?.[cur.unit] || 0} onResume={game.saveResume} fontScale={prefs.fontScale} onFontScale={(s) => onPrefs({ fontScale: s })} onBack={() => setScreen(isCenter(cur.unit) ? "map" : "domain")} onStartQuiz={() => setScreen("quiz")} onSimulate={() => finish(cur.unit, { correct: 7 + Math.floor(Math.random() * 4), total: 10, sim: true })} />}
           {screen === "quiz" && <QuizScreen key={cur.unit} unitId={cur.unit} onBack={() => setScreen("unit")} onFinish={(answers) => finish(cur.unit, { answers })} />}
           {screen === "result" && result && <ResultScreen key={result.unitId + xp} result={result} xp={xp} progress={progress} hasNext={Boolean(next)} onMap={backToMap} onNext={() => openUnit(next)} />}
           {screen === "review" && <ReviewScreen onBack={backToMap} onDone={backToMap} />}
           {screen === "exam" && <ExamScreen onBack={() => { game.refresh(); setScreen("me"); }} onCertified={(c) => game.setCertificate(c)} />}
           {screen === "library" && <LibraryScreen progress={progress} onBack={() => setScreen("me")} onOpenUnit={openUnit} />}
           {screen === "admin" && <AdminScreen onBack={() => setScreen("me")} onToast={setToast} onContentChanged={game.refreshAuthored} />}
+          {screen === "search" && <SearchScreen onBack={() => setScreen("map")} onOpenUnit={openUnit} />}
+          {screen === "stats" && <StatsScreen onBack={() => setScreen("map")} />}
+          {screen === "friends" && profile && <FriendsScreen myHandle={profile.handle} onBack={() => setScreen("map")} onToast={setToast} />}
           {screen === "league" && profile && <LeagueScreen />}
-          {screen === "me" && profile && <ProfileScreen profile={profile} progress={progress} xp={xp} badges={badges} streak={streak} freezes={freezes} studied={studied} certificate={certificate} onToggleNums={guard((v) => game.updateSettings({ arabicNums: v }))} onToggleReminders={(v) => game.updateSettings({ reminders: v })} onToast={setToast} onLogout={onLogout} onLibrary={() => setScreen("library")} onExam={() => setScreen("exam")} onAdmin={() => setScreen("admin")} />}
-          {TABS.includes(screen) && <TabBar tab={screen} onTab={setScreen} />}
+          {screen === "me" && profile && <ProfileScreen profile={profile} progress={progress} xp={xp} badges={badges} streak={streak} freezes={freezes} studied={studied} certificate={certificate} onPrefs={onPrefs} onToggleReminders={(v) => onPrefs({ reminders: v })} onToast={setToast} onLogout={onLogout} onLibrary={() => setScreen("library")} onExam={() => setScreen("exam")} onAdmin={() => setScreen("admin")} />}
+          {NAV_SCREENS.includes(screen) && <TabBar tab={screen} onTab={setScreen} />}
+          {newSector && <SectorCelebration domainId={newSector} progress={progress} level={xp} onClose={game.clearSector} onShare={() => { game.clearSector(); setScreen("me"); }} />}
           <Toast msg={toast} />
         </main>
       </div>
-    </NumCtx.Provider>
+    </PrefsProvider>
   );
 }

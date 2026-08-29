@@ -1,4 +1,4 @@
-import { C, FONT, MONO } from "../../../shared/constants/theme";
+import { HEX_DARK as C, FONT, MONO } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 
 // شهادة الثقافة العامة (SVG قابل للتصدير كصورة)

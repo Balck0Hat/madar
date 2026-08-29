@@ -21,3 +21,9 @@ export const finishSchema = {
       if (b.correct !== undefined && b.total !== undefined && b.correct > b.total) ctx.addIssue({ code: "custom", message: "الإجابات الصحيحة لا تتجاوز المجموع", path: ["correct"] });
     }),
 };
+
+// موضع القراءة: فهرس بطاقة داخل الوحدة (أقصى بنك بطاقات معقول 40)
+export const resumeSchema = {
+  params: z.object({ unitId }),
+  body: z.object({ card: z.number().int().min(0).max(40) }).strict(),
+};

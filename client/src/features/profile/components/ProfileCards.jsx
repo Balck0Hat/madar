@@ -64,21 +64,6 @@ export function LibraryLink({ count, onOpen }) {
   );
 }
 
-export function NumToggle({ arabicNums, onToggle }) {
-  return (
-    <Card>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div><div style={{ fontWeight: 800 }}>الأرقام</div><div style={{ color: C.muted, fontSize: 12 }}>اختر شكل الأرقام في كل التطبيق</div></div>
-        <div role="group" aria-label="شكل الأرقام" style={{ display: "flex", background: C.surface2, borderRadius: 999, padding: 3, border: `1px solid ${C.line}` }}>
-          {[["123", false], ["١٢٣", true]].map(([l, v]) => (
-            <button key={l} type="button" aria-pressed={arabicNums === v} onClick={() => onToggle(v)} style={{ background: arabicNums === v ? C.gold : "transparent", color: arabicNums === v ? "#141B33" : C.muted, border: "none", borderRadius: 999, padding: "6px 14px", fontFamily: MONO, fontWeight: 800, cursor: "pointer" }}>{l}</button>
-          ))}
-        </div>
-      </div>
-    </Card>
-  );
-}
-
 export function ImagePreview({ src, onClose }) {
   if (!src) return null;
   return (

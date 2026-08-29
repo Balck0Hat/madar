@@ -1,6 +1,6 @@
 import Progress from "./progress.model.js";
 import { parseUnitId } from "../../shared/utils/units.js";
-import { applyFinish, applyFreeze, streakFrom } from "../../shared/utils/game.js";
+import { applyFinish, applyFreeze, streakFrom, dayKey } from "../../shared/utils/game.js";
 import { checkClosed, isOpen } from "../../shared/utils/grading.js";
 import { gradeOpen } from "../../shared/utils/ai.js";
 import { models } from "../../shared/utils/models.js";
@@ -23,6 +23,27 @@ async function loadDoc(userId) {
 
 export async function getState(userId) {
   return (await loadDoc(userId)).toState();
+}
+
+// أقصى عدد قيود في سجل النقاط: يكفي لأكثر من أربعة أشهر ويمنع انتفاخ الوثيقة
+const XP_LOG_CAP = 120;
+
+// قيد واحد لكل يوم: تُجمَّع مكاسب اليوم في القيد الأخير بدل إضافة صف لكل حدث
+function logXp(doc, amount) {
+  if (!amount) return;
+  const day = dayKey();
+  const last = doc.xpLog[doc.xpLog.length - 1];
+  if (last && last.day === day) last.amount += amount;
+  else doc.xpLog.push({ day, amount });
+  if (doc.xpLog.length > XP_LOG_CAP) doc.xpLog.splice(0, doc.xpLog.length - XP_LOG_CAP);
+}
+
+// يحفظ موضع القراءة داخل وحدة ليكمل المستخدم من حيث توقّف
+export async function setResume(userId, unitId, card) {
+  const doc = await loadDoc(userId);
+  doc.resume.set(unitId, card);
+  await doc.save();
+  return { unitId, card };
 }
 
 // يصحّح الإجابات من بنك الأسئلة (المغلقة حتمياً والمفتوحة بالذكاء الاصطناعي)
@@ -52,6 +73,9 @@ export async function finishUnit(userId, unitId, { answers, correct, total, sim 
   Object.assign(doc, { xp: next.xp, weeklyXp: next.weeklyXp, badges: next.badges, studied: next.studied, streak: next.streak, freezes: next.freezes });
   doc.progress = new Map(Object.entries(next.progress));
   doc.attempts = new Map(Object.entries(next.attempts));
+  logXp(doc, result.gain);
+  // الوحدة اجتُيزت: لم يعد لموضع القراءة معنى
+  if (result.passed) doc.resume.delete(unitId);
   await doc.save();
   if (result.passed && result.fresh) bus.emit("unit.passed", { userId: String(userId), unitId });
   return { state: doc.toState(), result: { ...result, graded } };
@@ -60,6 +84,7 @@ export async function finishUnit(userId, unitId, { answers, correct, total, sim 
 export async function grantXp(userId, amount) {
   const doc = await loadDoc(userId);
   doc.xp += amount; doc.weeklyXp += amount;
+  logXp(doc, amount);
   await doc.save();
   return doc.toState();
 }

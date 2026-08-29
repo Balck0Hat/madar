@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C, MONO, inputStyle } from "../../../shared/constants/theme";
+import { C, MONO, inputStyle, alpha } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { vibrate } from "../../../shared/utils/text";
 import { useNum } from "../../../shared/context/NumContext";
@@ -45,7 +45,7 @@ export default function QuizScreen({ unitId, onFinish, onBack }) {
   };
 
   const opt = (label, key, isCorrect, isSel, onPick) => {
-    const bg = locked && isCorrect ? C.green + "33" : locked && isSel ? C.red + "33" : isSel ? info.color + "26" : C.surface;
+    const bg = locked && isCorrect ? alpha(C.green, 0.2) : locked && isSel ? alpha(C.red, 0.2) : isSel ? alpha(info.color, 0.15) : C.surface;
     const bd = locked && isCorrect ? C.green : locked && isSel ? C.red : isSel ? info.color : C.line;
     return (
       <button key={key} type="button" className={locked && isSel && !isCorrect ? "madar-shake" : ""} onClick={() => !locked && onPick()} aria-pressed={isSel} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: 14, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: 15, lineHeight: 1.5 }}>
@@ -71,7 +71,7 @@ export default function QuizScreen({ unitId, onFinish, onBack }) {
           {q.t === "order" && <OrderQuestion items={q.items} sel={sel} color={info.color} locked={locked} onChange={setSel} />}
         </div>
         {locked && (
-          <div className="madar-in" role="status" style={{ marginTop: 16, background: verdictColor + "1f", border: `1px solid ${verdictColor}66`, borderRadius: 14, padding: "12px 14px" }}>
+          <div className="madar-in" role="status" style={{ marginTop: 16, background: alpha(verdictColor, 0.12), border: `1px solid ${alpha(verdictColor, 0.4)}`, borderRadius: 14, padding: "12px 14px" }}>
             <div style={{ fontWeight: 800, color: verdictColor, marginBottom: 4 }}>{verdict}</div>
             {!isOpen && <div style={{ fontSize: 14, lineHeight: 1.7 }}>{q.why}</div>}
           </div>

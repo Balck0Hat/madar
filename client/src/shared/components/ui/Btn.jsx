@@ -8,7 +8,7 @@ export default function Btn({ children, onClick, primary, color, full = true, sm
     minHeight: small ? 0 : 44,
   };
   const style = primary
-    ? { ...base, background: color || C.gold, color: "#141B33", borderColor: "transparent" }
+    ? { ...base, background: color || C.gold, color: "var(--bg)", borderColor: "transparent" }
     : ghost
       ? { ...base, background: "transparent", color: paper ? P.muted : C.muted, borderColor: "transparent" }
       : paper

@@ -8,10 +8,11 @@ import { Bar, Btn, Card, Pill, TopBar } from "../../../shared/components/ui";
 import StudyCalendar from "./StudyCalendar";
 import BadgeGrid from "./BadgeGrid";
 import ReminderToggle from "./ReminderToggle";
-import { ShareSection, CertificateSection, LibraryLink, NumToggle, ImagePreview } from "./ProfileCards";
+import { ShareSection, CertificateSection, LibraryLink, ImagePreview } from "./ProfileCards";
+import AppearanceCard from "./AppearanceCard";
 import { svgToPng } from "../utils/svgToPng";
 
-export default function ProfileScreen({ profile, progress, xp, badges, streak, freezes = 0, studied, certificate, onToggleNums, onToggleReminders, onToast, onLogout, onLibrary, onExam, onAdmin }) {
+export default function ProfileScreen({ profile, progress, xp, badges, streak, freezes = 0, studied, certificate, onPrefs, onToggleReminders, onToast, onLogout, onLibrary, onExam, onAdmin }) {
   const num = useNum();
   const { level, cur, need } = levelProgress(xp);
   const st = stats(progress);
@@ -28,7 +29,7 @@ export default function ProfileScreen({ profile, progress, xp, badges, streak, f
       <div style={{ padding: "0 16px", display: "grid", gap: 12 }}>
         <Card>
           <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-            <div style={{ width: 56, height: 56, borderRadius: 99, background: C.gold, color: "#141B33", display: "grid", placeItems: "center", fontWeight: 900, fontSize: 24 }}>{profile.name[0]}</div>
+            <div style={{ width: 56, height: 56, borderRadius: 99, background: C.gold, color: "var(--bg)", display: "grid", placeItems: "center", fontWeight: 900, fontSize: 24 }}>{profile.name[0]}</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 900, fontSize: 18 }}>{profile.name}</div>
               <div style={{ display: "flex", gap: 6, marginTop: 6, flexWrap: "wrap" }}><Pill>المستوى {num(level)} · {levelTitle(level)}</Pill><Pill color={C.text}>{st.rank}</Pill></div>
@@ -50,7 +51,7 @@ export default function ProfileScreen({ profile, progress, xp, badges, streak, f
         <ShareSection profile={profile} progress={progress} level={level} st={st} refEl={shareRef} onSave={() => save(shareRef, 360, 640)} onToast={onToast} />
         <CertificateSection profile={profile} st={st} certificate={certificate} date={now.toLocaleDateString("ar", { year: "numeric", month: "long", day: "numeric" })} refEl={certRef} onSave={() => save(certRef, 360, 250)} onExam={onExam} />
         <ReminderToggle enabled={profile.reminders} onChange={onToggleReminders} onToast={onToast} />
-        <NumToggle arabicNums={profile.arabicNums} onToggle={onToggleNums} />
+        <AppearanceCard theme={profile.theme} fontScale={profile.fontScale} arabicNums={profile.arabicNums} onChange={onPrefs} />
         <BadgeGrid badges={badges} />
         <div style={{ color: C.muted, fontSize: 12, textAlign: "center" }}>{profile.email}</div>
         <Btn onClick={onLogout}>تسجيل الخروج</Btn>

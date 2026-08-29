@@ -19,7 +19,7 @@ export default function StudyCalendar({ studied }) {
           const day = i + 1, key = `${now.getFullYear()}-${now.getMonth()}-${day}`;
           const on = studied.includes(key), today = day === now.getDate();
           return (
-            <div key={i} title={String(day)} style={{ aspectRatio: "1", borderRadius: 6, background: on ? C.gold : C.surface2, border: `1px solid ${today ? C.gold : C.line}`, display: "grid", placeItems: "center", fontSize: 9, fontFamily: MONO, color: on ? "#141B33" : C.muted }}>
+            <div key={i} title={String(day)} style={{ aspectRatio: "1", borderRadius: 6, background: on ? C.gold : C.surface2, border: `1px solid ${today ? C.gold : C.line}`, display: "grid", placeItems: "center", fontSize: 9, fontFamily: MONO, color: on ? "var(--bg)" : C.muted }}>
               {num(day)}
             </div>
           );

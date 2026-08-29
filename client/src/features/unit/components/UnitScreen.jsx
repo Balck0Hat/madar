@@ -1,13 +1,19 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { C, P, MONO } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
-import { useNum } from "../../../shared/context/NumContext";
+import { useNum } from "../../../shared/context/PrefsContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
+import { useSpeech } from "../../../shared/hooks/useSpeech";
 import { Btn, TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
 import { contentService } from "../../content";
+import { useResume } from "../hooks/useResume";
+import { useFontScale } from "../hooks/useFontScale";
+import { usePageKeys } from "../hooks/usePageKeys";
+import { pageText } from "../utils/pageText";
 import UnitPlaceholder from "./UnitPlaceholder";
-import ThreadPage from "./ThreadPage";
-import { SparkPage, GoalsPage, CardPage, TryPage, DeepPage, EndPage } from "./UnitPages";
+import ResumeBar from "./ResumeBar";
+import ReaderTools from "./ReaderTools";
+import PageBody from "./PageBody";
 
 const LABEL = { spark: "الشرارة", goals: "الأهداف", card: "الدرس", try: "جرّب", deep: "التعمق", thread: "الخيط", end: "الخلاصة" };
 
@@ -18,13 +24,26 @@ const buildPages = (content) => [
   { t: "end" },
 ];
 
-// الدرس: بطاقات كقصص على ورق، تنقّل بالسحب أو النقر على جانبي الشاشة
-export default function UnitScreen({ unitId, authored, onBack, onStartQuiz, onSimulate }) {
+// الدرس: بطاقات كقصص على ورق، تنقّل بالسحب أو النقر على جانبي الشاشة أو بالأسهم
+export default function UnitScreen({ unitId, authored, resumeCard, fontScale, onBack, onStartQuiz, onSimulate, onResume, onFontScale }) {
   const num = useNum();
   const info = unitInfo(unitId);
   const [page, setPage] = useState(0);
+  const [asked, setAsked] = useState(false); // هل حسم القارئ أمر الاستئناف
   const touch = useRef(null);
   const { data: content, loading, error, reload } = useAsync(() => contentService.getUnit(unitId), [unitId], { enabled: authored });
+
+  const pages = content ? buildPages(content) : [];
+  const go = (d) => setPage((i) => (i + d >= 0 && i + d < pages.length ? i + d : i));
+  const next = () => go(1);
+  const prev = () => go(-1);
+
+  const speech = useSpeech();
+  const font = useFontScale(fontScale, onFontScale);
+  useResume(unitId, page, onResume);
+  usePageKeys({ next, prev, exit: onBack });
+  useEffect(() => { speech.stop(); }, [page]); // لا تُكمل القراءة الصوتية على صفحة أخرى
+
   if (!authored) return <UnitPlaceholder info={info} onBack={onBack} onSimulate={onSimulate} />;
   if (loading || error) {
     return (
@@ -35,11 +54,11 @@ export default function UnitScreen({ unitId, authored, onBack, onStartQuiz, onSi
     );
   }
 
-  const pages = buildPages(content);
   const p = pages[page];
   const last = page === pages.length - 1;
-  const next = () => { if (!last) setPage(page + 1); };
-  const prev = () => { if (page > 0) setPage(page - 1); };
+  const saved = Number.isInteger(resumeCard) ? resumeCard : 0;
+  // نعرض الشريط فقط في البداية وإن كان الموضع المحفوظ ضمن هذه النسخة من الدرس
+  const showResume = !asked && page === 0 && saved > 0 && saved < pages.length;
   const tap = (e) => {
     if (e.target.closest && e.target.closest("button,input,textarea,a")) return;
     const r = e.currentTarget.getBoundingClientRect();
@@ -63,14 +82,18 @@ export default function UnitScreen({ unitId, authored, onBack, onStartQuiz, onSi
       <TopBar paper onBack={onBack}
         title={<span style={{ fontSize: 15 }}>{info.domainName} <span style={{ color: P.muted, fontWeight: 400 }}>· {LABEL[p.t]}</span></span>}
         right={<span style={{ fontFamily: MONO, color: P.muted, fontSize: 12 }}>{num(page + 1)}/{num(pages.length)}</span>} />
-      <div key={page} className="madar-slide" onClick={tap} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ flex: 1, padding: "8px 20px 16px", userSelect: "none", WebkitUserSelect: "none" }}>
-        {p.t === "spark" && <SparkPage info={info} content={{ ...content, quiz: { length: quizCount } }} />}
-        {p.t === "goals" && <GoalsPage goals={content.goals} />}
-        {p.t === "card" && <CardPage card={p.c} index={page - 1} total={content.cards.length} />}
-        {p.t === "try" && <TryPage tryIt={content.tryIt} />}
-        {p.t === "deep" && <DeepPage deep={content.deep} />}
-        {p.t === "thread" && <ThreadPage thread={content.thread} />}
-        {p.t === "end" && <EndPage summary={content.summary} />}
+      {showResume && (
+        <ResumeBar card={saved} total={pages.length}
+          onResume={() => { setAsked(true); setPage(saved); }}
+          onRestart={() => setAsked(true)} />
+      )}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+        <div role="region" aria-live="polite" aria-label={`صفحة ${page + 1} من ${pages.length}`} style={{ flex: 1, padding: "8px 20px 10px" }}>
+          <div key={page} className="madar-slide madar-read" onClick={tap} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ userSelect: "none", WebkitUserSelect: "none" }}>
+            <PageBody p={p} index={page} content={content} info={info} quizCount={quizCount} />
+          </div>
+        </div>
+        <ReaderTools font={font} speech={speech} onSpeak={() => speech.speak(pageText(p, content, info))} />
       </div>
       <div style={{ padding: "8px 16px 22px", display: "flex", gap: 8, alignItems: "center" }}>
         <Btn ghost paper full={false} small onClick={() => (page > 0 ? prev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>

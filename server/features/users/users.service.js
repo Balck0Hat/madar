@@ -7,13 +7,13 @@ export async function getMe(userId) {
   return user.toPublic();
 }
 
-export async function updateMe(userId, { name, minutes, fav, arabicNums, reminders }) {
+// مفاتيح تعيش تحت settings؛ ما عداها (name) حقل جذر
+const SETTING_KEYS = ["minutes", "fav", "arabicNums", "reminders", "theme", "fontScale"];
+
+export async function updateMe(userId, body) {
   const $set = {};
-  if (name !== undefined) $set.name = name;
-  if (minutes !== undefined) $set["settings.minutes"] = minutes;
-  if (fav !== undefined) $set["settings.fav"] = fav;
-  if (arabicNums !== undefined) $set["settings.arabicNums"] = arabicNums;
-  if (reminders !== undefined) $set["settings.reminders"] = reminders;
+  if (body.name !== undefined) $set.name = body.name;
+  for (const key of SETTING_KEYS) if (body[key] !== undefined) $set[`settings.${key}`] = body[key];
   const user = await User.findByIdAndUpdate(userId, { $set }, { new: true, runValidators: true });
   if (!user) throw notFound("المستخدم غير موجود", "USER_NOT_FOUND");
   return user.toPublic();

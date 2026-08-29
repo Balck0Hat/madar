@@ -40,6 +40,13 @@ const unitSchema = new Schema(
   { timestamps: true },
 );
 
+// فهرس نصي للبحث؛ default_language "none" لأن تجذيع مونغو لا يدعم العربية
+// (البحث الأساسي بـregex لالتقاط الأجزاء، وهذا الفهرس يلتقط الكلمات المتفرقة)
+unitSchema.index(
+  { title: "text", spark: "text", "cards.h": "text", "cards.p": "text", summary: "text" },
+  { name: "unit_text", default_language: "none", weights: { title: 10, "cards.h": 4, summary: 3, spark: 2, "cards.p": 1 } },
+);
+
 // الأسئلة المعروضة للمتعلم لا تحمل الكلمات المفتاحية
 unitSchema.methods.toPublic = function toPublic() {
   const o = this.toObject({ versionKey: false });

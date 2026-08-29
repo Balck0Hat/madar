@@ -9,7 +9,7 @@ export default function UnitRow({ index, title, color, done, authored, locked, o
   return (
     <Card onClick={locked ? undefined : onOpen} style={{ opacity: locked ? 0.55 : 1, padding: "12px 14px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <div style={{ width: 34, height: 34, borderRadius: 99, flexShrink: 0, background: done ? color : C.surface2, color: done ? "#141B33" : C.muted, display: "grid", placeItems: "center", fontFamily: MONO, fontWeight: 800, border: `1px solid ${done ? color : C.line}` }}>
+        <div style={{ width: 34, height: 34, borderRadius: 99, flexShrink: 0, background: done ? color : C.surface2, color: done ? "var(--bg)" : C.muted, display: "grid", placeItems: "center", fontFamily: MONO, fontWeight: 800, border: `1px solid ${done ? color : C.line}` }}>
           {done ? <Check size={18} /> : num(index + 1)}
         </div>
         <div style={{ flex: 1 }}>

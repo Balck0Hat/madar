@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Zap } from "lucide-react";
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, alpha } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { vibrate } from "../../../shared/utils/text";
 import { useNum } from "../../../shared/context/NumContext";
@@ -56,7 +56,7 @@ export default function ReviewScreen({ onBack, onDone }) {
       <div style={{ display: "grid", gap: 8 }}>
         {options.map(([label, v]) => {
           const right = locked && v === q.a, wrong = locked && v === sel && v !== q.a;
-          return <button key={String(v)} type="button" className={wrong ? "madar-shake" : ""} onClick={() => pick(v)} style={{ background: right ? C.green + "33" : wrong ? C.red + "33" : C.surface, border: `1px solid ${right ? C.green : wrong ? C.red : C.line}`, borderRadius: 14, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: 15 }}>{label}</button>;
+          return <button key={String(v)} type="button" className={wrong ? "madar-shake" : ""} onClick={() => pick(v)} style={{ background: right ? alpha(C.green, 0.2) : wrong ? alpha(C.red, 0.2) : C.surface, border: `1px solid ${right ? C.green : wrong ? C.red : C.line}`, borderRadius: 14, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: 15 }}>{label}</button>;
         })}
       </div>
       {locked && <Card style={{ marginTop: 14 }}><div style={{ fontSize: 14, lineHeight: 1.7 }}>{q.why}</div></Card>}

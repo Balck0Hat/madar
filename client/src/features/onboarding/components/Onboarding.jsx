@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, alpha } from "../../../shared/constants/theme";
 import { DOMAINS } from "../../../shared/data/domains";
 import { Btn, Card } from "../../../shared/components/ui";
 import { Icon } from "../../../shared/components/icons/Icon";
@@ -36,7 +36,7 @@ export default function Onboarding({ name, onDone }) {
       {step === 1 && (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {DOMAINS.map((d) => (
-            <button key={d.id} type="button" onClick={() => setFav(d.id)} aria-pressed={fav === d.id} style={{ background: fav === d.id ? d.color + "26" : C.surface, border: `1px solid ${fav === d.id ? d.color : C.line}`, borderRadius: 16, padding: "14px 12px", color: C.text, textAlign: "start", cursor: "pointer" }}>
+            <button key={d.id} type="button" onClick={() => setFav(d.id)} aria-pressed={fav === d.id} style={{ background: fav === d.id ? alpha(d.color, 0.15) : C.surface, border: `1px solid ${fav === d.id ? d.color : C.line}`, borderRadius: 16, padding: "14px 12px", color: C.text, textAlign: "start", cursor: "pointer" }}>
               <Icon id={d.id} size={20} color={d.color} />
               <div style={{ fontWeight: 800, marginTop: 8 }}>{d.name}</div>
               <div style={{ color: C.muted, fontSize: 11, marginTop: 2, lineHeight: 1.5 }}>{d.desc}</div>

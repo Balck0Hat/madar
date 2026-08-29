@@ -1,5 +1,5 @@
 import { Zap, TrendingUp, TrendingDown } from "lucide-react";
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, alpha } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Card, Pill, TopBar, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
@@ -36,11 +36,11 @@ export default function LeagueScreen() {
           <div style={{ padding: "0 16px", display: "grid", gap: 6 }}>
             {data.rows.map((r, k) => (
               <div key={r.id}>
-                {data.active && k === data.promote && <div style={{ textAlign: "center", color: C.green, fontSize: 11, padding: "4px 0", borderTop: `1px dashed ${C.green}66` }}>فوق هذا الخط: صعود</div>}
-                {data.active && k === data.rows.length - data.relegate && k > data.promote && <div style={{ textAlign: "center", color: C.red, fontSize: 11, padding: "4px 0", borderTop: `1px dashed ${C.red}66` }}>تحت هذا الخط: هبوط</div>}
+                {data.active && k === data.promote && <div style={{ textAlign: "center", color: C.green, fontSize: 11, padding: "4px 0", borderTop: `1px dashed ${alpha(C.green, 0.4)}` }}>فوق هذا الخط: صعود</div>}
+                {data.active && k === data.rows.length - data.relegate && k > data.promote && <div style={{ textAlign: "center", color: C.red, fontSize: 11, padding: "4px 0", borderTop: `1px dashed ${alpha(C.red, 0.4)}` }}>تحت هذا الخط: هبوط</div>}
                 <div style={{ display: "flex", alignItems: "center", gap: 12, background: r.me ? C.goldSoft : C.surface, border: `1px solid ${r.me ? C.gold : C.line}`, borderRadius: 14, padding: "10px 12px" }}>
                   <span style={{ fontFamily: MONO, width: 22, color: k < 3 ? C.gold : C.muted, fontWeight: 800 }}>{num(k + 1)}</span>
-                  <span style={{ width: 30, height: 30, borderRadius: 99, background: r.me ? C.gold : C.surface2, color: r.me ? "#141B33" : C.text, display: "grid", placeItems: "center", fontWeight: 800, fontSize: 13, border: k < 3 ? `2px solid ${C.gold}` : "none" }}>{r.name[0]}</span>
+                  <span style={{ width: 30, height: 30, borderRadius: 99, background: r.me ? C.gold : C.surface2, color: r.me ? "var(--bg)" : C.text, display: "grid", placeItems: "center", fontWeight: 800, fontSize: 13, border: k < 3 ? `2px solid ${C.gold}` : "none" }}>{r.name[0]}</span>
                   <span style={{ flex: 1, fontWeight: r.me ? 800 : 600 }}>{r.name}{r.me && <span style={{ color: C.muted, fontWeight: 400, fontSize: 12 }}> (أنت)</span>}</span>
                   <span style={{ fontFamily: MONO, fontWeight: 800, color: C.gold, display: "flex", alignItems: "center", gap: 4 }}><Zap size={13} />{num(r.xp)}</span>
                 </div>

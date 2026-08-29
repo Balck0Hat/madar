@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Award } from "lucide-react";
-import { C, MONO, inputStyle } from "../../../shared/constants/theme";
+import { C, MONO, inputStyle, alpha } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useNum } from "../../../shared/context/NumContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
@@ -70,7 +70,7 @@ export default function ExamScreen({ onBack, onCertified }) {
   }
 
   const q = attempt.questions[i], info = unitInfo(q.unitId);
-  const optBtn = (label, v) => <button key={String(v)} type="button" onClick={() => setSel(v)} aria-pressed={sel === v} style={{ background: sel === v ? info.color + "26" : C.surface, border: `1px solid ${sel === v ? info.color : C.line}`, borderRadius: 14, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: 15 }}>{label}</button>;
+  const optBtn = (label, v) => <button key={String(v)} type="button" onClick={() => setSel(v)} aria-pressed={sel === v} style={{ background: sel === v ? alpha(info.color, 0.15) : C.surface, border: `1px solid ${sel === v ? info.color : C.line}`, borderRadius: 14, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: 15 }}>{label}</button>;
   return shell(
     <>
       <Bar value={i / attempt.total} color={C.gold} h={4} />

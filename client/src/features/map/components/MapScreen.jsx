@@ -12,8 +12,9 @@ import Wheel from "../../../shared/components/wheel/Wheel";
 import { polar, RADII, sectorMid } from "../../../shared/components/wheel/geometry";
 import StatsRow from "./StatsRow";
 import DomainGrid from "./DomainGrid";
+import { ChallengeCard } from "../../challenge";
 
-export default function MapScreen({ profile, progress, xp, streak, freezes = 0, weeklyXp, reviewDue = 0, onOpenDomain, onOpenUnit, onProfile, onReview, threadsNew }) {
+export default function MapScreen({ profile, progress, xp, streak, freezes = 0, weeklyXp, reviewDue = 0, onOpenDomain, onOpenUnit, onProfile, onReview, onToast, threadsNew }) {
   const num = useNum();
   const level = levelFromXp(xp);
   const st = stats(progress);
@@ -33,47 +34,61 @@ export default function MapScreen({ profile, progress, xp, streak, freezes = 0, 
 
   return (
     <div className="madar-in" style={{ paddingBottom: 90 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 18px 0" }}>
-        <div style={{ fontSize: 22, fontWeight: 900 }}>مدار</div>
-        <button type="button" onClick={onProfile} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 999, padding: "6px 12px 6px 6px", display: "flex", alignItems: "center", gap: 8, color: C.text, cursor: "pointer" }}>
-          <span style={{ width: 28, height: 28, borderRadius: 99, background: C.gold, color: "#141B33", display: "grid", placeItems: "center", fontWeight: 900 }}>{profile.name[0]}</span>
-          <span style={{ fontSize: 13, fontWeight: 700 }}>{profile.name}</span>
-          <Pill>{levelTitle(level)}</Pill>
-        </button>
-      </div>
-      <div style={{ padding: "6px 10px 0", touchAction: "manipulation" }} {...tilt}>
-        <div style={{ transformOrigin: zoom ? `${zoom.ox}% ${zoom.oy}%` : "50% 50%", transform: zoom ? "scale(2.8)" : "none", opacity: zoom ? 0.15 : 1, transition: "transform .42s cubic-bezier(.4,0,.2,1), opacity .42s ease" }}>
-          <Wheel progress={progress} level={level} recommended={next} onSelect={select} onCenter={onCenter} size="100%" threadsNew={threadsNew} />
+      {/* madar-wide: عمودان فوق 900px، و display:contents تحتها — فنفس الـJSX يعطي العمود الواحد على الهاتف بلا تغيير في الترتيب */}
+      <div className="madar-wide">
+        <div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 18px 0" }}>
+            <div style={{ fontSize: 22, fontWeight: 900 }}>مدار</div>
+            <button type="button" className="madar-press" onClick={onProfile} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 999, padding: "6px 12px 6px 6px", display: "flex", alignItems: "center", gap: 8, color: C.text, cursor: "pointer" }}>
+              <span style={{ width: 28, height: 28, borderRadius: 99, background: C.gold, color: "var(--bg)", display: "grid", placeItems: "center", fontWeight: 900 }}>{profile.name[0]}</span>
+              <span style={{ fontSize: 13, fontWeight: 700 }}>{profile.name}</span>
+              <Pill>{levelTitle(level)}</Pill>
+            </button>
+          </div>
+          {/* العجلة size="100%" فنحدّ حاضنتها بـ520px ونتوسّطها كي لا تتضخّم على سطح المكتب؛ على الهاتف العرض أقل فلا أثر للحد */}
+          <div style={{ padding: "6px 10px 0", touchAction: "manipulation", maxWidth: 520, marginInline: "auto" }} {...tilt}>
+            <div style={{ transformOrigin: zoom ? `${zoom.ox}% ${zoom.oy}%` : "50% 50%", transform: zoom ? "scale(2.8)" : "none", opacity: zoom ? 0.15 : 1, transition: "transform .42s cubic-bezier(.4,0,.2,1), opacity .42s ease" }}>
+              <Wheel progress={progress} level={level} recommended={next} onSelect={select} onCenter={onCenter} size="100%" threadsNew={threadsNew} />
+            </div>
+          </div>
         </div>
-      </div>
-      <StatsRow streak={streak} weeklyXp={weeklyXp} rank={st.rank} />
-      {freezes > 0 && <div style={{ padding: "8px 16px 0", color: C.muted, fontSize: 12, display: "flex", gap: 6, alignItems: "center" }}><Snowflake size={13} color="#52B8E8" />لديك {num(freezes)} تجميد للسلسلة: يحفظها إذا فاتك يوم.</div>}
-      <div style={{ padding: "14px 16px 0", display: "grid", gap: 10 }}>
+        <div>
+          <StatsRow streak={streak} weeklyXp={weeklyXp} rank={st.rank} />
+          {freezes > 0 && <div style={{ padding: "8px 16px 0", color: C.muted, fontSize: 12, display: "flex", gap: 6, alignItems: "center" }}><Snowflake size={13} color="#52B8E8" />لديك {num(freezes)} تجميد للسلسلة: يحفظها إذا فاتك يوم.</div>}
+          <div style={{ padding: "14px 16px 0", display: "grid", gap: 10 }}>
+            <ChallengeCard onToast={onToast} />
         {reviewDue > 0 && (
-          <Card accent={C.gold} onClick={onReview}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div><div style={{ fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}><RotateCcw size={16} color={C.gold} />مراجعة الصباح</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>{num(reviewDue)} وحدات مستحقة · 3 دقائق تثبّت ما تعلمته</div></div>
-              <Pill>+{num(10)} لكل وحدة</Pill>
+              // البطاقة قابلة للضغط لكن Card لا يقبل className، فنلفّها بغلاف يحمل تأثير الضغط
+              <div className="madar-press">
+                <Card accent={C.gold} onClick={onReview}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div><div style={{ fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}><RotateCcw size={16} color={C.gold} />مراجعة الصباح</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>{num(reviewDue)} وحدات مستحقة · 3 دقائق تثبّت ما تعلمته</div></div>
+                    <Pill>+{num(10)} لكل وحدة</Pill>
+                  </div>
+                </Card>
+              </div>
+            )}
+            {info ? (
+              <Card accent={info.color}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Pill color={info.color}>{info.domain ? `${info.domainName} · ${RING_NAMES[info.ring]}` : "المركز"}</Pill>
+                  <span style={{ color: C.muted, fontSize: 12, display: "flex", alignItems: "center", gap: 4 }}><Clock size={12} />{num(info.minutes)} د · {num(XP_LESSON[info.ring] + XP_QUIZ[info.ring])} XP</span>
+                </div>
+                <div style={{ fontWeight: 800, fontSize: 17, margin: "10px 0 12px", lineHeight: 1.5 }}>{info.title}</div>
+                <span className="madar-press" style={{ display: "block" }}>
+                  <Btn primary onClick={() => onOpenUnit(next)}><span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}><Play size={16} />ابدأ الوحدة</span></Btn>
+                </span>
+              </Card>
+            ) : (
+              <Card><div style={{ fontWeight: 800 }}>أنهيت المدار الأول</div><div style={{ color: C.muted, fontSize: 13 }}>امتحان المدار في صفحة «أنا»، والمدار الثاني يُفتح على العجلة.</div></Card>
+            )}
+            <div style={{ color: C.muted, fontSize: 12, textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center", gap: 6 }}>
+              <Target size={12} /> بوتيرة {num(profile.minutes)} دقيقة يومياً تكمل المدار الأول في {e.label} ({num(e.days)} يوماً)
             </div>
-          </Card>
-        )}
-        {info ? (
-          <Card accent={info.color}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <Pill color={info.color}>{info.domain ? `${info.domainName} · ${RING_NAMES[info.ring]}` : "المركز"}</Pill>
-              <span style={{ color: C.muted, fontSize: 12, display: "flex", alignItems: "center", gap: 4 }}><Clock size={12} />{num(info.minutes)} د · {num(XP_LESSON[info.ring] + XP_QUIZ[info.ring])} XP</span>
-            </div>
-            <div style={{ fontWeight: 800, fontSize: 17, margin: "10px 0 12px", lineHeight: 1.5 }}>{info.title}</div>
-            <Btn primary onClick={() => onOpenUnit(next)}><span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}><Play size={16} />ابدأ الوحدة</span></Btn>
-          </Card>
-        ) : (
-          <Card><div style={{ fontWeight: 800 }}>أنهيت المدار الأول</div><div style={{ color: C.muted, fontSize: 13 }}>امتحان المدار في صفحة «أنا»، والمدار الثاني يُفتح على العجلة.</div></Card>
-        )}
-        <div style={{ color: C.muted, fontSize: 12, textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center", gap: 6 }}>
-          <Target size={12} /> بوتيرة {num(profile.minutes)} دقيقة يومياً تكمل المدار الأول في {e.label} ({num(e.days)} يوماً)
+          </div>
+          <DomainGrid progress={progress} onOpenDomain={onOpenDomain} />
         </div>
       </div>
-      <DomainGrid progress={progress} onOpenDomain={onOpenDomain} />
     </div>
   );
 }

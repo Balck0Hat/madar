@@ -10,6 +10,9 @@ const unitResultSchema = new mongoose.Schema(
   { _id: false },
 );
 
+// سجل نقاط مختصر: يكفي لرسم آخر ثمانية أسابيع دون جدول منفصل
+const xpLogSchema = new mongoose.Schema({ day: { type: String, required: true }, amount: { type: Number, required: true } }, { _id: false });
+
 const lastLeagueSchema = new mongoose.Schema(
   { week: String, outcome: { type: String, enum: ["up", "down", "stay"] }, rank: Number, tier: Number },
   { _id: false },
@@ -21,6 +24,9 @@ const progressSchema = new mongoose.Schema(
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, unique: true, index: true },
     progress: { type: Map, of: unitResultSchema, default: () => new Map() },
     attempts: { type: Map, of: Number, default: () => new Map() },
+    // آخر بطاقة وقف عندها القارئ في كل وحدة، ليكمل من حيث انتهى
+    resume: { type: Map, of: Number, default: () => new Map() },
+    xpLog: { type: [xpLogSchema], default: [] },
     xp: { type: Number, default: 0, min: 0 },
     weeklyXp: { type: Number, default: 0, min: 0 },
     weekKey: { type: String, default: "" },
@@ -42,6 +48,7 @@ progressSchema.methods.toState = function toState() {
   return {
     progress: Object.fromEntries(this.progress || []),
     attempts: Object.fromEntries(this.attempts || []),
+    resume: Object.fromEntries(this.resume || []),
     xp: this.xp,
     weeklyXp: this.weeklyXp,
     badges: [...this.badges],

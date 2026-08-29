@@ -28,10 +28,16 @@ vi.mock("../../features/content/services/content.service", () => ({
 }));
 
 vi.mock("../../features/review/services/review.service", () => ({ getDue: vi.fn(async () => ({ items: [], totalDue: 0 })), answerReview: vi.fn() }));
+vi.mock("../../features/challenge/services/challenge.service", () => ({
+  getChallenge: vi.fn(async () => ({ question: null, answeredToday: true, correctToday: false, streak: 0, totalAnswered: 0 })),
+  answerChallenge: vi.fn(),
+}));
 vi.mock("../../features/exam/services/exam.service", () => ({ getStatus: vi.fn(async () => ({ eligible: false, certificate: null })), startExam: vi.fn(), submitExam: vi.fn(), verifyCertificate: vi.fn() }));
 
 vi.mock("../../features/progress/services/progress.service", () => ({
   getState: vi.fn(async () => db.state),
+  saveResume: vi.fn(async () => ({})),
+  getStats: vi.fn(async () => ({ weeks: [], byDomain: [] })),
   finishUnit: vi.fn(async (unitId, { answers, correct, total, sim }) => {
     let graded = null;
     if (answers) { graded = answers.map((a) => { const q = learningUnit.questions.find((x) => x.qid === a.qid); return { qid: a.qid, ok: q.t === "open" ? String(a.answer).length >= 8 : q.t === "fill" ? q.a.includes(String(a.answer).toLowerCase()) : a.answer === q.a }; }); correct = graded.filter((g) => g.ok).length; total = graded.length; }
@@ -95,7 +101,7 @@ describe("App flow", () => {
     db.user = mkUser("سارة", "sara@example.com"); db.state = emptyState();
     render(<App />);
     await screen.findByText("ابدأ الوحدة");
-    fireEvent.click(screen.getByText("أنا"));
+    fireEvent.click(screen.getAllByRole("button", { name: "أنا" })[0]);
     fireEvent.click(await screen.findByText("مكتبتي"));
     expect(await screen.findByText("المكتبة فارغة")).toBeInTheDocument();
     fireEvent.click(screen.getByLabelText("عودة"));
