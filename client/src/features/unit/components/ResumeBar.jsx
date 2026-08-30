@@ -6,7 +6,7 @@ const action = (fill) => ({
   fontFamily: "inherit", fontWeight: 800, fontSize: ".8em", cursor: "pointer",
   borderRadius: 10, padding: "7px 12px", minHeight: 34,
   background: fill ? C.gold : "transparent",
-  color: fill ? "#141B33" : P.muted,
+  color: fill ? "var(--bg)" : P.muted,
   border: `1px solid ${fill ? "transparent" : P.line}`,
 });
 
