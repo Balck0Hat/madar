@@ -2,6 +2,7 @@
 // node scripts/audit-content.js
 import { loadSeedUnits } from "../shared/data/seed/index.js";
 import { checkClosed } from "../shared/utils/grading.js";
+import { readdir, readFile } from "node:fs/promises";
 
 const issues = [];
 const add = (unitId, where, msg) => issues.push({ unitId, where, msg });
@@ -55,6 +56,20 @@ for (const u of units) {
     seenCard.add(c.h);
   });
   if (u.thread && u.thread.to === u.unitId) add(u.unitId, "thread", "الخيط يشير إلى الوحدة نفسها");
+}
+
+// فحص على النصّ المصدري لا على القيم: مفتاح إجابة مكتوب كتعبير («a: true === false»)
+// يُقيَّم إلى قيمة سليمة، فلا يراه أي فحص يعمل على الوحدة بعد تحميلها.
+const SCALAR = `(?:true|false|-?\\d+(?:\\.\\d+)?|"[^"]*"|'[^']*')`;
+// المصفوفة تُطابَق كاملة لا تُقسَم على الفواصل: نصّ مثل "17,000" يحمل فاصلة داخله
+const LITERAL = new RegExp(`^(?:${SCALAR}|\\[\\s*(?:${SCALAR}(?:\\s*,\\s*${SCALAR})*\\s*)?\\])$`);
+const isLiteral = (v) => LITERAL.test(v.trim());
+const dir = new URL("../shared/data/seed/units/", import.meta.url);
+for (const file of (await readdir(dir)).filter((f) => f.endsWith(".js"))) {
+  const src = await readFile(new URL(file, dir), "utf8");
+  for (const m of src.matchAll(/qid: "([^"]+)"[^}]*?\ba:\s*(\[[^\]]*\]|[^,}\n]+)/g)) {
+    if (!isLiteral(m[2])) add(file.replace(/\.js$/, ""), m[1], `مفتاح إجابة ليس قيمة صريحة: a: ${m[2].trim()}`);
+  }
 }
 
 const byUnit = issues.reduce((m, i) => ({ ...m, [i.unitId]: [...(m[i.unitId] || []), i] }), {});
