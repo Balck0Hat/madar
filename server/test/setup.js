@@ -1,11 +1,6 @@
-process.env.NODE_ENV = "test";
-process.env.JWT_ACCESS_SECRET ||= "test-access-secret-test-access-secret-0000";
-process.env.JWT_REFRESH_SECRET ||= "test-refresh-secret-test-refresh-secret-00";
-// قاعدة اختبار خاصة بكل عملية. الإسناد قسري لا ||= لأن vitest يحمّل .env قبل هذا الملف،
-// فالمتغير موجود سلفاً وتشغيلان متوازيان كانا يمسحان بيانات بعضهما.
-process.env.MONGO_URI_TEST = process.env.MONGO_URI_TEST_OVERRIDE || `mongodb://127.0.0.1:27017/madar_test_${process.pid}`;
-process.env.CLIENT_DIST = "";
-
+// متغيّرات البيئة كلها في vitest.config.js — لا تُوضع هنا:
+// استيرادات ESM تُرفع فوق أي إسناد في جسم الملف، فتُقرأ shared/config/env.js
+// من .env قبل أن ينفّذ هذا الملف سطراً واحداً، ويصير الإسناد بلا أثر.
 import mongoose from "mongoose";
 import { beforeAll, afterEach, afterAll } from "vitest";
 import { connectDb, disconnectDb } from "../shared/database/connect.js";
@@ -18,4 +13,8 @@ afterEach(async () => {
   await Promise.all(collections.map((c) => c.deleteMany({})));
 });
 
-afterAll(async () => { await disconnectDb(); });
+// القاعدة خاصة بهذا التشغيل، فتُحذف بعده كي لا تتراكم قواعد ميتة
+afterAll(async () => {
+  await mongoose.connection.dropDatabase();
+  await disconnectDb();
+});

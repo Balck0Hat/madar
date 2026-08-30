@@ -16,13 +16,13 @@ function Field({ id, label, error, ...props }) {
 }
 
 // تسجيل حساب جديد أو تسجيل الدخول بالبريد وكلمة المرور
-export default function AuthScreen({ mode: initialMode = "register", onBack, onAuthed }) {
-  const [mode, setMode] = useState(initialMode);
+export default function AuthScreen({ mode: initialMode = "register", canRegister = true, onBack, onAuthed }) {
+  const [mode, setMode] = useState(canRegister ? initialMode : "login");
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
   const [topError, setTopError] = useState("");
-  const isRegister = mode === "register";
+  const isRegister = canRegister && mode === "register";
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const validate = () => {
@@ -56,15 +56,17 @@ export default function AuthScreen({ mode: initialMode = "register", onBack, onA
     <div className="madar-in" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <TopBar title={isRegister ? "حساب جديد" : "تسجيل الدخول"} onBack={onBack} />
       <form onSubmit={submit} noValidate style={{ padding: "8px 22px 32px", display: "grid", gap: 14, flex: 1, alignContent: "start" }}>
-        <div style={{ color: C.muted, fontSize: 14, lineHeight: 1.7 }}>{isRegister ? "يُحفظ تقدمك على حسابك وتعود إليه من أي جهاز." : "أهلاً بعودتك."}</div>
+        <div style={{ color: C.muted, fontSize: 14, lineHeight: 1.7 }}>{isRegister ? "يُحفظ تقدمك على حسابك وتعود إليه من أي جهاز." : canRegister ? "أهلاً بعودتك." : "التسجيل مغلق حالياً، والدخول متاح لأصحاب الحسابات."}</div>
         {isRegister && <Field id="name" label="الاسم" value={form.name} onChange={set("name")} onBlur={() => setErrors((x) => ({ ...x, ...(form.name.trim() ? { name: undefined } : {}) }))} error={errors.name} autoComplete="name" autoFocus />}
         <Field id="email" label="البريد الإلكتروني" type="email" dir="ltr" value={form.email} onChange={set("email")} error={errors.email} autoComplete="email" autoFocus={!isRegister} />
         <Field id="password" label="كلمة المرور" type="password" dir="ltr" value={form.password} onChange={set("password")} error={errors.password} autoComplete={isRegister ? "new-password" : "current-password"} />
         {topError && <div role="alert" style={{ background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: 12, padding: "10px 12px", fontSize: 13 }}>{topError}</div>}
         <Btn primary disabled={busy} onClick={submit}>{busy ? "لحظة..." : isRegister ? "أنشئ الحساب" : "ادخل"}</Btn>
-        <Btn ghost onClick={() => { setMode(isRegister ? "login" : "register"); setErrors({}); setTopError(""); }}>
-          {isRegister ? "لديّ حساب، أريد الدخول" : "ليس لديّ حساب"}
-        </Btn>
+        {canRegister && (
+          <Btn ghost onClick={() => { setMode(isRegister ? "login" : "register"); setErrors({}); setTopError(""); }}>
+            {isRegister ? "لديّ حساب، أريد الدخول" : "ليس لديّ حساب"}
+          </Btn>
+        )}
       </form>
     </div>
   );

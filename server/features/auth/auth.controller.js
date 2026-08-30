@@ -7,7 +7,7 @@ import * as google from "./google.service.js";
 
 const STATE_COOKIE = "madar_oauth_state";
 
-export const providers = (req, res) => res.json({ success: true, data: { google: env.googleEnabled } });
+export const providers = (req, res) => res.json({ success: true, data: { google: env.googleEnabled, registrationOpen: env.registrationOpen } });
 
 export const register = asyncHandler(async (req, res) => {
   const { user, tokens } = await authService.register(req.body);

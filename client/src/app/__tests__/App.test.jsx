@@ -5,13 +5,13 @@ import { ApiError } from "../../shared/utils/api";
 import { learningUnit } from "../../test/fixtures/learning";
 
 // خادم وهمي في الذاكرة بدل HTTP: يُحاكي القواعد الأساسية للخادم الحقيقي
-const db = { user: null, state: null };
+const db = { user: null, state: null, registrationOpen: true };
 const emptyState = () => ({ progress: {}, attempts: {}, xp: 0, weeklyXp: 0, badges: [], studied: [], frozenDays: [], freezes: 0, streak: 0, lastLeague: null });
 const settings = { minutes: 30, fav: "human", arabicNums: false, reminders: true };
 const mkUser = (name, email) => ({ id: "u1", name, email, handle: `${name}-ab12`, role: "user", tier: 0, settings: { ...settings } });
 
 vi.mock("../../features/auth/services/auth.service", () => ({
-  providers: vi.fn(async () => ({ google: false })),
+  providers: vi.fn(async () => ({ google: false, registrationOpen: db.registrationOpen })),
   googleUrl: () => "/api/v1/auth/google",
   me: vi.fn(async () => { if (!db.user) throw new ApiError("no session", 401, "UNAUTHORIZED"); return db.user; }),
   register: vi.fn(async ({ name, email }) => { db.user = mkUser(name, email); db.state = emptyState(); return db.user; }),
@@ -61,7 +61,7 @@ vi.mock("../../features/progress/services/progress.service", () => ({
 }));
 
 beforeEach(() => {
-  db.user = null; db.state = null;
+  db.user = null; db.state = null; db.registrationOpen = true;
   // الجولة التعريفية تُعرض مرة واحدة؛ اختبارات التدفق تخصّ متعلّماً رآها
   try { localStorage.setItem("madar.tour.v1", "done"); } catch (err) { /* التخزين محجوب */ }
 });

@@ -36,7 +36,7 @@ function Shell() {
   const nav = useNavigate();
   const { pathname } = useLocation();
   const [ready, setReady] = useState(false);
-  const [providers, setProviders] = useState({ google: false });
+  const [providers, setProviders] = useState({ google: false, registrationOpen: false });
   const [toast, setToast] = useState("");
   const [help, setHelp] = useState(false);
   const [tour, setTour] = useState(false);
@@ -93,8 +93,8 @@ function Shell() {
             <Routes>
               <Route path="/" element={!ready ? <Loading /> : profile
                 ? <MapScreen profile={profile} progress={progress} resume={resume} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={(id, r) => nav(paths.domain(id, r))} onOpenUnit={openUnit} onProfile={() => nav(paths.me)} onReview={() => nav(paths.review)} onToast={setToast} threadsNew={threadsNew} />
-                : <Landing onStart={() => nav(paths.auth("register"))} onLogin={() => nav(paths.auth("login"))} googleUrl={providers.google ? authService.googleUrl() : null} />} />
-              <Route path="/auth/:mode" element={<AuthRoute onAuthed={onAuthed} onBack={() => nav(paths.home)} />} />
+                : <Landing onStart={() => nav(paths.auth("register"))} onLogin={() => nav(paths.auth("login"))} googleUrl={providers.google ? authService.googleUrl() : null} canRegister={providers.registrationOpen} />} />
+              <Route path="/auth/:mode" element={<AuthRoute onAuthed={onAuthed} onBack={() => nav(paths.home)} canRegister={providers.registrationOpen} />} />
               <Route path="/welcome" element={priv(profile && <Onboarding name={profile.name} onDone={onOnboarded} />)} />
               <Route path="/d/:domainId/:ring" element={priv(<DomainRoute progress={progress} authored={authored} onOpenUnit={openUnit} onBack={() => nav(paths.home)} nav={nav} />)} />
               <Route path="/u/:unitId" element={priv(<UnitRoute game={game} authored={authored} resume={resume} prefs={prefs} readMode={profile?.readMode ?? "cards"} onPrefs={onPrefs} finish={finish} nav={nav} />)} />
@@ -126,7 +126,7 @@ function Shell() {
 }
 
 // المسارات التي تقرأ معاملاتها من الرابط
-const AuthRoute = ({ onAuthed, onBack }) => <AuthScreen mode={useParams().mode === "login" ? "login" : "register"} onBack={onBack} onAuthed={onAuthed} />;
+const AuthRoute = ({ onAuthed, onBack, canRegister }) => <AuthScreen mode={useParams().mode === "login" ? "login" : "register"} canRegister={canRegister} onBack={onBack} onAuthed={onAuthed} />;
 const PublicRoute = ({ onHome }) => <PublicProfile handle={useParams().handle} onHome={onHome} />;
 const VerifyRoute = ({ onHome }) => <VerifyPage code={(useParams().code || "").toUpperCase()} onHome={onHome} />;
 

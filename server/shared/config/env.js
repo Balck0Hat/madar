@@ -30,6 +30,8 @@ export const env = {
   anthropicKey: process.env.ANTHROPIC_API_KEY || "",
   aiModel: process.env.AI_MODEL || "claude-opus-5",
   google: { clientId: process.env.GOOGLE_CLIENT_ID || "", clientSecret: process.env.GOOGLE_CLIENT_SECRET || "" },
+  // التسجيل مغلق ما لم يُفتح صراحةً: الافتراض الآمن أن الباب مقفل
+  registrationOpen: process.env.REGISTRATION_OPEN === "true",
 };
 
 env.pushEnabled = Boolean(env.vapid.publicKey && env.vapid.privateKey);

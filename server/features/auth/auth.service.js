@@ -1,7 +1,13 @@
 import User from "../users/user.model.js";
 import { env } from "../../shared/config/env.js";
-import { conflict, unauthorized } from "../../shared/utils/AppError.js";
+import { conflict, unauthorized, forbidden } from "../../shared/utils/AppError.js";
 import { signAccess, signRefresh, verifyRefresh, newJti, hashToken, refreshExpiry } from "../../shared/utils/tokens.js";
+
+// حساب جديد بأي طريق: بالبريد أو بحساب خارجي. البوابة هنا لا في المسار
+// كي لا يفتحها مسار جديد يُضاف لاحقاً وينسى صاحبه التحقّق.
+function ensureOpen() {
+  if (!env.registrationOpen) throw forbidden("التسجيل مغلق حالياً، والدخول متاح لأصحاب الحسابات", "REGISTRATION_CLOSED");
+}
 
 const roleFor = (email) => (env.adminEmails.includes(email.toLowerCase()) ? "admin" : "user");
 
@@ -17,6 +23,7 @@ async function issueTokens(user) {
 }
 
 export async function register({ name, email, password }) {
+  ensureOpen();
   if (await User.exists({ email })) throw conflict("البريد مسجّل من قبل", "EMAIL_TAKEN");
   const user = await User.create({ name, email, password, role: roleFor(email) });
   const tokens = await issueTokens(user);
@@ -40,6 +47,7 @@ export async function login({ email, password }) {
 export async function loginWithProvider(provider, { email, name }) {
   let user = await User.findOne({ email }).select("+refreshTokens");
   const isNew = !user;
+  if (isNew) ensureOpen();
   if (!user) user = await User.create({ name, email, provider, role: roleFor(email) });
   const tokens = await issueTokens(user);
   return { user: user.toPublic(), tokens, isNew };
