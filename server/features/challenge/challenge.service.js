@@ -7,28 +7,57 @@ import { notFound } from "../../shared/utils/AppError.js";
 
 export const XP_CHALLENGE = 20;
 
-// بذرة من تاريخ اليوم: كل المستخدمين يحصلون على السؤال نفسه دون تخزينه
-function hash(str) {
-  let h = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
+// مولّد زائف حتمي: يخلط قائمة بترتيب يعتمد على بذرة وحدها
+function mulberry32(seed) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
-// وحدة واحدة ثم سؤال مغلق واحد منها، كلاهما مشتق من مفتاح اليوم (لا عشوائية)
+function shuffled(list, seed) {
+  const out = [...list];
+  const rnd = mulberry32(seed);
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+// مفتاح يوم غير صالح يجب ألا يُسقط التحدّي: نعود إلى اليوم الحالي بدل NaN
+const dayNumber = (day) => {
+  const t = Date.parse(`${day}T00:00:00Z`);
+  return Math.floor((Number.isNaN(t) ? Date.now() : t) / 86400000);
+};
+
+// المركز والمدار الأول وحدهما: التحدي مشترك بين كل المتعلّمين، فلا يصحّ أن
+// يُسأل المبتدئ عن مادة المدار الثالث. هذه الوحدات هي القاسم المشترك بينهم.
+const inPool = (unitId) => unitId.startsWith("center") || unitId.split("-")[1] === "1";
+
+// وحدة واحدة ثم سؤال مغلق واحد منها، كلاهما مشتق من اليوم (لا عشوائية).
+// دورة كاملة قبل أي تكرار: القسمة على بصمة رقمية كانت تُكتّل الاختيار، فتظهر
+// وحدة خمس مرات في السنة وتغيب عشرات غيرها كلياً.
 export async function questionOfDay(day = dayKey()) {
   const Unit = models.Unit();
   // الشرط نفسه المطبَّق أدناه: لولا استثناء المحجوز هنا لاختيرت وحدة كل مغلقاتها امتحانية فتخرج قائمة فارغة
   const hasClosed = { published: true, questions: { $elemMatch: { t: { $ne: "open" }, examOnly: { $ne: true } } } };
   // نجلب المعرّفات وحدها أولاً: تحميل بنوك الأسئلة كلها في كل طلب مكلف بلا داعٍ
-  const ids = await Unit.find(hasClosed).select("unitId").sort("unitId").lean();
-  if (!ids.length) return null;
-  const { unitId } = ids[hash(day) % ids.length];
+  const all = await Unit.find(hasClosed).select("unitId").sort("unitId").lean();
+  // البذور وحدها إن لم يُنشر المدار الأول بعد: بركة فارغة تعني لا تحدّي أصلاً
+  const ids = all.map((d) => d.unitId).filter(inPool);
+  const pool = ids.length ? ids : all.map((d) => d.unitId);
+  if (!pool.length) return null;
+
+  const n = dayNumber(day);
+  // ترتيب جديد لكل دورة، فلا يحفظ المواظب تسلسل الدورة الماضية
+  const unitId = shuffled(pool, Math.floor(n / pool.length))[((n % pool.length) + pool.length) % pool.length];
+
   const unit = await Unit.findOne({ unitId }).select("unitId title questions").lean();
   const closed = unit.questions.filter((q) => q.t !== "open" && q.examOnly !== true).sort((a, b) => a.qid.localeCompare(b.qid));
-  const question = closed[hash(`${day}:${unitId}`) % closed.length];
+  const question = shuffled(closed, n)[0];
   return { day, unitId, unitTitle: unit.title, question };
 }
 

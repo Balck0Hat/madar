@@ -83,6 +83,10 @@ html { -webkit-text-size-adjust: 100%; }
 .madar-press{transition:transform .12s ease}
 .madar-press:active{transform:scale(.97)}
 @media (prefers-reduced-motion:reduce){
-  .madar-pulse,.madar-draw,.madar-spin,.madar-in,.madar-tw,.madar-shake,.madar-conf,.madar-pop,.madar-slide,.madar-trace,.madar-flash,.madar-fade,.madar-rise,.madar-stagger > *,.madar-press{animation:none;transition:none}
+  /* شامل لا مُعدَّد: القائمة السابقة كانت تفوتها الانتقالات المكتوبة داخل
+     المكوّنات، فتظل الواجهة تتحرّك عند من طلب إيقاف الحركة. */
+  .madar *,.madar *::before,.madar *::after{
+    animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important}
 }
 `;

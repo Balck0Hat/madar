@@ -37,8 +37,9 @@ describe("reserved exam questions must not leak into any learner path", () => {
 
   it("should never serve a reserved question as the daily challenge", async () => {
     // أيام كثيرة: سؤال اليوم مشتق من التاريخ، فيوم واحد لا يثبت شيئاً
-    for (let day = 1; day <= 40; day++) {
-      const out = await challenge.questionOfDay(`2026-01-${String(day).padStart(2, "0")}`);
+    for (let i = 0; i < 40; i++) {
+      const day = new Date(Date.UTC(2026, 0, 1) + i * 86400000).toISOString().slice(0, 10);
+      const out = await challenge.questionOfDay(day);
       expect(out?.question).toBeTruthy();
       expect(reserved(out.unitId, out.question.qid)).toBe(false);
     }

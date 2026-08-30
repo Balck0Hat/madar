@@ -1,6 +1,6 @@
 import { C, P, FONT } from "../../constants/theme";
 
-export default function Btn({ children, onClick, primary, color, full = true, small, disabled, ghost, paper, style: extra = {} }) {
+export default function Btn({ children, onClick, primary, color, full = true, small, disabled, ghost, paper, className = "", style: extra = {} }) {
   const base = {
     fontFamily: FONT, fontWeight: 700, borderRadius: 14, border: "1px solid",
     cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.45 : 1,
@@ -15,7 +15,10 @@ export default function Btn({ children, onClick, primary, color, full = true, sm
         ? { ...base, background: P.card, color: P.ink, borderColor: P.line }
         : { ...base, background: C.surface2, color: C.text, borderColor: C.line };
   return (
-    <button type="button" disabled={disabled} onClick={disabled ? undefined : onClick} style={{ ...style, ...extra }}>
+    // ردّ الفعل اللمسي هنا لا عند كل نداء: زرّ لا يستجيب للضغط
+    // يجعل التطبيق يبدو بطيئاً حتى حين يكون سريعاً
+    <button type="button" disabled={disabled} onClick={disabled ? undefined : onClick}
+      className={`${disabled ? "" : "madar-press"} ${className}`.trim()} style={{ ...style, ...extra }}>
       {children}
     </button>
   );
