@@ -28,7 +28,7 @@ export default function PrimaryCard({ info, resuming = false, minutes, eta, onOp
   return (
     <Card accent={info.color}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-        <Pill color={info.color}>{info.domain ? `${info.domainName} · ${RING_NAMES[info.ring]}` : "المركز"}</Pill>
+        <Pill color={info.color}>{info.domain ? `${info.domainName} · ${RING_NAMES[info.ring]}` : `المركز · ${num(info.step)} من ${num(info.of)}`}</Pill>
         <span style={{ color: C.muted, fontSize: 12, display: "flex", alignItems: "center", gap: 4 }}>
           <Clock size={12} aria-hidden="true" />{num(info.minutes)} د · {num(xp)} XP
         </span>
@@ -36,8 +36,13 @@ export default function PrimaryCard({ info, resuming = false, minutes, eta, onOp
 
       <div style={{ fontWeight: 800, fontSize: 17, margin: "10px 0 4px", lineHeight: 1.5 }}>{info.title}</div>
       {/* سطر واحد يشرح لماذا هذه الوحدة بالذات، فالبطاقة الوحيدة يجب أن تبرّر نفسها */}
+      {/* المركز ثلاث وحدات لا بوابة: من لا يرى عددها لا يعرف متى تنتهي،
+          ومن يظنّها قفلاً لا يجرّب المجالات وهي مفتوحة من اليوم الأول. */}
       <div style={{ color: C.muted, fontSize: 13, marginBottom: 12, lineHeight: 1.7 }}>
-        {resuming ? "توقّفت هنا في آخر مرة." : "الخطوة التالية على مسارك."}
+        {resuming ? "توقّفت هنا في آخر مرة."
+          : info.domain ? "الخطوة التالية على مسارك."
+          : info.step === info.of ? "آخر وحدة في المركز، وبعدها يبدأ مسارك في المجالات."
+          : "المركز ثلاث وحدات تُمهّد للبقية، والمجالات مفتوحة لك من الآن."}
       </div>
 
       <span className="madar-press" style={{ display: "block" }}>

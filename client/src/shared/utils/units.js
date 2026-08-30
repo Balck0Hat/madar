@@ -13,7 +13,7 @@ export function parseId(id) {
 
 export function unitInfo(id) {
   const p = parseId(id);
-  if (p.center) return { id, title: CENTER[p.i], ring: 0, color: C.gold, domainName: "المركز", domain: null, minutes: 30 };
+  if (p.center) return { id, title: CENTER[p.i], ring: 0, color: C.gold, domainName: "المركز", domain: null, minutes: 30, step: p.i + 1, of: CENTER.length };
   const dom = DOMAINS[p.di];
   return { id, title: dom.rings[p.r][p.i], ring: p.r, color: dom.color, domainName: dom.name, domain: dom, minutes: RING_MIN[p.r] };
 }
