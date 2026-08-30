@@ -3,6 +3,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CSS } from "../global";
+import { BP, T, R } from "../../constants/theme";
 
 const SRC = join(dirname(fileURLToPath(import.meta.url)), "../../..");
 
@@ -55,5 +56,22 @@ describe("theme variables", () => {
       for (const m of src.matchAll(/color:\s*[^,;\n]*"#[0-9a-fA-F]{3,8}"/g)) offenders.push(`${file.split("/src/")[1]} → ${m[0]}`);
     }
     expect(offenders).toEqual([]);
+  });
+
+  it("should render the named breakpoints as real pixel values", () => {
+    // المقاييس تُركَّب وقت التشغيل، فلا تظهر نصاً في الحزمة: نتحقق من الناتج
+    expect(CSS).toContain(`max-width:${BP.phone}px`);
+    expect(CSS).toContain(`min-width:${BP.desk}px`);
+    expect(CSS).toContain(`max-width:${BP.appMax}px`);
+    expect(CSS).not.toContain("${");
+    expect(CSS).not.toContain("undefinedpx");
+  });
+
+  it("should keep the scales ordered and free of duplicate steps", () => {
+    for (const scale of [T, R]) {
+      const v = Object.values(scale);
+      expect(new Set(v).size).toBe(v.length);
+      expect([...v].sort((a, b) => a - b)).toEqual(v);
+    }
   });
 });

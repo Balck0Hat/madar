@@ -1,5 +1,5 @@
 import { Snowflake, RotateCcw } from "lucide-react";
-import { C } from "../../../shared/constants/theme";
+import { C, T } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Card, Pill } from "../../../shared/components/ui";
 import { ChallengeCard } from "../../challenge";
@@ -14,7 +14,7 @@ export default function TodayPanel({ streak, weeklyXp, freezes = 0, reviewDue = 
       {!calm && <StatsRow streak={streak} weeklyXp={weeklyXp} />}
 
       {!calm && freezes > 0 && (
-        <div style={{ color: C.muted, fontSize: 12, display: "flex", gap: 6, alignItems: "center" }}>
+        <div style={{ color: C.muted, fontSize: T.sm, display: "flex", gap: 6, alignItems: "center" }}>
           <Snowflake size={13} color="#52B8E8" aria-hidden="true" />
           لديك {num(freezes)} تجميد للسلسلة: يحفظها إذا فاتك يوم.
         </div>
@@ -29,7 +29,7 @@ export default function TodayPanel({ streak, weeklyXp, freezes = 0, reviewDue = 
                 <div style={{ fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}>
                   <RotateCcw size={16} color={C.gold} aria-hidden="true" />مراجعة الصباح
                 </div>
-                <div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>
+                <div style={{ color: C.muted, fontSize: T.base, marginTop: 4 }}>
                   {num(reviewDue)} وحدات مستحقة · 3 دقائق تثبّت ما تعلمته
                 </div>
               </div>

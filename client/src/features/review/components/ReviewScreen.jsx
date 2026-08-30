@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Zap } from "lucide-react";
-import { C, MONO, alpha } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { vibrate } from "../../../shared/utils/text";
 import { useNum } from "../../../shared/context/NumContext";
@@ -26,7 +26,7 @@ export default function ReviewScreen({ onBack, onDone }) {
     return (
       <Shell onBack={onBack}>
         <div style={{ textAlign: "center", padding: "30px 0" }}>
-          <div style={{ fontSize: 26, fontWeight: 900 }}>انتهت مراجعة اليوم</div>
+          <div style={{ fontSize: T.x5, fontWeight: 900 }}>انتهت مراجعة اليوم</div>
           <div style={{ color: C.muted, marginTop: 6 }}>{num(data.items.length)} وحدات · <span style={{ color: C.gold, fontFamily: MONO, fontWeight: 800 }}><Zap size={13} /> +{num(gained)}</span></div>
           <div style={{ marginTop: 20 }}><Btn primary onClick={onDone}>العودة إلى الخريطة</Btn></div>
         </div>
@@ -50,16 +50,16 @@ export default function ReviewScreen({ onBack, onDone }) {
   const next = () => { if (pos + 1 < flat.length) { setPos(pos + 1); setSel(null); } else setFinished(true); };
   const options = q.t === "tf" ? [["صح", true], ["خطأ", false]] : q.opts.map((o, k) => [o, k]);
   return (
-    <Shell onBack={onBack} right={<span style={{ fontFamily: MONO, color: C.muted, fontSize: 12 }}>{num(pos + 1)}/{num(flat.length)}</span>}>
-      <div style={{ color: info.color, fontSize: 12, fontWeight: 700 }}>{info.domainName} · {q.title}</div>
-      <div style={{ fontSize: 19, fontWeight: 800, margin: "8px 0 16px", lineHeight: 1.6 }}>{q.q}</div>
+    <Shell onBack={onBack} right={<span style={{ fontFamily: MONO, color: C.muted, fontSize: T.sm }}>{num(pos + 1)}/{num(flat.length)}</span>}>
+      <div style={{ color: info.color, fontSize: T.sm, fontWeight: 700 }}>{info.domainName} · {q.title}</div>
+      <div style={{ fontSize: T.x3, fontWeight: 800, margin: "8px 0 16px", lineHeight: 1.6 }}>{q.q}</div>
       <div style={{ display: "grid", gap: 8 }}>
         {options.map(([label, v]) => {
           const right = locked && v === q.a, wrong = locked && v === sel && v !== q.a;
-          return <button key={String(v)} type="button" className={wrong ? "madar-shake" : ""} onClick={() => pick(v)} style={{ background: right ? alpha(C.green, 0.2) : wrong ? alpha(C.red, 0.2) : C.surface, border: `1px solid ${right ? C.green : wrong ? C.red : C.line}`, borderRadius: 14, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: 15 }}>{label}</button>;
+          return <button key={String(v)} type="button" className={wrong ? "madar-shake" : ""} onClick={() => pick(v)} style={{ background: right ? alpha(C.green, 0.2) : wrong ? alpha(C.red, 0.2) : C.surface, border: `1px solid ${right ? C.green : wrong ? C.red : C.line}`, borderRadius: R.xl, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: T.lg }}>{label}</button>;
         })}
       </div>
-      {locked && <Card style={{ marginTop: 14 }}><div style={{ fontSize: 14, lineHeight: 1.7 }}>{q.why}</div></Card>}
+      {locked && <Card style={{ marginTop: 14 }}><div style={{ fontSize: T.md, lineHeight: 1.7 }}>{q.why}</div></Card>}
       <div style={{ marginTop: 18 }}>{locked && <Btn primary disabled={busy} onClick={next}>{pos + 1 < flat.length ? "التالي" : "إنهاء"}</Btn>}</div>
     </Shell>
   );

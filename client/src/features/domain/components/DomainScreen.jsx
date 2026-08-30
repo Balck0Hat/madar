@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react";
-import { C, MONO, alpha } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
 import { DOMAINS } from "../../../shared/data/domains";
 import { RING_NAMES, RING_MIN, XP_LESSON, XP_QUIZ } from "../../../shared/data/curriculum";
 import { uid } from "../../../shared/utils/units";
@@ -21,24 +21,24 @@ export default function DomainScreen({ domainId, ringIdx, progress, authored = [
       <div style={{ padding: "0 16px" }}>
         <PatternBand id={d.id} color={d.color}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ width: 52, height: 52, borderRadius: 16, background: C.bg, border: `1px solid ${alpha(d.color, 0.4)}`, display: "grid", placeItems: "center" }}><Icon id={d.id} size={28} color={d.color} /></div>
-            <div><div style={{ fontWeight: 900, fontSize: 20 }}>{d.name}</div><div style={{ color: C.muted, fontSize: 13 }}>{d.desc}</div></div>
+            <div style={{ width: 52, height: 52, borderRadius: R.x2, background: C.bg, border: `1px solid ${alpha(d.color, 0.4)}`, display: "grid", placeItems: "center" }}><Icon id={d.id} size={28} color={d.color} /></div>
+            <div><div style={{ fontWeight: 900, fontSize: T.x3 }}>{d.name}</div><div style={{ color: C.muted, fontSize: T.base }}>{d.desc}</div></div>
           </div>
         </PatternBand>
         <div role="tablist" style={{ display: "flex", gap: 6, margin: "14px 0 10px" }}>
           {RING_NAMES.map((r, i) => (
-            <button key={r} type="button" role="tab" aria-selected={ringIdx === i} onClick={() => onRing(i)} style={{ flex: 1, background: ringIdx === i ? alpha(d.color, 0.15) : C.surface, border: `1px solid ${ringIdx === i ? d.color : C.line}`, color: C.text, borderRadius: 12, padding: "9px 6px", fontSize: 12, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+            <button key={r} type="button" role="tab" aria-selected={ringIdx === i} onClick={() => onRing(i)} style={{ flex: 1, background: ringIdx === i ? alpha(d.color, 0.15) : C.surface, border: `1px solid ${ringIdx === i ? d.color : C.line}`, color: C.text, borderRadius: R.lg, padding: "9px 6px", fontSize: T.sm, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
               {i > 0 && !st.ring1Done && <Lock size={11} />}{r}
             </button>
           ))}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6, fontSize: 13 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6, fontSize: T.base }}>
           <span style={{ color: C.muted }}>{num(RING_MIN[ringIdx])} دقيقة للوحدة · {num(XP_LESSON[ringIdx] + XP_QUIZ[ringIdx])} XP</span>
           <span style={{ fontFamily: MONO, color: C.muted }}>{num(n)}/{num(8)}</span>
         </div>
         <Bar value={n / 8} color={d.color} />
         {locked && (
-          <div style={{ background: C.goldSoft, border: `1px solid ${alpha(C.gold, 0.33)}`, borderRadius: 14, padding: "10px 12px", marginTop: 12, fontSize: 13, display: "flex", gap: 8, alignItems: "center" }}>
+          <div style={{ background: C.goldSoft, border: `1px solid ${alpha(C.gold, 0.33)}`, borderRadius: R.xl, padding: "10px 12px", marginTop: 12, fontSize: T.base, display: "flex", gap: 8, alignItems: "center" }}>
             <Lock size={14} color={C.gold} /> يُفتح هذا المدار بعد إكمال المدار الأول في المجالات العشرة كلها.
           </div>
         )}

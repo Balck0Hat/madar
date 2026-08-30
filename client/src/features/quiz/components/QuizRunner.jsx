@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C, MONO, inputStyle, alpha } from "../../../shared/constants/theme";
+import { C, MONO, inputStyle, alpha, T, R } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { vibrate } from "../../../shared/utils/text";
 import { useNum } from "../../../shared/context/NumContext";
@@ -58,7 +58,7 @@ export default function QuizRunner({ unitId, questions, saved, onFinish, onBack 
     const bg = locked && isCorrect ? alpha(C.green, 0.2) : locked && isSel ? alpha(C.red, 0.2) : isSel ? alpha(info.color, 0.15) : C.surface;
     const bd = locked && isCorrect ? C.green : locked && isSel ? C.red : isSel ? info.color : C.line;
     return (
-      <button key={key} type="button" className={locked && isSel && !isCorrect ? "madar-shake" : ""} onClick={() => !locked && onPick()} aria-pressed={isSel} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: 14, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: 15, lineHeight: 1.5 }}>
+      <button key={key} type="button" className={locked && isSel && !isCorrect ? "madar-shake" : ""} onClick={() => !locked && onPick()} aria-pressed={isSel} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.xl, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: T.lg, lineHeight: 1.5 }}>
         {label}
       </button>
     );
@@ -70,11 +70,11 @@ export default function QuizRunner({ unitId, questions, saved, onFinish, onBack 
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <TopBar title="الاختبار" onBack={onBack} right={<span style={{ fontFamily: MONO, color: C.muted, fontSize: 12 }}>{num(i + 1)}/{num(total)}</span>} />
+      <TopBar title="الاختبار" onBack={onBack} right={<span style={{ fontFamily: MONO, color: C.muted, fontSize: T.sm }}>{num(i + 1)}/{num(total)}</span>} />
       <div style={{ padding: "0 16px 8px" }}><Bar value={(i + (locked ? 1 : 0)) / total} color={info.color} h={4} /></div>
       <div key={i} className="madar-in" style={{ flex: 1, padding: "10px 18px" }}>
-        <div style={{ color: C.muted, fontSize: 12, fontWeight: 700 }}>{PROMPT[q.t]}</div>
-        <div style={{ fontSize: 19, fontWeight: 800, margin: "8px 0 16px", lineHeight: 1.6 }}>{q.q}</div>
+        <div style={{ color: C.muted, fontSize: T.sm, fontWeight: 700 }}>{PROMPT[q.t]}</div>
+        <div style={{ fontSize: T.x3, fontWeight: 800, margin: "8px 0 16px", lineHeight: 1.6 }}>{q.q}</div>
         <div style={{ display: "grid", gap: 8 }}>
           {q.t === "mcq" && q.opts.map((o, k) => opt(o, k, k === q.a, sel === k, () => setSel(k)))}
           {q.t === "tf" && [["صح", true], ["خطأ", false]].map(([l, v]) => opt(l, l, v === q.a, sel === v, () => setSel(v)))}
@@ -84,9 +84,9 @@ export default function QuizRunner({ unitId, questions, saved, onFinish, onBack 
         </div>
         {locked && selfOpen && <OpenSelfCheck q={q} mark={mark} onMark={pickMark} />}
         {locked && !selfOpen && (
-          <div className="madar-in" role="status" style={{ marginTop: 16, background: alpha(verdictColor, 0.12), border: `1px solid ${alpha(verdictColor, 0.4)}`, borderRadius: 14, padding: "12px 14px" }}>
+          <div className="madar-in" role="status" style={{ marginTop: 16, background: alpha(verdictColor, 0.12), border: `1px solid ${alpha(verdictColor, 0.4)}`, borderRadius: R.xl, padding: "12px 14px" }}>
             <div style={{ fontWeight: 800, color: verdictColor, marginBottom: 4 }}>{verdict}</div>
-            {q.t !== "open" && <div style={{ fontSize: 14, lineHeight: 1.7 }}>{q.why}</div>}
+            {q.t !== "open" && <div style={{ fontSize: T.md, lineHeight: 1.7 }}>{q.why}</div>}
           </div>
         )}
       </div>

@@ -33,6 +33,17 @@ export const HEX_DARK = {
 // شفافية تعمل مع متغيرات CSS ومع الهيكس معاً
 export const alpha = (color, amount) => `color-mix(in srgb, ${color} ${Math.round(amount * 100)}%, transparent)`;
 
+// المقاييس مستخرَجة من الاستعمال القائم لا مفروضة عليه: القيم هي نفسها
+// التي كان التصميم يستعملها، فالشكل لم يتغيّر. أُسقطت القيم التي ظهرت
+// مرة أو مرتين وشُدّت إلى أقرب درجة (9,10→11 · 17→18 · 19→20 · 24,25→26).
+export const T = { xs: 11, sm: 12, base: 13, md: 14, lg: 15, xl: 16, x2: 18, x3: 20, x4: 22, x5: 26, hero: 40, display: 68 };
+
+// أنصاف الأقطار: 6,7→8 · 22→20 · 99 و999 توحّدتا في pill
+export const R = { xs: 4, sm: 8, md: 10, lg: 12, xl: 14, x2: 16, x3: 18, x4: 20, pill: 999 };
+
+// نقاط الانكسار مسمّاة بدورها في التخطيط لا بأرقامها
+export const BP = { phone: 430, desk: 900, narrowDesk: 1180, focusMax: 820, appMax: 1120 };
+
 // خط الواجهة، وخط قراءة للدرس، وخط أرقام
 export const FONT = '"Readex Pro","Noto Sans Arabic","SF Arabic","Segoe UI",Tahoma,sans-serif';
 export const READ = '"Noto Naskh Arabic","SF Arabic",Georgia,serif';

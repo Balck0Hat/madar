@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Highlighter, MessageSquarePlus, Trash2, Pencil, X } from "lucide-react";
-import { P, C, FONT, READ, alpha } from "../../../shared/constants/theme";
+import { P, C, FONT, READ, alpha, T, R } from "../../../shared/constants/theme";
 import { tintOf } from "../utils/highlight";
 import NoteComposer from "./NoteComposer";
 
@@ -29,7 +29,7 @@ export default function NoteToolbar({ sel, onSave, onEdit, onRemove, onClose, bu
     transform: below ? "translateX(-50%)" : "translate(-50%, -100%)",
     width: Math.min(300, (window.innerWidth || 360) - 24),
     background: P.card, color: P.ink, fontFamily: FONT,
-    border: `1px solid ${P.line}`, borderRadius: 16, padding: 10,
+    border: `1px solid ${P.line}`, borderRadius: R.x2, padding: 10,
     boxShadow: "0 10px 30px rgba(0,0,0,.28)",
   };
 
@@ -37,7 +37,7 @@ export default function NoteToolbar({ sel, onSave, onEdit, onRemove, onClose, bu
   return createPortal(
     <div dir="rtl" role="dialog" aria-label="أدوات التظليل" style={style} onClick={(e) => e.stopPropagation()}>
       <div style={{ display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 8 }}>
-        <div style={{ fontFamily: READ, fontSize: 13, lineHeight: 1.7, color: P.muted, flex: 1, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", borderInlineStart: `3px solid ${tintOf(color)}`, paddingInlineStart: 8 }}>
+        <div style={{ fontFamily: READ, fontSize: T.base, lineHeight: 1.7, color: P.muted, flex: 1, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", borderInlineStart: `3px solid ${tintOf(color)}`, paddingInlineStart: 8 }}>
           {sel.text}
         </div>
         <button type="button" aria-label="إغلاق" onClick={onClose} style={{ ...icon, color: P.muted }}><X size={15} /></button>
@@ -67,13 +67,13 @@ export default function NoteToolbar({ sel, onSave, onEdit, onRemove, onClose, bu
       )}
 
       {existing && sel.note && !mode && (
-        <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.7, background: alpha(tintOf(sel.color), 0.14), borderRadius: 10, padding: "6px 9px" }}>{sel.note}</div>
+        <div style={{ marginTop: 8, fontSize: T.base, lineHeight: 1.7, background: alpha(tintOf(sel.color), 0.14), borderRadius: R.md, padding: "6px 9px" }}>{sel.note}</div>
       )}
-      {err && <div role="alert" style={{ marginTop: 8, fontSize: 12, color: C.red, lineHeight: 1.6 }}>{err}</div>}
+      {err && <div role="alert" style={{ marginTop: 8, fontSize: T.sm, color: C.red, lineHeight: 1.6 }}>{err}</div>}
     </div>,
     document.body,
   );
 }
 
 const icon = { background: "transparent", border: "none", cursor: "pointer", padding: 2, lineHeight: 0 };
-const action = { display: "flex", alignItems: "center", gap: 5, fontFamily: FONT, fontWeight: 700, fontSize: 13, borderRadius: 10, padding: "8px 10px", border: "none", cursor: "pointer", background: P.bg, color: P.ink };
+const action = { display: "flex", alignItems: "center", gap: 5, fontFamily: FONT, fontWeight: 700, fontSize: T.base, borderRadius: R.md, padding: "8px 10px", border: "none", cursor: "pointer", background: P.bg, color: P.ink };

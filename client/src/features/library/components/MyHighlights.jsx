@@ -1,5 +1,5 @@
 import { ArrowUpLeft } from "lucide-react";
-import { C, READ, FONT, alpha } from "../../../shared/constants/theme";
+import { C, READ, FONT, alpha, T, R } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
@@ -32,8 +32,8 @@ export default function MyHighlights({ onBack, onOpenUnit }) {
             <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
               {notes.map((n) => (
                 <div key={n.id} style={{ borderInlineStart: `3px solid ${tintOf(n.color)}`, paddingInlineStart: 10 }}>
-                  <div style={{ fontFamily: READ, fontSize: 15, lineHeight: 1.9, background: alpha(tintOf(n.color), 0.14), borderRadius: 8, padding: "3px 6px" }}>{n.text}</div>
-                  {n.note && <div style={{ fontSize: 13, lineHeight: 1.7, color: C.muted, marginTop: 5 }}>— {n.note}</div>}
+                  <div style={{ fontFamily: READ, fontSize: T.lg, lineHeight: 1.9, background: alpha(tintOf(n.color), 0.14), borderRadius: R.sm, padding: "3px 6px" }}>{n.text}</div>
+                  {n.note && <div style={{ fontSize: T.base, lineHeight: 1.7, color: C.muted, marginTop: 5 }}>— {n.note}</div>}
                   {/* الوسيط الثاني (الصفحة) اختياري: من يفتح الوحدة قد يتجاهله فتُفتح من أولها */}
                   <button type="button" onClick={() => onOpenUnit(unitId, n.page)} style={link}>
                     <ArrowUpLeft size={13} aria-hidden="true" />افتح عند الصفحة {num(n.page + 1)}
@@ -48,4 +48,4 @@ export default function MyHighlights({ onBack, onOpenUnit }) {
   );
 }
 
-const link = { display: "flex", alignItems: "center", gap: 4, marginTop: 6, background: "transparent", border: "none", cursor: "pointer", padding: "6px 0", fontFamily: FONT, fontSize: 12, fontWeight: 700, color: C.gold };
+const link = { display: "flex", alignItems: "center", gap: 4, marginTop: 6, background: "transparent", border: "none", cursor: "pointer", padding: "6px 0", fontFamily: FONT, fontSize: T.sm, fontWeight: 700, color: C.gold };

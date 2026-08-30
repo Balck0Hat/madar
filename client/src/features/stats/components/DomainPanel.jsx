@@ -1,4 +1,4 @@
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { DOMAINS } from "../../../shared/data/domains";
 import { Icon } from "../../../shared/components/icons/Icon";
@@ -15,9 +15,9 @@ export default function DomainPanel({ rows }) {
   const all = known.reduce((s, r) => s + r.total, 0);
 
   return (
-    <section style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 18, padding: 16 }}>
-      <h2 style={{ margin: 0, fontSize: 15, fontWeight: 800 }}>إنجازك في المجالات</h2>
-      <p style={{ margin: "2px 0 12px", color: C.muted, fontSize: 12 }}>أكملت {num(done)} وحدة من {num(all)}</p>
+    <section style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x3, padding: 16 }}>
+      <h2 style={{ margin: 0, fontSize: T.lg, fontWeight: 800 }}>إنجازك في المجالات</h2>
+      <p style={{ margin: "2px 0 12px", color: C.muted, fontSize: T.sm }}>أكملت {num(done)} وحدة من {num(all)}</p>
       <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 12 }}>
         {known.map((r) => {
           const dom = DOMAINS.find((d) => d.id === r.domain);
@@ -27,8 +27,8 @@ export default function DomainPanel({ rows }) {
             <li key={r.domain}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                 <Icon id={dom.id} size={16} color={dom.color} />
-                <span style={{ flex: 1, fontSize: 14, fontWeight: 700 }}>{dom.name}</span>
-                <span style={{ fontFamily: MONO, fontSize: 13, color: C.muted }} aria-label={`${dom.name}: ${r.done} من ${total}`}>
+                <span style={{ flex: 1, fontSize: T.md, fontWeight: 700 }}>{dom.name}</span>
+                <span style={{ fontFamily: MONO, fontSize: T.base, color: C.muted }} aria-label={`${dom.name}: ${r.done} من ${total}`}>
                   {num(r.done)}/{num(total)}
                 </span>
               </div>

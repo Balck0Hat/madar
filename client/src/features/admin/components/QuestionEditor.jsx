@@ -1,10 +1,10 @@
 import { Trash2 } from "lucide-react";
-import { C, inputStyle } from "../../../shared/constants/theme";
+import { C, inputStyle, T, R } from "../../../shared/constants/theme";
 import { Btn } from "../../../shared/components/ui";
 import { Q_TYPES, toLines, fromLines, fromCsv } from "../utils/editor.utils";
 
-const small = { ...inputStyle, padding: "9px 12px", fontSize: 14 };
-const Label = ({ children }) => <div style={{ fontSize: 12, color: C.muted, fontWeight: 700, marginBottom: 4 }}>{children}</div>;
+const small = { ...inputStyle, padding: "9px 12px", fontSize: T.md };
+const Label = ({ children }) => <div style={{ fontSize: T.sm, color: C.muted, fontWeight: 700, marginBottom: 4 }}>{children}</div>;
 
 // محرّر سؤال واحد من بنك الوحدة
 export default function QuestionEditor({ q, index, onChange, onRemove }) {
@@ -12,7 +12,7 @@ export default function QuestionEditor({ q, index, onChange, onRemove }) {
   const setType = (t) => set({ t, opts: t === "mcq" ? q.opts?.length ? q.opts : ["", "", "", ""] : undefined, items: t === "order" ? q.items || ["", "", ""] : undefined, a: t === "tf" ? true : t === "mcq" ? 0 : t === "open" ? undefined : [] });
   const aText = Array.isArray(q.a) ? q.a.join("، ") : q.a ?? "";
   return (
-    <div style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 14, padding: 12, display: "grid", gap: 10 }}>
+    <div style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.xl, padding: 12, display: "grid", gap: 10 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontWeight: 800, color: C.gold }}>س{index + 1}</span>
         <select aria-label="نوع السؤال" value={q.t} onChange={(e) => setType(e.target.value)} style={{ ...small, width: "auto" }}>

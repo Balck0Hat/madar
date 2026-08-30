@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { C } from "../../../shared/constants/theme";
+import { C, T } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { TopBar, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
 import { getFriends, getFriendsLeague } from "../services/friends.service";
@@ -12,7 +12,7 @@ import FriendsLeague from "./FriendsLeague";
 
 const Section = ({ title, children }) => (
   <section style={{ display: "grid", gap: 8 }}>
-    <h2 style={{ fontWeight: 800, fontSize: 16, margin: "6px 0 0" }}>{title}</h2>
+    <h2 style={{ fontWeight: 800, fontSize: T.xl, margin: "6px 0 0" }}>{title}</h2>
     {children}
   </section>
 );
@@ -47,7 +47,7 @@ export default function FriendsScreen({ myHandle, onBack, onToast }) {
               <>
                 <FriendsList friends={friends} onChanged={refresh} onToast={onToast} />
                 <Section title="دوري الأصدقاء">
-                  <div style={{ color: C.muted, fontSize: 12, lineHeight: 1.7 }}>النقاط تُحسب من الاثنين إلى الأحد.</div>
+                  <div style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.7 }}>النقاط تُحسب من الاثنين إلى الأحد.</div>
                   <FriendsLeague rows={safeList(league.data?.rows ?? league.data)} loading={league.loading} error={league.error} onRetry={league.reload} />
                 </Section>
                 <InviteCard myHandle={myHandle} onToast={onToast} />

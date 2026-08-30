@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Download } from "lucide-react";
-import { C, inputStyle } from "../../../shared/constants/theme";
+import { C, inputStyle, T } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Btn, Card, Skeleton, ErrorState } from "../../../shared/components/ui";
 import { listUnits, exportAll, exportUnit } from "../services/admin.service";
 import { downloadJson } from "../utils/io.utils";
 
-const small = { ...inputStyle, padding: "9px 12px", fontSize: 14 };
+const small = { ...inputStyle, padding: "9px 12px", fontSize: T.md };
 const stamp = () => new Date().toISOString().slice(0, 10);
 
 // تنزيل كل الوحدات أو وحدة بعينها كـ JSON نظيف يقبله الاستيراد كما هو
@@ -31,7 +31,7 @@ export default function ExportCard({ onToast }) {
   return (
     <Card>
       <div style={{ fontWeight: 800, marginBottom: 4 }}>تصدير</div>
-      <div style={{ color: C.muted, fontSize: 12, marginBottom: 10, lineHeight: 1.7 }}>
+      <div style={{ color: C.muted, fontSize: T.sm, marginBottom: 10, lineHeight: 1.7 }}>
         ملف JSON نظيف بلا حقول قاعدة البيانات، يصلح للنسخ الاحتياطي وللاستيراد في خادم آخر.
       </div>
       <div style={{ display: "grid", gap: 8 }}>
@@ -47,7 +47,7 @@ export default function ExportCard({ onToast }) {
             <Download size={16} />
           </Btn>
         </div>
-        {err && <div role="alert" style={{ color: C.red, fontSize: 13 }}>{err}</div>}
+        {err && <div role="alert" style={{ color: C.red, fontSize: T.base }}>{err}</div>}
       </div>
     </Card>
   );

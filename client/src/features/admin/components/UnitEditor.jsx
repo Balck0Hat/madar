@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { C, inputStyle, alpha } from "../../../shared/constants/theme";
+import { C, inputStyle, alpha, T, R } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Btn, TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
 import { getUnit, saveUnit } from "../services/admin.service";
@@ -9,9 +9,9 @@ import CardsEditor from "./CardsEditor";
 import QuestionEditor from "./QuestionEditor";
 import VersionsPanel from "./VersionsPanel";
 
-const small = { ...inputStyle, padding: "9px 12px", fontSize: 14 };
-const Section = ({ title, children }) => <div style={{ display: "grid", gap: 8 }}><div style={{ fontWeight: 800, color: C.gold, fontSize: 14 }}>{title}</div>{children}</div>;
-const Lines = ({ label, value, onChange, rows = 3 }) => <div><div style={{ fontSize: 12, color: C.muted, fontWeight: 700, marginBottom: 4 }}>{label}</div><textarea value={toLines(value)} onChange={(e) => onChange(fromLines(e.target.value))} rows={rows} style={{ ...small, resize: "vertical", lineHeight: 1.7 }} /></div>;
+const small = { ...inputStyle, padding: "9px 12px", fontSize: T.md };
+const Section = ({ title, children }) => <div style={{ display: "grid", gap: 8 }}><div style={{ fontWeight: 800, color: C.gold, fontSize: T.md }}>{title}</div>{children}</div>;
+const Lines = ({ label, value, onChange, rows = 3 }) => <div><div style={{ fontSize: T.sm, color: C.muted, fontWeight: 700, marginBottom: 4 }}>{label}</div><textarea value={toLines(value)} onChange={(e) => onChange(fromLines(e.target.value))} rows={rows} style={{ ...small, resize: "vertical", lineHeight: 1.7 }} /></div>;
 
 // محرّر وحدة كاملة: يحمّل الموجود أو يبدأ من قالب فارغ
 export default function UnitEditor({ unitId, isNew, onBack, onSaved, onToast }) {
@@ -60,7 +60,7 @@ function Form({ initial, unitId, isNew, onSaved, onToast }) {
         <Btn small full={false} onClick={() => set({ questions: [...u.questions, emptyQuestion(u.questions.length + 1)] })}><span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Plus size={14} />سؤال جديد</span></Btn>
       </Section>
       {!isNew && <VersionsPanel unitId={unitId} current={u} onToast={onToast} onRestored={(unit) => { setU(toFormUnit(unit)); onSaved(); }} />}
-      {err && <div role="alert" style={{ color: C.red, fontSize: 13, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: 12, padding: 10 }}>{err}</div>}
+      {err && <div role="alert" style={{ color: C.red, fontSize: T.base, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: R.lg, padding: 10 }}>{err}</div>}
       <div style={{ display: "flex", gap: 8, position: "sticky", bottom: 12 }}>
         <Btn disabled={busy} onClick={() => save(false)}>حفظ كمسودة</Btn>
         <Btn primary disabled={busy} onClick={() => save(true)}>{busy ? "لحظة..." : "نشر"}</Btn>
@@ -70,5 +70,5 @@ function Form({ initial, unitId, isNew, onSaved, onToast }) {
 }
 
 function Shell({ unitId, onBack, children }) {
-  return <div className="madar-in" style={{ paddingBottom: 40 }}><TopBar title={<span style={{ fontSize: 15 }}>تحرير <span style={{ color: C.muted, fontWeight: 400 }}>{unitId}</span></span>} onBack={onBack} /><div style={{ padding: "0 16px" }}>{children}</div></div>;
+  return <div className="madar-in" style={{ paddingBottom: 40 }}><TopBar title={<span style={{ fontSize: T.lg }}>تحرير <span style={{ color: C.muted, fontWeight: 400 }}>{unitId}</span></span>} onBack={onBack} /><div style={{ padding: "0 16px" }}>{children}</div></div>;
 }

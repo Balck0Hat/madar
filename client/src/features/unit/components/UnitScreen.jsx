@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { P, MONO, alpha } from "../../../shared/constants/theme";
+import { P, MONO, alpha, T, R } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
@@ -62,11 +62,11 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, re
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: P.bg, color: P.ink, transition: "background .4s", "--unit-color": info.color, backgroundImage: `radial-gradient(140% 60% at 50% 0%, ${alpha(info.color, 0.07)}, transparent 60%)` }}>
       <div style={{ padding: "12px 12px 0", display: "flex", gap: 3 }}>
-        {pages.map((_, i) => <div key={i} style={{ flex: 1, height: 3, borderRadius: 99, background: i <= at ? info.color : P.line, transition: "background .3s" }} />)}
+        {pages.map((_, i) => <div key={i} style={{ flex: 1, height: 3, borderRadius: R.pill, background: i <= at ? info.color : P.line, transition: "background .3s" }} />)}
       </div>
       <TopBar paper onBack={onBack}
-        title={<span style={{ fontSize: 15 }}>{info.domainName} <span style={{ color: P.muted, fontWeight: 400 }}>· {shortLabel(pages[at])}</span></span>}
-        right={<span style={{ fontFamily: MONO, color: P.muted, fontSize: 12 }}>{num(at + 1)}/{num(pages.length)}</span>} />
+        title={<span style={{ fontSize: T.lg }}>{info.domainName} <span style={{ color: P.muted, fontWeight: 400 }}>· {shortLabel(pages[at])}</span></span>}
+        right={<span style={{ fontFamily: MONO, color: P.muted, fontSize: T.sm }}>{num(at + 1)}/{num(pages.length)}</span>} />
       {showResume && (
         <ResumeBar card={saved} total={pages.length}
           onResume={() => { setAsked(true); goTo(saved); }}

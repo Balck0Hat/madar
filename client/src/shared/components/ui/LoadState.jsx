@@ -1,5 +1,5 @@
 import { WifiOff, AlertTriangle } from "lucide-react";
-import { C, P, alpha } from "../../constants/theme";
+import { C, P, alpha, T, R } from "../../constants/theme";
 import Spot from "../art/Spot";
 import Btn from "./Btn";
 
@@ -26,7 +26,7 @@ export function Skeleton({ lines = 4, paper = false }) {
           className="madar-shim"
           style={{
             height: i === 0 ? 120 : 16,
-            borderRadius: i === 0 ? 18 : 8,
+            borderRadius: i === 0 ? R.x3 : R.sm,
             width: i === 0 ? "100%" : `${90 - (i % 3) * 18}%`,
             background: base,
             backgroundImage: `linear-gradient(90deg, transparent 15%, ${shine} 50%, transparent 85%)`,
@@ -52,7 +52,7 @@ export function ErrorState({ message, onRetry, onBack }) {
       style={{
         background: alpha(tone, 0.12),
         border: `1px solid ${alpha(tone, 0.4)}`,
-        borderRadius: 16,
+        borderRadius: R.x2,
         padding: 16,
         display: "grid",
         gap: 10,
@@ -62,9 +62,9 @@ export function ErrorState({ message, onRetry, onBack }) {
         <Icon size={16} color={tone} aria-hidden="true" />
         {offline ? "لا يوجد اتصال" : "تعذّر التحميل"}
       </div>
-      <div style={{ fontSize: 14, lineHeight: 1.7 }}>{message}</div>
+      <div style={{ fontSize: T.md, lineHeight: 1.7 }}>{message}</div>
       {offline && (
-        <div style={{ fontSize: 13, lineHeight: 1.7, color: C.muted }}>
+        <div style={{ fontSize: T.base, lineHeight: 1.7, color: C.muted }}>
           تحقّق من اتصالك بالإنترنت ثم أعد المحاولة؛ ما أنجزته محفوظ.
         </div>
       )}
@@ -83,9 +83,9 @@ export function EmptyState({ title, text, action, onAction, spot, sample }) {
   return (
     <div className="madar-rise" style={{ textAlign: "center", padding: "36px 16px", display: "grid", gap: 8, justifyItems: "center" }}>
       {/* بدون spot نُبقي العلامة القديمة حتى لا تتغيّر الشاشات التي لم تُحدَّث بعد */}
-      {spot ? <Spot k={spot} size={140} /> : <div style={{ fontSize: 40, color: C.gold }} aria-hidden="true">✦</div>}
-      <div style={{ fontWeight: 800, fontSize: 18 }}>{title}</div>
-      {text && <div style={{ color: C.muted, fontSize: 14, lineHeight: 1.7, maxWidth: 320 }}>{text}</div>}
+      {spot ? <Spot k={spot} size={140} /> : <div style={{ fontSize: T.hero, color: C.gold }} aria-hidden="true">✦</div>}
+      <div style={{ fontWeight: 800, fontSize: T.x2 }}>{title}</div>
+      {text && <div style={{ color: C.muted, fontSize: T.md, lineHeight: 1.7, maxWidth: 320 }}>{text}</div>}
       {action && <Btn primary small full={false} onClick={onAction}>{action}</Btn>}
       {sample && <EmptySample>{sample}</EmptySample>}
     </div>
@@ -96,7 +96,7 @@ export function EmptyState({ title, text, action, onAction, spot, sample }) {
 function EmptySample({ children }) {
   return (
     <div style={{ width: "100%", maxWidth: 420, marginTop: 14, display: "grid", gap: 8, justifyItems: "stretch" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.muted, fontSize: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.muted, fontSize: T.sm }}>
         <span style={{ height: 1, flex: 1, background: C.line }} aria-hidden="true" />
         هكذا ستبدو
         <span style={{ height: 1, flex: 1, background: C.line }} aria-hidden="true" />
@@ -109,7 +109,7 @@ function EmptySample({ children }) {
           filter: "saturate(.5)",
           pointerEvents: "none",
           userSelect: "none",
-          borderRadius: 18,
+          borderRadius: R.x3,
           border: `1px dashed ${alpha(C.text, 0.18)}`,
           padding: 10,
         }}

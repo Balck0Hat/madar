@@ -1,5 +1,5 @@
 import { Flame, Zap } from "lucide-react";
-import { C, FONT, MONO } from "../../../shared/constants/theme";
+import { C, FONT, MONO, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 
 // السلسلة ونقاط الأسبوع فقط.
@@ -14,11 +14,11 @@ export default function StatsRow({ streak, weeklyXp }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
       {items.map(([I, l, v, col, font]) => (
-        <div key={l} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 16, padding: "10px 12px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted, fontSize: 11 }}>
+        <div key={l} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: "10px 12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted, fontSize: T.xs }}>
             <I size={13} color={col} aria-hidden="true" />{l}
           </div>
-          <div style={{ fontWeight: 800, fontSize: 16, marginTop: 4, fontFamily: font }}>{v}</div>
+          <div style={{ fontWeight: 800, fontSize: T.xl, marginTop: 4, fontFamily: font }}>{v}</div>
         </div>
       ))}
     </div>

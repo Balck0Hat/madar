@@ -1,5 +1,5 @@
 import { Award, Share2, BookOpen, ShieldCheck, BarChart3, Users } from "lucide-react";
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Btn, Card, Pill } from "../../../shared/components/ui";
 import ShareCard from "./ShareCard";
@@ -17,11 +17,11 @@ export function ShareSection({ profile, progress, level, st, refEl, onSave, onTo
   return (
     <Card>
       <div style={{ fontWeight: 800, marginBottom: 4 }}>عجلتي</div>
-      <div style={{ color: C.muted, fontSize: 12, marginBottom: 10 }}>صفحة عامة برابط، وبطاقة طولية للستوري.</div>
+      <div style={{ color: C.muted, fontSize: T.sm, marginBottom: 10 }}>صفحة عامة برابط، وبطاقة طولية للستوري.</div>
       <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-        <div style={{ width: 150, flexShrink: 0, border: `1px solid ${C.line}`, borderRadius: 18, overflow: "hidden" }}><ShareCard profile={profile} progress={progress} level={level} refEl={refEl} /></div>
+        <div style={{ width: 150, flexShrink: 0, border: `1px solid ${C.line}`, borderRadius: R.x3, overflow: "hidden" }}><ShareCard profile={profile} progress={progress} level={level} refEl={refEl} /></div>
         <div style={{ flex: 1, display: "grid", gap: 8 }}>
-          <div style={{ color: C.muted, fontSize: 12, lineHeight: 1.6 }}>{num(st.units)} وحدة · {num(st.threads)} خيط · {st.rank}</div>
+          <div style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.6 }}>{num(st.units)} وحدة · {num(st.threads)} خيط · {st.rank}</div>
           <Btn small primary onClick={share}><span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Share2 size={14} />مشاركة الرابط</span></Btn>
           <Btn small onClick={onSave}>إنشاء صورة</Btn>
         </div>
@@ -42,10 +42,10 @@ export function CertificateSection({ profile, st, certificate, date, refEl, onSa
         <Pill color={earned ? C.green : C.muted}>{earned ? "مسجّلة" : "معاينة"}</Pill>
       </div>
       <Certificate name={profile.name} earned={earned} code={code} date={issued} refEl={refEl} />
-      <div style={{ color: C.muted, fontSize: 12, margin: "10px 0", lineHeight: 1.7 }}>
+      <div style={{ color: C.muted, fontSize: T.sm, margin: "10px 0", lineHeight: 1.7 }}>
         {earned ? <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}><ShieldCheck size={13} color={C.green} />رابط التحقق: <span style={{ fontFamily: MONO }}>{window.location.origin}/verify/{code}</span></span> : st.ring1Done ? "أتممت المدار الأول. يبقى امتحان الإتمام: أربعون سؤالاً في خمس وأربعين دقيقة، والنجاح ثمانون بالمئة." : "تُمنح بعد إتمام وحدات المدار الأول الثلاث والثمانين واجتياز امتحان إتمام من أربعين سؤالاً."}
       </div>
-      <div style={{ color: C.muted, fontSize: 11, marginBottom: 10, lineHeight: 1.7 }}>
+      <div style={{ color: C.muted, fontSize: T.xs, marginBottom: 10, lineHeight: 1.7 }}>
         تشهد هذه الورقة بإتمام الوحدات واجتياز امتحان <b>غير مراقَب</b>، ولا تشهد بخبرة أو تأهيل مهني. محاولة واحدة كل ثلاثين يوماً.
       </div>
       <div style={{ display: "flex", gap: 8 }}>
@@ -62,7 +62,7 @@ export function LibraryLink({ count, onOpen }) {
     <Card onClick={onOpen}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}><BookOpen size={16} color={C.gold} />مكتبتي</div>
-        <span style={{ color: C.muted, fontSize: 12 }}>{num(count)} خلاصة</span>
+        <span style={{ color: C.muted, fontSize: T.sm }}>{num(count)} خلاصة</span>
       </div>
     </Card>
   );
@@ -72,8 +72,8 @@ export function ImagePreview({ src, onClose }) {
   if (!src) return null;
   return (
     <div onClick={onClose} role="dialog" aria-label="معاينة الصورة" style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.85)", zIndex: 40, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 20, gap: 12 }}>
-      <img src={src} alt="صورة للمشاركة" style={{ maxWidth: "100%", maxHeight: "75vh", borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,.6)" }} />
-      <div style={{ color: C.text, fontSize: 13, textAlign: "center" }}>اضغط مطولاً على الصورة لحفظها، أو اضغط في أي مكان للإغلاق</div>
+      <img src={src} alt="صورة للمشاركة" style={{ maxWidth: "100%", maxHeight: "75vh", borderRadius: R.x2, boxShadow: "0 20px 60px rgba(0,0,0,.6)" }} />
+      <div style={{ color: C.text, fontSize: T.base, textAlign: "center" }}>اضغط مطولاً على الصورة لحفظها، أو اضغط في أي مكان للإغلاق</div>
     </div>
   );
 }
@@ -84,7 +84,7 @@ export function NavLinkCard({ icon: Icon, label, hint, onOpen }) {
     <Card onClick={onOpen}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}><Icon size={16} color={C.gold} />{label}</div>
-        {hint && <span style={{ color: C.muted, fontSize: 12 }}>{hint}</span>}
+        {hint && <span style={{ color: C.muted, fontSize: T.sm }}>{hint}</span>}
       </div>
     </Card>
   );

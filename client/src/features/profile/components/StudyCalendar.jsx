@@ -1,4 +1,4 @@
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Card } from "../../../shared/components/ui";
 
@@ -12,14 +12,14 @@ export default function StudyCalendar({ studied }) {
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
         <div style={{ fontWeight: 800 }}>{monthName}</div>
-        <div style={{ color: C.muted, fontSize: 12 }}>{num(studied.length)} يوم دراسة</div>
+        <div style={{ color: C.muted, fontSize: T.sm }}>{num(studied.length)} يوم دراسة</div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 5 }}>
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1, key = `${now.getFullYear()}-${now.getMonth()}-${day}`;
           const on = studied.includes(key), today = day === now.getDate();
           return (
-            <div key={i} title={String(day)} style={{ aspectRatio: "1", borderRadius: 6, background: on ? C.gold : C.surface2, border: `1px solid ${today ? C.gold : C.line}`, display: "grid", placeItems: "center", fontSize: 9, fontFamily: MONO, color: on ? "var(--bg)" : C.muted }}>
+            <div key={i} title={String(day)} style={{ aspectRatio: "1", borderRadius: R.sm, background: on ? C.gold : C.surface2, border: `1px solid ${today ? C.gold : C.line}`, display: "grid", placeItems: "center", fontSize: T.xs, fontFamily: MONO, color: on ? "var(--bg)" : C.muted }}>
               {num(day)}
             </div>
           );

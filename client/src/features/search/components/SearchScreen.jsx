@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C } from "../../../shared/constants/theme";
+import { C, T } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { TopBar, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
@@ -47,7 +47,7 @@ export default function SearchScreen({ onBack, onOpenUnit }) {
         {showRecent && <RecentSearches items={recent} onPick={pick} onClear={() => setRecent(clearRecent())} />}
 
         {!enabled && !showRecent && (
-          <div style={{ color: C.muted, fontSize: 13, textAlign: "center", padding: "24px 8px", lineHeight: 1.8 }}>
+          <div style={{ color: C.muted, fontSize: T.base, textAlign: "center", padding: "24px 8px", lineHeight: 1.8 }}>
             اكتب حرفين على الأقل للبحث في عناوين الوحدات وخلاصاتها.
           </div>
         )}
@@ -61,7 +61,7 @@ export default function SearchScreen({ onBack, onOpenUnit }) {
           )}
           {enabled && !loading && results.length > 0 && (
             <>
-              <div style={{ color: C.muted, fontSize: 12 }}>عدد النتائج {num(results.length)} لـ «{term}»</div>
+              <div style={{ color: C.muted, fontSize: T.sm }}>عدد النتائج {num(results.length)} لـ «{term}»</div>
               {results.map((r, i) => <ResultCard key={`${r.unitId}-${i}`} result={r} onOpen={open} />)}
             </>
           )}

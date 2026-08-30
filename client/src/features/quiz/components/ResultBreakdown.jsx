@@ -1,5 +1,5 @@
 import { Zap } from "lucide-react";
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, T } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { useCountUp } from "../../../shared/hooks/useCountUp";
 import { Card } from "../../../shared/components/ui";
@@ -11,7 +11,7 @@ function Line({ label, value, delay, last }) {
   const num = useNum();
   const live = settled(useCountUp(value, { duration: 600, delay }), value);
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: last ? "none" : `1px dashed ${C.line}`, fontSize: 14 }}>
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: last ? "none" : `1px dashed ${C.line}`, fontSize: T.md }}>
       <span>{label}</span>
       <span style={{ fontFamily: MONO, color: C.gold, fontWeight: 800 }}>+{num(live)}</span>
     </div>

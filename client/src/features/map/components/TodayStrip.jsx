@@ -1,10 +1,10 @@
 import { ChevronDown, Flame, Zap, RotateCcw } from "lucide-react";
-import { C, MONO, alpha } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { useTodayOpen } from "../hooks/useTodayOpen";
 import TodayPanel from "./TodayPanel";
 
-const fact = { display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: C.muted, fontFamily: MONO };
+const fact = { display: "inline-flex", alignItems: "center", gap: 4, fontSize: T.sm, color: C.muted, fontFamily: MONO };
 
 // السهم يدور فقط (transform) ولا يتحرّك أصلاً لمن طلب حركة مخفّضة.
 // نحقن القاعدة هنا لا في global.js لأنها خاصة بهذا المكوّن وحده.
@@ -24,7 +24,7 @@ export default function TodayStrip(props) {
   if (calm && reviewDue === 0) return null;
 
   return (
-    <div style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 18, padding: "10px 14px" }}>
+    <div style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x3, padding: "10px 14px" }}>
       <style>{CHEV_CSS}</style>
       <button
         type="button"
@@ -34,12 +34,12 @@ export default function TodayStrip(props) {
         style={{ width: "100%", background: "transparent", border: "none", padding: 0, cursor: "pointer", color: C.text, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}
       >
         <span style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-          <span style={{ fontWeight: 800, fontSize: 14 }}>اليوم</span>
+          <span style={{ fontWeight: 800, fontSize: T.md }}>اليوم</span>
           {/* ملخّص صامت: أرقام صغيرة بلا ألوان صارخة، لأن الهدف الاطمئنان لا الضغط */}
           {!calm && <span style={fact}><Flame size={12} color={C.muted} aria-hidden="true" />{num(streak)}</span>}
           {!calm && <span style={fact}><Zap size={12} color={C.muted} aria-hidden="true" />{num(weeklyXp)}</span>}
           {reviewDue > 0 && (
-            <span style={{ ...fact, color: C.gold, background: alpha(C.gold, 0.12), borderRadius: 999, padding: "2px 8px" }}>
+            <span style={{ ...fact, color: C.gold, background: alpha(C.gold, 0.12), borderRadius: R.pill, padding: "2px 8px" }}>
               <RotateCcw size={12} aria-hidden="true" />{num(reviewDue)}
             </span>
           )}

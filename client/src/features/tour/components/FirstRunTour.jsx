@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
-import { C, alpha } from "../../../shared/constants/theme";
+import { C, alpha, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Btn } from "../../../shared/components/ui";
 import { TOUR_CARDS } from "../data/tourCards";
@@ -51,10 +51,10 @@ export default function FirstRunTour({ onDone }) {
         aria-labelledby="madar-tour-title"
         className="madar-rise"
         onClick={(e) => e.stopPropagation()}
-        style={{ width: "100%", maxWidth: 420, background: C.surface, border: `1px solid ${C.line}`, borderRadius: 22, padding: 20, boxShadow: "var(--shadow)" }}
+        style={{ width: "100%", maxWidth: 420, background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x4, padding: 20, boxShadow: "var(--shadow)" }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ color: C.muted, fontSize: 12 }}>{num(i + 1)} من {num(TOUR_CARDS.length)}</span>
+          <span style={{ color: C.muted, fontSize: T.sm }}>{num(i + 1)} من {num(TOUR_CARDS.length)}</span>
           <button type="button" aria-label="تخطّي الجولة" onClick={close} style={{ background: "transparent", border: "none", color: C.muted, cursor: "pointer", padding: 6, lineHeight: 0 }}>
             <X size={18} aria-hidden="true" />
           </button>
@@ -63,15 +63,15 @@ export default function FirstRunTour({ onDone }) {
         {/* key يعيد تشغيل حركة الظهور عند كل بطاقة؛ الحركة نفسها مُعطّلة لمن طلب تقليلها */}
         <div key={card.id} className="madar-in" style={{ display: "grid", justifyItems: "center", gap: 10, textAlign: "center", padding: "6px 0 4px" }}>
           <TourArt k={card.art} size={116} />
-          <h2 id="madar-tour-title" style={{ fontWeight: 900, fontSize: 19, margin: 0 }}>{card.title}</h2>
-          <div style={{ display: "grid", gap: 7, color: C.muted, fontSize: 14, lineHeight: 1.8, textAlign: "start" }}>
+          <h2 id="madar-tour-title" style={{ fontWeight: 900, fontSize: T.x3, margin: 0 }}>{card.title}</h2>
+          <div style={{ display: "grid", gap: 7, color: C.muted, fontSize: T.md, lineHeight: 1.8, textAlign: "start" }}>
             {card.lines.map((l) => <p key={l} style={{ margin: 0 }}>{l}</p>)}
           </div>
         </div>
 
         <div style={{ display: "flex", gap: 6, justifyContent: "center", margin: "14px 0 12px" }} aria-hidden="true">
           {TOUR_CARDS.map((c, n) => (
-            <span key={c.id} style={{ width: n === i ? 18 : 6, height: 6, borderRadius: 999, background: n === i ? C.gold : alpha(C.text, 0.2) }} />
+            <span key={c.id} style={{ width: n === i ? 18 : 6, height: 6, borderRadius: R.pill, background: n === i ? C.gold : alpha(C.text, 0.2) }} />
           ))}
         </div>
 

@@ -1,5 +1,5 @@
 import { Clock, Check } from "lucide-react";
-import { P, MONO, READ } from "../../../shared/constants/theme";
+import { P, MONO, READ, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 import Art from "../../../shared/components/art/Art";
 
@@ -43,8 +43,8 @@ export function GoalsPage({ goals }) {
       <div style={{ fontSize: "1.38em", fontWeight: 800, margin: "6px 0 16px" }}>بعد هذه الوحدة ستستطيع أن</div>
       <div style={{ display: "grid", gap: 10 }}>
         {goals.map((g, i) => (
-          <div key={i} style={{ display: "flex", gap: 12, alignItems: "center", background: P.card, border: `1px solid ${P.line}`, borderRadius: 16, padding: "12px 14px" }}>
-            <span style={{ width: 26, height: 26, borderRadius: 99, background: P.ink, color: P.bg, display: "grid", placeItems: "center", fontFamily: MONO, fontWeight: 800, fontSize: ".8em", flexShrink: 0 }}>{num(i + 1)}</span>
+          <div key={i} style={{ display: "flex", gap: 12, alignItems: "center", background: P.card, border: `1px solid ${P.line}`, borderRadius: R.x2, padding: "12px 14px" }}>
+            <span style={{ width: 26, height: 26, borderRadius: R.pill, background: P.ink, color: P.bg, display: "grid", placeItems: "center", fontFamily: MONO, fontWeight: 800, fontSize: ".8em", flexShrink: 0 }}>{num(i + 1)}</span>
             <span style={{ lineHeight: 1.6 }}>{g}</span>
           </div>
         ))}
@@ -80,7 +80,7 @@ export function DeepPage({ deep, mark = plain }) {
     <div>
       <div style={{ color: P.muted, fontSize: ".75em", fontWeight: 700 }}>اختياري</div>
       <div style={{ fontSize: "1.19em", fontWeight: 800, margin: "6px 0 12px", lineHeight: 1.5 }}>{deep.title}</div>
-      <div style={{ background: P.card, border: `1px solid ${P.line}`, borderRadius: 16, padding: "12px 14px" }}>
+      <div style={{ background: P.card, border: `1px solid ${P.line}`, borderRadius: R.x2, padding: "12px 14px" }}>
         <div style={{ color: P.gold, fontSize: ".75em", fontWeight: 800, marginBottom: 4 }}>لماذا اخترناه</div>
         <div style={{ ...body, fontSize: ".97em" }}>{mark(deep.why)}</div>
       </div>

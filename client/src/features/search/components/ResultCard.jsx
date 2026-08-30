@@ -1,4 +1,4 @@
-import { C } from "../../../shared/constants/theme";
+import { C, T } from "../../../shared/constants/theme";
 import { Card, Pill } from "../../../shared/components/ui";
 import { safeUnitInfo, splitMatches } from "../utils/result.utils";
 
@@ -14,7 +14,7 @@ export default function ResultCard({ result, onOpen }) {
         {info.domainName && <Pill color={info.color}>{info.domainName}</Pill>}
       </div>
       {result.snippet && (
-        <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.8, color: C.muted }}>
+        <p style={{ margin: "8px 0 0", fontSize: T.md, lineHeight: 1.8, color: C.muted }}>
           {parts.map((part, i) =>
             i % 2 === 1
               ? <strong key={i} style={{ color: C.gold, fontWeight: 800 }}>{part}</strong>

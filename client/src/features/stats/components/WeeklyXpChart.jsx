@@ -1,4 +1,4 @@
-import { C, MONO, alpha } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 
 const W = 340, H = 152, PAD = 10, TOP = 30, BASE = 118, LABEL_Y = 138;
@@ -27,9 +27,9 @@ export default function WeeklyXpChart({ weeks }) {
   const summary = `نقاط آخر ${data.length} أسابيع: المجموع ${total} نقطة، أعلى أسبوع ${data[peak].xp} نقطة، وأحدث أسبوع ${data[data.length - 1].xp} نقطة.`;
 
   return (
-    <section style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 18, padding: 16 }}>
-      <h2 style={{ margin: 0, fontSize: 15, fontWeight: 800 }}>نقاطك الأسبوعية</h2>
-      <p style={{ margin: "2px 0 6px", color: C.muted, fontSize: 12 }}>آخر {num(data.length)} أسابيع — المجموع {num(total)} نقطة</p>
+    <section style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x3, padding: 16 }}>
+      <h2 style={{ margin: 0, fontSize: T.lg, fontWeight: 800 }}>نقاطك الأسبوعية</h2>
+      <p style={{ margin: "2px 0 6px", color: C.muted, fontSize: T.sm }}>آخر {num(data.length)} أسابيع — المجموع {num(total)} نقطة</p>
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" width="100%" role="img" aria-label={summary} style={{ display: "block" }}>
         {data.map((w, i) => {
           const h = Math.round((w.xp / max) * (BASE - TOP));

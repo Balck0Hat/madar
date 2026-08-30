@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Copy, Check } from "lucide-react";
-import { C, MONO, alpha } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
 import { Btn, Card } from "../../../shared/components/ui";
 import { shareLink } from "../utils/friends.utils";
 
@@ -34,15 +34,15 @@ export default function InviteCard({ myHandle, onToast }) {
 
   return (
     <Card accent={C.gold}>
-      <div style={{ fontWeight: 800, fontSize: 14 }}>ادعُ أصدقاءك</div>
-      <div style={{ color: C.muted, fontSize: 13, marginTop: 4, lineHeight: 1.7 }}>
+      <div style={{ fontWeight: 800, fontSize: T.md }}>ادعُ أصدقاءك</div>
+      <div style={{ color: C.muted, fontSize: T.base, marginTop: 4, lineHeight: 1.7 }}>
         شارك رابطك، ومن يفتحه يرى معرّفك ويضيفك بضغطة.
       </div>
       <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 10 }}>
         <div
           ref={boxRef}
           dir="ltr"
-          style={{ flex: 1, minWidth: 0, fontFamily: MONO, fontSize: 12, background: alpha(C.gold, 0.1), border: `1px solid ${alpha(C.gold, 0.3)}`, borderRadius: 12, padding: "10px 12px", overflowX: "auto", whiteSpace: "nowrap", textAlign: "left" }}
+          style={{ flex: 1, minWidth: 0, fontFamily: MONO, fontSize: T.sm, background: alpha(C.gold, 0.1), border: `1px solid ${alpha(C.gold, 0.3)}`, borderRadius: R.lg, padding: "10px 12px", overflowX: "auto", whiteSpace: "nowrap", textAlign: "left" }}
         >
           {link}
         </div>

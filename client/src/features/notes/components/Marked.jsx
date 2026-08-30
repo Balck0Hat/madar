@@ -1,3 +1,4 @@
+import { R } from "../../../shared/constants/theme";
 import { splitHighlights, tintBg, tintOf } from "../utils/highlight";
 
 const press = (e) => {
@@ -26,7 +27,7 @@ export default function Marked({ text, notes = [] }) {
             style={{
               background: tintBg(part.note.color),
               color: "inherit",
-              borderRadius: 4,
+              borderRadius: R.xs,
               padding: "0.08em 0.12em",
               cursor: "pointer",
               boxDecorationBreak: "clone",

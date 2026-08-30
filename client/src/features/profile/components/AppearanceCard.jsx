@@ -1,5 +1,5 @@
 import { Sun, Moon, Monitor, Type, Waves } from "lucide-react";
-import { C, MONO, alpha } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Card } from "../../../shared/components/ui";
 
@@ -9,10 +9,10 @@ const SCALES = [0.9, 1, 1.1, 1.25, 1.4];
 const seg = (active) => ({
   background: active ? C.gold : "transparent",
   color: active ? "var(--bg)" : C.muted,
-  border: "none", borderRadius: 999, padding: "7px 12px", cursor: "pointer",
-  fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", gap: 6,
+  border: "none", borderRadius: R.pill, padding: "7px 12px", cursor: "pointer",
+  fontWeight: 800, fontSize: T.base, display: "flex", alignItems: "center", gap: 6,
 });
-const group = { display: "flex", background: C.surface2, borderRadius: 999, padding: 3, border: `1px solid ${C.line}`, gap: 2 };
+const group = { display: "flex", background: C.surface2, borderRadius: R.pill, padding: 3, border: `1px solid ${C.line}`, gap: 2 };
 
 // المقبض ينزلق بـ transform وحده، ويثبت لمن طلب حركة مخفّضة
 const SWITCH_CSS = `
@@ -28,7 +28,7 @@ export default function AppearanceCard({ theme, fontScale, arabicNums, calm = fa
       <div style={{ fontWeight: 800, marginBottom: 12 }}>المظهر</div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-        <div style={{ color: C.muted, fontSize: 13 }}>السمة</div>
+        <div style={{ color: C.muted, fontSize: T.base }}>السمة</div>
         <div role="group" aria-label="السمة" style={group}>
           {THEMES.map(([v, label, I]) => (
             <button key={v} type="button" aria-pressed={theme === v} onClick={() => onChange({ theme: v })} style={seg(theme === v)}>
@@ -39,10 +39,10 @@ export default function AppearanceCard({ theme, fontScale, arabicNums, calm = fa
       </div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-        <div style={{ color: C.muted, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}><Type size={14} />حجم النص</div>
+        <div style={{ color: C.muted, fontSize: T.base, display: "flex", alignItems: "center", gap: 6 }}><Type size={14} />حجم النص</div>
         <div role="group" aria-label="حجم النص" style={group}>
           {SCALES.map((s) => (
-            <button key={s} type="button" aria-pressed={fontScale === s} onClick={() => onChange({ fontScale: s })} style={{ ...seg(fontScale === s), fontSize: 11 + (s - 0.9) * 12, padding: "7px 10px" }}>
+            <button key={s} type="button" aria-pressed={fontScale === s} onClick={() => onChange({ fontScale: s })} style={{ ...seg(fontScale === s), fontSize: T.xs + (s - 0.9) * T.sm, padding: "7px 10px" }}>
               أ
             </button>
           ))}
@@ -50,7 +50,7 @@ export default function AppearanceCard({ theme, fontScale, arabicNums, calm = fa
       </div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <div style={{ color: C.muted, fontSize: 13 }}>الأرقام</div>
+        <div style={{ color: C.muted, fontSize: T.base }}>الأرقام</div>
         <div role="group" aria-label="شكل الأرقام" style={group}>
           {[["123", false], ["١٢٣", true]].map(([l, v]) => (
             <button key={l} type="button" aria-pressed={arabicNums === v} onClick={() => onChange({ arabicNums: v })} style={{ ...seg(arabicNums === v), fontFamily: MONO }}>{l}</button>
@@ -58,7 +58,7 @@ export default function AppearanceCard({ theme, fontScale, arabicNums, calm = fa
         </div>
       </div>
 
-      <div style={{ marginTop: 12, padding: "10px 12px", borderRadius: 12, background: alpha(C.gold, 0.08), border: `1px dashed ${alpha(C.gold, 0.3)}`, fontSize: 13, lineHeight: 1.8 }}>
+      <div style={{ marginTop: 12, padding: "10px 12px", borderRadius: R.lg, background: alpha(C.gold, 0.08), border: `1px dashed ${alpha(C.gold, 0.3)}`, fontSize: T.base, lineHeight: 1.8 }}>
         معاينة: تُقاس المسافة إلى الشمس بنحو {num(150)} مليون كيلومتر.
       </div>
 
@@ -67,10 +67,10 @@ export default function AppearanceCard({ theme, fontScale, arabicNums, calm = fa
       <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${C.line}`, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
         <style>{SWITCH_CSS}</style>
         <div>
-          <div style={{ fontWeight: 700, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{ fontWeight: 700, fontSize: T.md, display: "flex", alignItems: "center", gap: 6 }}>
             <Waves size={15} color={calm ? C.gold : C.muted} aria-hidden="true" />وضع الهدوء
           </div>
-          <div style={{ color: C.muted, fontSize: 12, marginTop: 4, lineHeight: 1.7, maxWidth: "34ch" }}>
+          <div style={{ color: C.muted, fontSize: T.sm, marginTop: 4, lineHeight: 1.7, maxWidth: "34ch" }}>
             يخفي السلسلة والدوري والتحدي. تقدّمك يُحسب كما هو.
           </div>
         </div>
@@ -82,8 +82,8 @@ export default function AppearanceCard({ theme, fontScale, arabicNums, calm = fa
           onClick={() => onChange({ calm: !calm })}
           style={{ flexShrink: 0, background: "transparent", border: "none", padding: "9px 0", minHeight: 44, cursor: "pointer" }}
         >
-          <span style={{ display: "block", width: 46, height: 26, borderRadius: 999, background: calm ? C.gold : C.surface2, border: `1px solid ${calm ? "transparent" : C.line}`, padding: 3 }}>
-            <span className="madar-knob" style={{ display: "block", width: 18, height: 18, borderRadius: 999, background: calm ? "var(--bg)" : C.muted, transform: calm ? "translateX(-20px)" : "none" }} />
+          <span style={{ display: "block", width: 46, height: 26, borderRadius: R.pill, background: calm ? C.gold : C.surface2, border: `1px solid ${calm ? "transparent" : C.line}`, padding: 3 }}>
+            <span className="madar-knob" style={{ display: "block", width: 18, height: 18, borderRadius: R.pill, background: calm ? "var(--bg)" : C.muted, transform: calm ? "translateX(-20px)" : "none" }} />
           </span>
         </button>
       </div>

@@ -1,5 +1,5 @@
 import { Zap } from "lucide-react";
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, T } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Skeleton, ErrorState } from "../../../shared/components/ui";
 import { personName } from "../utils/friends.utils";
@@ -25,13 +25,13 @@ export default function FriendsLeague({ rows, loading, error, onRetry }) {
   const num = useNum();
   if (loading) return <Skeleton lines={4} />;
   if (error) return <ErrorState message={error.message} onRetry={onRetry} />;
-  if (!rows.length) return <div style={{ color: C.muted, fontSize: 13, lineHeight: 1.7 }}>يظهر الترتيب حين يسجّل أصدقاؤك نقاطاً هذا الأسبوع.</div>;
+  if (!rows.length) return <div style={{ color: C.muted, fontSize: T.base, lineHeight: 1.7 }}>يظهر الترتيب حين يسجّل أصدقاؤك نقاطاً هذا الأسبوع.</div>;
 
   return (
-    <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 6px", fontSize: 14 }}>
+    <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 6px", fontSize: T.md }}>
       <caption style={SR}>ترتيب الأصدقاء بنقاط هذا الأسبوع</caption>
       <thead>
-        <tr style={{ color: C.muted, fontSize: 11 }}>
+        <tr style={{ color: C.muted, fontSize: T.xs }}>
           <th scope="col" style={{ ...TH, width: 36 }}>#</th>
           <th scope="col" style={TH}>المتعلم</th>
           <th scope="col" style={{ ...TH, textAlign: "end" }}>نقاط الأسبوع</th>
@@ -43,7 +43,7 @@ export default function FriendsLeague({ rows, loading, error, onRetry }) {
             <td style={{ ...cell(r.me, "start"), fontFamily: MONO, fontWeight: 800, color: k < 3 ? C.gold : C.muted }}>{num(k + 1)}</td>
             <td style={{ ...cell(r.me, "mid"), fontWeight: r.me ? 800 : 600 }}>
               {personName(r)}
-              {r.me && <span style={{ color: C.muted, fontWeight: 400, fontSize: 12 }}> (أنت)</span>}
+              {r.me && <span style={{ color: C.muted, fontWeight: 400, fontSize: T.sm }}> (أنت)</span>}
             </td>
             <td style={{ ...cell(r.me, "end"), fontFamily: MONO, fontWeight: 800, color: C.gold, textAlign: "end" }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Zap size={12} />{num(r.xp ?? 0)}</span>

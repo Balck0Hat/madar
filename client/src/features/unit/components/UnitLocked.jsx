@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react";
-import { P, READ, alpha } from "../../../shared/constants/theme";
+import { P, READ, alpha, T, R } from "../../../shared/constants/theme";
 import { Btn, TopBar } from "../../../shared/components/ui";
 import Art from "../../../shared/components/art/Art";
 
@@ -13,7 +13,7 @@ export default function UnitLocked({ info, content, onBack }) {
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: P.bg, color: P.ink, backgroundImage: `radial-gradient(140% 60% at 50% 0%, ${alpha(info.color, 0.07)}, transparent 60%)` }}>
       <TopBar paper onBack={onBack}
-        title={<span style={{ fontSize: 15 }}>{info.domainName} <span style={{ color: P.muted, fontWeight: 400 }}>· معاينة</span></span>} />
+        title={<span style={{ fontSize: T.lg }}>{info.domainName} <span style={{ color: P.muted, fontWeight: 400 }}>· معاينة</span></span>} />
       <div className="madar-read madar-in" style={{ flex: 1, padding: "8px 20px 10px" }}>
         <div style={{ fontSize: "1.44em", fontWeight: 800, margin: "10px 0 14px", lineHeight: 1.4 }}>{content?.title || info.title}</div>
         {content?.spark && (
@@ -27,8 +27,8 @@ export default function UnitLocked({ info, content, onBack }) {
             <div style={body}>{card.p}</div>
           </div>
         )}
-        <div role="note" style={{ marginTop: 26, display: "flex", gap: 12, alignItems: "flex-start", background: P.card, border: `1px solid ${P.line}`, borderRadius: 18, padding: "14px 16px" }}>
-          <span style={{ width: 34, height: 34, borderRadius: 999, flexShrink: 0, display: "grid", placeItems: "center", background: alpha(P.gold, 0.16), color: P.gold }}>
+        <div role="note" style={{ marginTop: 26, display: "flex", gap: 12, alignItems: "flex-start", background: P.card, border: `1px solid ${P.line}`, borderRadius: R.x3, padding: "14px 16px" }}>
+          <span style={{ width: 34, height: 34, borderRadius: R.pill, flexShrink: 0, display: "grid", placeItems: "center", background: alpha(P.gold, 0.16), color: P.gold }}>
             <Lock size={17} aria-hidden="true" />
           </span>
           <div>

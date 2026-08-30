@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UserPlus } from "lucide-react";
-import { C, inputStyle, alpha } from "../../../shared/constants/theme";
+import { C, inputStyle, alpha, T, R } from "../../../shared/constants/theme";
 import { Btn, Card } from "../../../shared/components/ui";
 import { sendRequest } from "../services/friends.service";
 import { cleanHandle, validateHandle, addFriendError } from "../utils/friends.utils";
@@ -33,7 +33,7 @@ export default function AddFriend({ myHandle, onAdded, onToast }) {
   return (
     <Card>
       <form onSubmit={submit} noValidate>
-        <label htmlFor="friend-handle" style={{ fontWeight: 800, fontSize: 14, display: "flex", gap: 8, alignItems: "center" }}>
+        <label htmlFor="friend-handle" style={{ fontWeight: 800, fontSize: T.md, display: "flex", gap: 8, alignItems: "center" }}>
           <UserPlus size={16} color={C.gold} />أضف صديقاً بمعرّفه
         </label>
         <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
@@ -52,7 +52,7 @@ export default function AddFriend({ myHandle, onAdded, onToast }) {
           </Btn>
         </div>
         {err && (
-          <div id="friend-handle-err" role="alert" style={{ marginTop: 8, fontSize: 13, color: C.red, background: alpha(C.red, 0.12), borderRadius: 10, padding: "8px 10px", lineHeight: 1.6 }}>
+          <div id="friend-handle-err" role="alert" style={{ marginTop: 8, fontSize: T.base, color: C.red, background: alpha(C.red, 0.12), borderRadius: R.md, padding: "8px 10px", lineHeight: 1.6 }}>
             {err}
           </div>
         )}

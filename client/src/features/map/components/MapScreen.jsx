@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C } from "../../../shared/constants/theme";
+import { C, T, R } from "../../../shared/constants/theme";
 import { unitInfo, isCenter } from "../../../shared/utils/units";
 import { nextUnit, eta } from "../../../shared/utils/progress";
 import { levelFromXp, levelTitle } from "../../../shared/utils/level";
@@ -44,10 +44,10 @@ export default function MapScreen({
       <div className="madar-wide">
         <div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 18px 0" }}>
-            <div style={{ fontSize: 22, fontWeight: 900 }}>مدار</div>
-            <button type="button" className="madar-press" onClick={onProfile} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 999, padding: "6px 12px 6px 6px", display: "flex", alignItems: "center", gap: 8, color: C.text, cursor: "pointer" }}>
-              <span style={{ width: 28, height: 28, borderRadius: 99, background: C.gold, color: "var(--bg)", display: "grid", placeItems: "center", fontWeight: 900 }}>{profile.name[0]}</span>
-              <span style={{ fontSize: 13, fontWeight: 700 }}>{profile.name}</span>
+            <div style={{ fontSize: T.x4, fontWeight: 900 }}>مدار</div>
+            <button type="button" className="madar-press" onClick={onProfile} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.pill, padding: "6px 12px 6px 6px", display: "flex", alignItems: "center", gap: 8, color: C.text, cursor: "pointer" }}>
+              <span style={{ width: 28, height: 28, borderRadius: R.pill, background: C.gold, color: "var(--bg)", display: "grid", placeItems: "center", fontWeight: 900 }}>{profile.name[0]}</span>
+              <span style={{ fontSize: T.base, fontWeight: 700 }}>{profile.name}</span>
               <Pill>{levelTitle(level)}</Pill>
             </button>
           </div>

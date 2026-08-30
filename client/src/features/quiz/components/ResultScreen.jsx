@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link2, Award } from "lucide-react";
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, T, R } from "../../../shared/constants/theme";
 import { BADGES } from "../../../shared/data/curriculum";
 import { unitInfo, parseId } from "../../../shared/utils/units";
 import { levelProgress } from "../../../shared/utils/level";
@@ -51,29 +51,29 @@ export default function ResultScreen({ result, xp, progress, onMap, onNext, hasN
         <div style={{ display: "flex", justifyContent: "center", position: "relative" }}>
           <Wheel progress={shown} level={level} size={230} compact rotate={rotate} animate threadsNew={phase === 2 ? result.newThreads : []} highlight={phase === 2 ? highlight : null} />
           {flight && phase < 2 && <StarFlight unitId={result.unitId} size={230} rotate={rotate} color={info.color} onLand={() => setPhase(1)} />}
-          <div style={{ position: "absolute", bottom: -6, left: "50%", transform: "translateX(-50%)", background: C.surface, border: `1px solid ${info.color}`, borderRadius: 999, padding: "6px 14px", display: "flex", gap: 8, alignItems: "center", whiteSpace: "nowrap" }}>
-            <span style={{ fontFamily: MONO, fontWeight: 800, color: info.color, fontSize: 18 }}>{score}</span>
-            <span style={{ color: C.muted, fontSize: 12 }}>{result.sim ? "محاكاة" : "الاختبار"}</span>
+          <div style={{ position: "absolute", bottom: -6, left: "50%", transform: "translateX(-50%)", background: C.surface, border: `1px solid ${info.color}`, borderRadius: R.pill, padding: "6px 14px", display: "flex", gap: 8, alignItems: "center", whiteSpace: "nowrap" }}>
+            <span style={{ fontFamily: MONO, fontWeight: 800, color: info.color, fontSize: T.x2 }}>{score}</span>
+            <span style={{ color: C.muted, fontSize: T.sm }}>{result.sim ? "محاكاة" : "الاختبار"}</span>
           </div>
         </div>
       ) : <ScoreRing pct={correct / result.total} label={score} />}
       <div style={{ textAlign: "center", marginTop: 18 }}>
-        <div style={{ fontSize: 26, fontWeight: 900 }}>{result.passed ? (perfect ? "علامة كاملة" : "اجتزت الوحدة") : "قريب من النجاح"}</div>
-        <div style={{ color: C.muted, marginTop: 4, fontSize: 14, lineHeight: 1.6 }}>{result.passed ? info.title : "راجع البطاقات وأعد المحاولة، الأسئلة تتغير في كل مرة."}</div>
+        <div style={{ fontSize: T.x5, fontWeight: 900 }}>{result.passed ? (perfect ? "علامة كاملة" : "اجتزت الوحدة") : "قريب من النجاح"}</div>
+        <div style={{ color: C.muted, marginTop: 4, fontSize: T.md, lineHeight: 1.6 }}>{result.passed ? info.title : "راجع البطاقات وأعد المحاولة، الأسئلة تتغير في كل مرة."}</div>
       </div>
       <div style={{ marginTop: 18, display: "grid", gap: 10 }}>
         {result.breakdown.length > 0 && <ResultBreakdown breakdown={result.breakdown} gain={result.gain} />}
-        {result.passed && result.breakdown.length === 0 && <Card><div style={{ color: C.muted, fontSize: 13 }}>وحدة مكتملة سابقاً: لا نقاط إضافية على الإعادة.</div></Card>}
+        {result.passed && result.breakdown.length === 0 && <Card><div style={{ color: C.muted, fontSize: T.base }}>وحدة مكتملة سابقاً: لا نقاط إضافية على الإعادة.</div></Card>}
         <ResultLevel xp={xp} xpBefore={result.xpBefore} />
         {(result.graded || []).filter((g) => g.feedback).map((g) => (
           <Card key={g.qid} accent={g.ok ? C.green : C.red}>
-            <div style={{ fontWeight: 800, color: g.ok ? C.green : C.red, fontSize: 13 }}>{g.ok ? "إجابتك المفتوحة مقبولة" : "إجابتك المفتوحة لم تُقبل"}{g.source === "ai" && <span style={{ color: C.muted, fontWeight: 400 }}> · صحّحها المرشد الذكي</span>}</div>
-            <div style={{ fontSize: 14, lineHeight: 1.7, marginTop: 4 }}>{g.feedback}</div>
+            <div style={{ fontWeight: 800, color: g.ok ? C.green : C.red, fontSize: T.base }}>{g.ok ? "إجابتك المفتوحة مقبولة" : "إجابتك المفتوحة لم تُقبل"}{g.source === "ai" && <span style={{ color: C.muted, fontWeight: 400 }}> · صحّحها المرشد الذكي</span>}</div>
+            <div style={{ fontSize: T.md, lineHeight: 1.7, marginTop: 4 }}>{g.feedback}</div>
           </Card>
         ))}
-        {result.earnedFreeze && <Card accent={C.gold}><div style={{ fontWeight: 800 }}>❄ حصلت على تجميد للسلسلة</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>سبعة أيام متتالية. التجميد يحفظ سلسلتك إذا فاتك يوم.</div></Card>}
-        {result.newThreads.length > 0 && <Card accent={C.gold}><div style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 800 }}><Link2 size={16} color={C.gold} />خيط معرفة اكتمل</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>رُسم خط ضوئي جديد على عجلتك بين مجالين.</div></Card>}
-        {result.newBadges.map((id) => { const b = BADGES.find((x) => x.id === id); return <Card key={id} accent={C.gold}><div style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 800 }}><Award size={16} color={C.gold} />وسام جديد: {b.name}</div><div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>{b.desc}</div></Card>; })}
+        {result.earnedFreeze && <Card accent={C.gold}><div style={{ fontWeight: 800 }}>❄ حصلت على تجميد للسلسلة</div><div style={{ color: C.muted, fontSize: T.base, marginTop: 4 }}>سبعة أيام متتالية. التجميد يحفظ سلسلتك إذا فاتك يوم.</div></Card>}
+        {result.newThreads.length > 0 && <Card accent={C.gold}><div style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 800 }}><Link2 size={16} color={C.gold} />خيط معرفة اكتمل</div><div style={{ color: C.muted, fontSize: T.base, marginTop: 4 }}>رُسم خط ضوئي جديد على عجلتك بين مجالين.</div></Card>}
+        {result.newBadges.map((id) => { const b = BADGES.find((x) => x.id === id); return <Card key={id} accent={C.gold}><div style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 800 }}><Award size={16} color={C.gold} />وسام جديد: {b.name}</div><div style={{ color: C.muted, fontSize: T.base, marginTop: 4 }}>{b.desc}</div></Card>; })}
       </div>
       <div style={{ flex: 1 }} />
       <div style={{ display: "grid", gap: 8, marginTop: 20 }}>

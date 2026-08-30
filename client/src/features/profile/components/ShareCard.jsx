@@ -1,4 +1,4 @@
-import { HEX_DARK as C, FONT, MONO } from "../../../shared/constants/theme";
+import { HEX_DARK as C, FONT, MONO, R } from "../../../shared/constants/theme";
 import { stats } from "../../../shared/utils/progress";
 import { useNum } from "../../../shared/context/NumContext";
 import WheelBody from "../../../shared/components/wheel/WheelBody";
@@ -21,7 +21,7 @@ export default function ShareCard({ profile, progress, level, refEl }) {
   const st = stats(progress);
   const num = useNum();
   return (
-    <svg ref={refEl} viewBox="0 0 360 640" width="100%" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", borderRadius: 18 }} direction="rtl">
+    <svg ref={refEl} viewBox="0 0 360 640" width="100%" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", borderRadius: R.x3 }} direction="rtl">
       <defs>
         <GoldDefs />
         <linearGradient id="cg-night" x1="0" y1="0" x2="0" y2="1">

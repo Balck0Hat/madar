@@ -1,4 +1,4 @@
-import { C, MONO, alpha } from "../../constants/theme";
+import { C, MONO, alpha, T, R } from "../../constants/theme";
 import { SHORTCUTS } from "../../hooks/useShortcuts";
 import Btn from "./Btn";
 
@@ -12,13 +12,13 @@ export default function ShortcutsHelp({ onClose }) {
       onClick={onClose}
       style={{ position: "fixed", inset: 0, background: alpha("#000", 0.6), backdropFilter: "blur(3px)", zIndex: 60, display: "grid", placeItems: "center", padding: 20 }}
     >
-      <div onClick={(e) => e.stopPropagation()} className="madar-rise" style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 20, padding: 20, width: "100%", maxWidth: 380, boxShadow: "var(--shadow)" }}>
-        <div style={{ fontWeight: 900, fontSize: 18, marginBottom: 14 }}>اختصارات لوحة المفاتيح</div>
+      <div onClick={(e) => e.stopPropagation()} className="madar-rise" style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x4, padding: 20, width: "100%", maxWidth: 380, boxShadow: "var(--shadow)" }}>
+        <div style={{ fontWeight: 900, fontSize: T.x2, marginBottom: 14 }}>اختصارات لوحة المفاتيح</div>
         <div style={{ display: "grid", gap: 8 }}>
           {SHORTCUTS.map(([key, label]) => (
             <div key={key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-              <span style={{ fontSize: 14 }}>{label}</span>
-              <kbd style={{ fontFamily: MONO, fontSize: 12, fontWeight: 700, background: C.surface2, border: `1px solid ${C.line}`, borderRadius: 7, padding: "3px 9px", color: C.gold, whiteSpace: "nowrap" }}>{key}</kbd>
+              <span style={{ fontSize: T.md }}>{label}</span>
+              <kbd style={{ fontFamily: MONO, fontSize: T.sm, fontWeight: 700, background: C.surface2, border: `1px solid ${C.line}`, borderRadius: R.sm, padding: "3px 9px", color: C.gold, whiteSpace: "nowrap" }}>{key}</kbd>
             </div>
           ))}
         </div>

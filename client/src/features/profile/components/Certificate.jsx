@@ -1,4 +1,4 @@
-import { HEX_DARK as C, FONT, MONO } from "../../../shared/constants/theme";
+import { HEX_DARK as C, FONT, MONO, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { GoldDefs, GeoPattern, Seal, Corner, Rule, Lozenge } from "./CardArt";
 
@@ -8,7 +8,7 @@ import { GoldDefs, GeoPattern, Seal, Corner, Rule, Lozenge } from "./CardArt";
 export default function Certificate({ name, earned, code, date, refEl }) {
   const num = useNum();
   return (
-    <svg ref={refEl} viewBox="0 0 360 250" width="100%" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", borderRadius: 14 }} direction="rtl">
+    <svg ref={refEl} viewBox="0 0 360 250" width="100%" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", borderRadius: R.xl }} direction="rtl">
       <defs>
         <GoldDefs />
         <GeoPattern />

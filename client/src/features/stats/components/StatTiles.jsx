@@ -1,5 +1,5 @@
 import { TrendingUp, TrendingDown, Clock, Target } from "lucide-react";
-import { C, MONO, alpha } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { DOMAINS } from "../../../shared/data/domains";
 
@@ -10,13 +10,13 @@ const domainColor = (id) => DOMAINS.find((d) => d.id === id)?.color || C.gold;
 const toPercent = (v) => (v === null ? null : Math.round(v <= 1 ? v * 100 : v));
 
 const Tile = ({ icon, label, value, color, hint }) => (
-  <div style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: 16, padding: 12, display: "grid", gap: 4 }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted, fontSize: 12 }}>
-      <span style={{ width: 22, height: 22, borderRadius: 8, background: alpha(color, 0.15), display: "grid", placeItems: "center" }} aria-hidden="true">{icon}</span>
+  <div style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: 12, display: "grid", gap: 4 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted, fontSize: T.sm }}>
+      <span style={{ width: 22, height: 22, borderRadius: R.sm, background: alpha(color, 0.15), display: "grid", placeItems: "center" }} aria-hidden="true">{icon}</span>
       {label}
     </div>
-    <div style={{ fontWeight: 800, fontSize: 17, color, fontFamily: hint ? MONO : undefined }}>{value}</div>
-    {hint && <div style={{ color: C.muted, fontSize: 11 }}>{hint}</div>}
+    <div style={{ fontWeight: 800, fontSize: T.x2, color, fontFamily: hint ? MONO : undefined }}>{value}</div>
+    {hint && <div style={{ color: C.muted, fontSize: T.xs }}>{hint}</div>}
   </div>
 );
 

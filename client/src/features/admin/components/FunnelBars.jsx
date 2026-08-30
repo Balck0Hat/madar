@@ -1,4 +1,4 @@
-import { C, MONO, alpha } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 
 const W = 320, ROW = 14, BAR = 9;
@@ -25,8 +25,8 @@ export default function FunnelBars({ row }) {
   return (
     <div style={{ display: "grid", gap: 6, paddingBottom: 12, borderBottom: `1px solid ${C.line}` }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.5 }}>{row.title}</span>
-        <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 800, color: tone, whiteSpace: "nowrap" }}>{num(row.completion)}٪</span>
+        <span style={{ fontSize: T.base, fontWeight: 700, lineHeight: 1.5 }}>{row.title}</span>
+        <span style={{ fontFamily: MONO, fontSize: T.base, fontWeight: 800, color: tone, whiteSpace: "nowrap" }}>{num(row.completion)}٪</span>
       </div>
       {/* الرسم زخرفي: الملخّص النصي تحته يحمل الأرقام كاملة لقارئ الشاشة وللعين معاً */}
       <svg viewBox={`0 0 ${W} ${height}`} preserveAspectRatio="xMidYMid meet" width="100%" aria-hidden="true" focusable="false" style={{ display: "block" }}>
@@ -42,13 +42,13 @@ export default function FunnelBars({ row }) {
           );
         })}
       </svg>
-      <p style={{ margin: 0, color: C.muted, fontSize: 12, lineHeight: 1.8 }}>{summary}</p>
+      <p style={{ margin: 0, color: C.muted, fontSize: T.sm, lineHeight: 1.8 }}>{summary}</p>
       {row.dropOffPage ? (
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.7, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.3)}`, borderRadius: 10, padding: "6px 10px" }}>
+        <p style={{ margin: 0, fontSize: T.sm, lineHeight: 1.7, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.3)}`, borderRadius: R.md, padding: "6px 10px" }}>
           يتوقف أكثرهم بعد البطاقة <b style={{ fontFamily: MONO }}>{num(row.dropOffPage)}</b> — {num(row.dropOffShare)}٪ ممن فتحوا الوحدة لم يتجاوزوها.
         </p>
       ) : (
-        <p style={{ margin: 0, color: C.muted, fontSize: 12 }}>لا صفحة توقّف واضحة في هذه الوحدة.</p>
+        <p style={{ margin: 0, color: C.muted, fontSize: T.sm }}>لا صفحة توقّف واضحة في هذه الوحدة.</p>
       )}
     </div>
   );

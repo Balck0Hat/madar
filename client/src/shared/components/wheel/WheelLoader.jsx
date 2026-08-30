@@ -1,4 +1,4 @@
-import { C } from "../../constants/theme";
+import { C, T } from "../../constants/theme";
 import { DOMAINS } from "../../data/domains";
 import { ring, RADII } from "./geometry";
 
@@ -16,7 +16,7 @@ export default function WheelLoader({ size = 200, label = "" }) {
         <circle className="madar-trace" pathLength="1" cx="180" cy="180" r="40" fill="none" stroke={C.gold} strokeWidth="2" style={{ animationDelay: "0.7s" }} />
         <circle cx="180" cy="180" r="5" fill={C.gold} className="madar-pop" style={{ animationDelay: "1s", transformOrigin: "180px 180px" }} />
       </svg>
-      {label && <div style={{ color: C.muted, fontSize: 13 }}>{label}</div>}
+      {label && <div style={{ color: C.muted, fontSize: T.base }}>{label}</div>}
     </div>
   );
 }

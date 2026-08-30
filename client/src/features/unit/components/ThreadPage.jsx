@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link2 } from "lucide-react";
-import { C, P, READ, alpha } from "../../../shared/constants/theme";
+import { C, P, READ, alpha, R } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { vibrate } from "../../../shared/utils/text";
 
@@ -26,7 +26,7 @@ export default function ThreadPage({ thread }) {
           const bg = right ? alpha(C.green, 0.2) : wrong ? alpha(C.red, 0.2) : P.card;
           const bd = right ? C.green : wrong ? C.red : P.line;
           return (
-            <button key={i} type="button" className={wrong ? "madar-shake" : ""} onClick={() => pick(i)} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: 14, padding: "12px 14px", color: P.ink, textAlign: "start", cursor: "pointer", fontSize: ".94em", minHeight: 44 }}>
+            <button key={i} type="button" className={wrong ? "madar-shake" : ""} onClick={() => pick(i)} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.xl, padding: "12px 14px", color: P.ink, textAlign: "start", cursor: "pointer", fontSize: ".94em", minHeight: 44 }}>
               {o}
             </button>
           );

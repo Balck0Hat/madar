@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { P, FONT, alpha } from "../../../shared/constants/theme";
+import { P, FONT, alpha, T, R } from "../../../shared/constants/theme";
 import { COLOR_KEYS, tintOf } from "../utils/highlight";
 
 const MAX = 500;
@@ -20,8 +20,8 @@ export default function NoteComposer({ value, onChange, color, onColor, onSave, 
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onCancel(); } }}
         style={{
-          width: "100%", resize: "vertical", fontFamily: FONT, fontSize: 14, lineHeight: 1.7,
-          background: P.bg, color: P.ink, border: `1px solid ${P.line}`, borderRadius: 12, padding: "8px 10px",
+          width: "100%", resize: "vertical", fontFamily: FONT, fontSize: T.md, lineHeight: 1.7,
+          background: P.bg, color: P.ink, border: `1px solid ${P.line}`, borderRadius: R.lg, padding: "8px 10px",
         }}
       />
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -32,7 +32,7 @@ export default function NoteComposer({ value, onChange, color, onColor, onSave, 
                 key={key} type="button" role="radio" aria-checked={color === key} aria-label={`لون ${key}`}
                 onClick={() => onColor(key)}
                 style={{
-                  width: 22, height: 22, borderRadius: 99, cursor: "pointer",
+                  width: 22, height: 22, borderRadius: R.pill, cursor: "pointer",
                   background: alpha(tintOf(key), 0.45),
                   border: `2px solid ${color === key ? tintOf(key) : "transparent"}`,
                 }}
@@ -51,4 +51,4 @@ export default function NoteComposer({ value, onChange, color, onColor, onSave, 
   );
 }
 
-const btn = { fontFamily: FONT, fontWeight: 700, fontSize: 13, borderRadius: 10, padding: "7px 12px", border: "none", cursor: "pointer" };
+const btn = { fontFamily: FONT, fontWeight: 700, fontSize: T.base, borderRadius: R.md, padding: "7px 12px", border: "none", cursor: "pointer" };

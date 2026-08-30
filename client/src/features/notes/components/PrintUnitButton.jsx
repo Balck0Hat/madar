@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Printer } from "lucide-react";
-import { C, P, FONT } from "../../../shared/constants/theme";
+import { C, P, FONT, T, R } from "../../../shared/constants/theme";
 import { contentService } from "../../content";
 import * as notesService from "../services/notes.service";
 import UnitPrintView from "./UnitPrintView";
@@ -40,17 +40,17 @@ export default function PrintUnitButton({ unitId, info, unit: preloaded, small, 
         type="button" onClick={run} disabled={busy}
         style={{
           display: "flex", alignItems: "center", gap: 6, fontFamily: FONT, fontWeight: 700,
-          fontSize: small ? 13 : 14, minHeight: small ? 34 : 44, padding: small ? "7px 12px" : "10px 14px",
-          borderRadius: 12, cursor: busy ? "default" : "pointer", opacity: busy ? 0.5 : 1,
+          fontSize: small ? T.base : T.md, minHeight: small ? 34 : 44, padding: small ? "7px 12px" : "10px 14px",
+          borderRadius: R.lg, cursor: busy ? "default" : "pointer", opacity: busy ? 0.5 : 1,
           background: paper ? P.card : C.surface2, color: paper ? P.ink : C.text, border: `1px solid ${paper ? P.line : C.line}`,
         }}
       >
         <Printer size={15} aria-hidden="true" />{busy ? "نجهّز الملف…" : "تنزيل PDF"}
       </button>
-      <div style={{ fontSize: 11, lineHeight: 1.7, color: paper ? P.muted : C.muted }}>
+      <div style={{ fontSize: T.xs, lineHeight: 1.7, color: paper ? P.muted : C.muted }}>
         اختر «الحفظ كـ PDF» في حوار الطباعة.
       </div>
-      {err && <div role="alert" style={{ fontSize: 12, color: C.red }}>{err}</div>}
+      {err && <div role="alert" style={{ fontSize: T.sm, color: C.red }}>{err}</div>}
       {data && <UnitPrintView unit={data.unit} info={info} notes={data.notes} />}
     </div>
   );

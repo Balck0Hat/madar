@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Zap, Flame } from "lucide-react";
-import { C, MONO } from "../../../shared/constants/theme";
+import { C, MONO, T } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Btn } from "../../../shared/components/ui";
 import PersonRow from "./PersonRow";
@@ -30,7 +30,7 @@ export default function FriendsList({ friends, onChanged, onToast }) {
   if (!friends.length) return null;
   return (
     <div style={{ display: "grid", gap: 8 }}>
-      <div style={{ fontWeight: 800, fontSize: 14, margin: "4px 0 2px" }}>أصدقاؤك ({num(friends.length)})</div>
+      <div style={{ fontWeight: 800, fontSize: T.md, margin: "4px 0 2px" }}>أصدقاؤك ({num(friends.length)})</div>
       {friends.map((f) => (
         <PersonRow
           key={f.id}
@@ -44,7 +44,7 @@ export default function FriendsList({ friends, onChanged, onToast }) {
         >
           {confirmId === f.id ? (
             <>
-              <span style={{ color: C.red, fontSize: 12, fontWeight: 700 }}>حذف؟</span>
+              <span style={{ color: C.red, fontSize: T.sm, fontWeight: 700 }}>حذف؟</span>
               <Btn primary color={C.red} small full={false} disabled={busy === f.id} onClick={() => remove(f.id)}>نعم</Btn>
               <Btn small full={false} onClick={() => setConfirmId(null)}>تراجع</Btn>
             </>

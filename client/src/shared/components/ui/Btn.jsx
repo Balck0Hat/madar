@@ -1,10 +1,10 @@
-import { C, P, FONT } from "../../constants/theme";
+import { C, P, FONT, T, R } from "../../constants/theme";
 
 export default function Btn({ children, onClick, primary, color, full = true, small, disabled, ghost, paper, className = "", style: extra = {} }) {
   const base = {
-    fontFamily: FONT, fontWeight: 700, borderRadius: 14, border: "1px solid",
+    fontFamily: FONT, fontWeight: 700, borderRadius: R.xl, border: "1px solid",
     cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.45 : 1,
-    width: full ? "100%" : "auto", padding: small ? "9px 14px" : "14px 18px", fontSize: small ? 14 : 16,
+    width: full ? "100%" : "auto", padding: small ? "9px 14px" : "14px 18px", fontSize: small ? T.md : T.xl,
     minHeight: small ? 0 : 44,
   };
   const style = primary

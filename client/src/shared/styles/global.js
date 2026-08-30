@@ -1,3 +1,5 @@
+import { BP } from "../constants/theme";
+
 // متغيرات السمة والحركات والتخطيط المتجاوب؛ تُحقن مرة واحدة من App
 export const CSS = `
 :root, [data-theme="dark"] {
@@ -27,20 +29,20 @@ html { -webkit-text-size-adjust: 100%; }
 
 /* التخطيط: عمود واحد على الهاتف، وعمودان وشريط جانبي على الشاشات الكبيرة */
 .madar-app{display:flex;justify-content:center;min-height:100vh}
-.madar-main{width:100%;max-width:430px;min-height:100vh;position:relative}
+.madar-main{width:100%;max-width:${BP.phone}px;min-height:100vh;position:relative}
 .madar-side{display:none}
 .madar-wide{display:contents}
-@media (min-width:900px){
+@media (min-width:${BP.desk}px){
   .madar-app{gap:0}
-  .madar-main{max-width:1120px;padding-inline-start:232px;padding-bottom:0}
-  .madar-main.is-focus{max-width:820px;padding-inline-start:0}
+  .madar-main{max-width:${BP.appMax}px;padding-inline-start:232px;padding-bottom:0}
+  .madar-main.is-focus{max-width:${BP.focusMax}px;padding-inline-start:0}
   .madar-side{display:flex;position:fixed;inset-block:0;inset-inline-start:calc(50% - 560px);width:216px;flex-direction:column;gap:6px;padding:22px 14px;border-inline-end:1px solid var(--line);background:var(--surface)}
   .madar-wide{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:22px;align-items:start;padding:0 16px}
   .madar-wide > *{min-width:0}
   .madar-read{max-width:70ch;margin-inline:auto}
   .madar-hide-lg{display:none !important}
 }
-@media (min-width:900px) and (max-width:1180px){
+@media (min-width:${BP.desk}px) and (max-width:${BP.narrowDesk}px){
   .madar-side{inset-inline-start:0}
   .madar-main{margin-inline-start:0}
 }

@@ -1,10 +1,10 @@
 import { BookmarkCheck } from "lucide-react";
-import { C, P, alpha } from "../../../shared/constants/theme";
+import { C, P, alpha, R } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 
 const action = (fill) => ({
   fontFamily: "inherit", fontWeight: 800, fontSize: ".8em", cursor: "pointer",
-  borderRadius: 10, padding: "7px 12px", minHeight: 34,
+  borderRadius: R.md, padding: "7px 12px", minHeight: 34,
   background: fill ? C.gold : "transparent",
   color: fill ? "var(--bg)" : P.muted,
   border: `1px solid ${fill ? "transparent" : P.line}`,
@@ -17,7 +17,7 @@ export default function ResumeBar({ card, total, onResume, onRestart }) {
   return (
     <div className="madar-in" role="status" style={{
       margin: "8px 16px 0", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
-      background: alpha(C.gold, 0.14), border: `1px solid ${alpha(C.gold, 0.5)}`, borderRadius: 14, padding: "8px 10px",
+      background: alpha(C.gold, 0.14), border: `1px solid ${alpha(C.gold, 0.5)}`, borderRadius: R.xl, padding: "8px 10px",
     }}>
       <BookmarkCheck size={16} color={P.gold} style={{ flexShrink: 0 }} aria-hidden="true" />
       <span style={{ flex: 1, minWidth: 130, fontSize: ".8em", lineHeight: 1.6, color: P.ink }}>

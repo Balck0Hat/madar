@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { History, ChevronDown } from "lucide-react";
-import { C } from "../../../shared/constants/theme";
+import { C, T } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
 import { listVersions, restoreVersion } from "../services/admin.service";
@@ -33,7 +33,7 @@ export default function VersionsPanel({ unitId, current, onRestored, onToast }) 
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        style={{ display: "flex", alignItems: "center", gap: 8, background: "transparent", border: "none", color: C.gold, fontWeight: 800, fontSize: 14, cursor: "pointer", padding: 0, font: "inherit" }}
+        style={{ display: "flex", alignItems: "center", gap: 8, background: "transparent", border: "none", color: C.gold, fontWeight: 800, fontSize: T.md, cursor: "pointer", padding: 0, font: "inherit" }}
       >
         <History size={16} aria-hidden="true" />
         النسخ السابقة
@@ -44,9 +44,9 @@ export default function VersionsPanel({ unitId, current, onRestored, onToast }) 
           {loading && <Skeleton lines={3} />}
           {error && <ErrorState message={error.message} onRetry={reload} />}
           {data && !data.length && <EmptyState title="لا نسخ بعد" text="تُحفظ نسخة تلقائياً في كل مرة تحفظ فيها وحدة موجودة." />}
-          {err && <div role="alert" style={{ color: C.red, fontSize: 13 }}>{err}</div>}
+          {err && <div role="alert" style={{ color: C.red, fontSize: T.base }}>{err}</div>}
           {data?.map((v) => <VersionRow key={v.version} version={v} current={currentCounts} busy={busy === v.version} onRestore={restore} />)}
-          {data?.length > 0 && <div style={{ color: C.muted, fontSize: 12 }}>تُحفظ آخر 20 نسخة لكل وحدة؛ الفروق أعلاه مقارنةً بالمحتوى المعروض الآن.</div>}
+          {data?.length > 0 && <div style={{ color: C.muted, fontSize: T.sm }}>تُحفظ آخر 20 نسخة لكل وحدة؛ الفروق أعلاه مقارنةً بالمحتوى المعروض الآن.</div>}
         </div>
       )}
     </div>

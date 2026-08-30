@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Search, X } from "lucide-react";
-import { C, FONT, alpha } from "../../../shared/constants/theme";
+import { C, FONT, alpha, T, R } from "../../../shared/constants/theme";
 
 // حقل البحث: تركيز تلقائي، مسح بالزر أو بمفتاح Escape، وبحث فوري بمفتاح Enter
 export default function SearchInput({ value, onChange, onSubmit, onClear, onFocus, onBlur }) {
@@ -12,7 +12,7 @@ export default function SearchInput({ value, onChange, onSubmit, onClear, onFocu
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, background: C.surface2, border: `1px solid ${C.line}`, borderRadius: 14, padding: "0 12px", height: 48 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, background: C.surface2, border: `1px solid ${C.line}`, borderRadius: R.xl, padding: "0 12px", height: 48 }}>
       <Search size={18} color={C.muted} aria-hidden="true" />
       <input
         ref={ref}
@@ -25,14 +25,14 @@ export default function SearchInput({ value, onChange, onSubmit, onClear, onFocu
         onBlur={onBlur}
         aria-label="ابحث في الوحدات والخلاصات"
         placeholder="اكتب كلمة أو موضوعاً…"
-        style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: C.text, fontFamily: FONT, fontSize: 16, minWidth: 0 }}
+        style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: C.text, fontFamily: FONT, fontSize: T.xl, minWidth: 0 }}
       />
       {value && (
         <button
           type="button"
           onClick={() => { onClear(); ref.current?.focus(); }}
           aria-label="مسح البحث"
-          style={{ background: alpha(C.muted, 0.16), border: "none", borderRadius: 999, width: 26, height: 26, display: "grid", placeItems: "center", color: C.text, cursor: "pointer", flexShrink: 0 }}
+          style={{ background: alpha(C.muted, 0.16), border: "none", borderRadius: R.pill, width: 26, height: 26, display: "grid", placeItems: "center", color: C.text, cursor: "pointer", flexShrink: 0 }}
         >
           <X size={14} />
         </button>

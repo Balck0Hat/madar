@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C, alpha, inputStyle } from "../../../shared/constants/theme";
+import { C, alpha, inputStyle, T, R } from "../../../shared/constants/theme";
 import { Btn } from "../../../shared/components/ui";
 
 const TF = [["صح", true], ["خطأ", false]];
@@ -10,7 +10,7 @@ function Option({ label, picked, isCorrect, locked, onPick }) {
   const bd = locked && isCorrect ? C.green : locked && picked ? C.red : picked ? C.gold : C.line;
   return (
     <button type="button" onClick={locked ? undefined : onPick} disabled={locked} aria-pressed={picked}
-      style={{ background: bg, border: `1px solid ${bd}`, borderRadius: 12, padding: "10px 12px", color: C.text, textAlign: "start", cursor: locked ? "default" : "pointer", fontSize: 14, lineHeight: 1.5, fontFamily: "inherit" }}>
+      style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.lg, padding: "10px 12px", color: C.text, textAlign: "start", cursor: locked ? "default" : "pointer", fontSize: T.md, lineHeight: 1.5, fontFamily: "inherit" }}>
       {label}
     </button>
   );
@@ -43,7 +43,7 @@ export default function ChallengeQuestion({ question, result, submitting, onSubm
   }
   return (
     <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-      <input aria-label="إجابتك" value={sel || ""} onChange={(e) => setSel(e.target.value)} placeholder="اكتب إجابتك" disabled={locked || submitting} style={{ ...inputStyle, fontSize: 14, padding: "10px 12px" }} />
+      <input aria-label="إجابتك" value={sel || ""} onChange={(e) => setSel(e.target.value)} placeholder="اكتب إجابتك" disabled={locked || submitting} style={{ ...inputStyle, fontSize: T.md, padding: "10px 12px" }} />
       <Btn primary small full={false} disabled={!String(sel || "").trim() || locked || submitting} onClick={() => onSubmit(sel)}>أرسل</Btn>
     </div>
   );

@@ -1,5 +1,5 @@
 import { Map as MapIcon, Trophy, User, Search, BarChart3, Users } from "lucide-react";
-import { C, FONT, alpha } from "../../constants/theme";
+import { C, FONT, alpha, T, R } from "../../constants/theme";
 import { paths } from "../../../app/routes";
 import OrbitMark from "./OrbitMark";
 
@@ -35,15 +35,15 @@ export function SideNav({ path, onGo, name }) {
     <nav aria-label="التنقل الرئيسي" className="madar-side">
       <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 8px 14px" }}>
         <OrbitMark size={34} />
-        <div><div style={{ fontWeight: 900, fontSize: 20, lineHeight: 1 }}>مدار</div><div style={{ color: C.muted, fontSize: 11, marginTop: 3 }}>افهم كل شيء</div></div>
+        <div><div style={{ fontWeight: 900, fontSize: T.x3, lineHeight: 1 }}>مدار</div><div style={{ color: C.muted, fontSize: T.xs, marginTop: 3 }}>افهم كل شيء</div></div>
       </div>
       {NAV.map(({ k, label, Icon }) => (
-        <button key={k} type="button" onClick={() => onGo(k)} aria-current={path === k ? "page" : undefined} className="madar-press" style={{ display: "flex", alignItems: "center", gap: 10, background: path === k ? C.goldSoft : "transparent", border: `1px solid ${path === k ? alpha(C.gold, 0.33) : "transparent"}`, borderRadius: 12, padding: "11px 12px", color: path === k ? C.gold : C.text, cursor: "pointer", fontFamily: FONT, fontSize: 14, fontWeight: path === k ? 800 : 600, textAlign: "start" }}>
+        <button key={k} type="button" onClick={() => onGo(k)} aria-current={path === k ? "page" : undefined} className="madar-press" style={{ display: "flex", alignItems: "center", gap: 10, background: path === k ? C.goldSoft : "transparent", border: `1px solid ${path === k ? alpha(C.gold, 0.33) : "transparent"}`, borderRadius: R.lg, padding: "11px 12px", color: path === k ? C.gold : C.text, cursor: "pointer", fontFamily: FONT, fontSize: T.md, fontWeight: path === k ? 800 : 600, textAlign: "start" }}>
           <Icon size={19} />{label}
         </button>
       ))}
       <div style={{ flex: 1 }} />
-      {name && <div style={{ color: C.muted, fontSize: 12, padding: "0 10px" }}>{name}</div>}
+      {name && <div style={{ color: C.muted, fontSize: T.sm, padding: "0 10px" }}>{name}</div>}
     </nav>
   );
 }
