@@ -53,12 +53,12 @@ export function GoalsPage({ goals }) {
   );
 }
 
-export function CardPage({ card, index, total, color, mark = plain }) {
+export function CardPage({ card, index, color, mark = plain }) {
   const num = useNum();
   return (
     <div>
       <Art k={card.art} color={color} />
-      <div style={{ color: color || P.gold, fontSize: ".75em", fontWeight: 700, marginTop: 14 }}>البطاقة {num(index)} من {num(total)}</div>
+      <div style={{ color: color || P.gold, fontSize: ".75em", fontWeight: 700, marginTop: 14 }}>البطاقة {num(index)}</div>
       <div style={{ fontSize: "1.38em", fontWeight: 800, margin: "4px 0 10px", lineHeight: 1.4 }}>{card.h}</div>
       <div style={body}>{mark(card.p)}</div>
     </div>

@@ -14,7 +14,7 @@ export default function SectionBody({ p, content, info, quizCount, unitId, mark 
     case "goals":
       return <GoalsPage goals={content.goals || []} />;
     case "card":
-      return <CardPage card={p.c} index={p.n} total={(content.cards || []).length} color={info.color} mark={mark} />;
+      return <CardPage card={p.c} index={p.n} color={info.color} mark={mark} />;
     case "try":
       return <TryPage tryIt={content.tryIt} color={info.color} mark={mark} />;
     case "deep":

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { C, P, MONO, alpha } from "../../../shared/constants/theme";
+import { C } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { Btn } from "../../../shared/components/ui";
 import PageBody from "./PageBody";
@@ -37,14 +37,6 @@ export default function CardMode({ page, pages, content, info, unitId, quizCount
           </div>
         </div>
         {tools}
-      </div>
-      {/* الموضع كان في aria-label وحده، فالقارئ يقلب البطاقات دون أن يعرف
-          كم بقي. المحتوى قصير، لكن الطريق المجهول الطول يبدو طويلاً. */}
-      <div style={{ padding: "0 16px", display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ flex: 1, height: 3, borderRadius: 999, background: alpha(info.color, 0.18), overflow: "hidden" }}>
-          <div className="madar-bar" style={{ height: "100%", borderRadius: 999, background: info.color, width: `${((page + 1) / pages.length) * 100}%` }} />
-        </div>
-        <span style={{ color: P.muted, fontSize: 12, fontFamily: MONO, whiteSpace: "nowrap" }}>{num(page + 1)}/{num(pages.length)}</span>
       </div>
       <div style={{ padding: "8px 16px 22px", display: "flex", gap: 8, alignItems: "center" }}>
         <Btn ghost paper full={false} small onClick={() => (page > 0 ? onPrev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>

@@ -73,7 +73,6 @@ html { -webkit-text-size-adjust: 100%; }
 .madar-seg path{transition:fill-opacity .9s ease}
 @keyframes madarSlide{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
 .madar-slide{animation:madarSlide .3s ease-out}
-.madar-bar{transition:width .3s ease}
 @keyframes madarRise{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
 .madar-rise{animation:madarRise .45s cubic-bezier(.2,.7,.3,1) both}
 .madar-stagger > *{animation:madarRise .45s cubic-bezier(.2,.7,.3,1) both}
@@ -84,6 +83,6 @@ html { -webkit-text-size-adjust: 100%; }
 .madar-press{transition:transform .12s ease}
 .madar-press:active{transform:scale(.97)}
 @media (prefers-reduced-motion:reduce){
-  .madar-pulse,.madar-draw,.madar-spin,.madar-in,.madar-tw,.madar-shake,.madar-conf,.madar-pop,.madar-slide,.madar-trace,.madar-flash,.madar-fade,.madar-rise,.madar-stagger > *,.madar-press,.madar-bar{animation:none;transition:none}
+  .madar-pulse,.madar-draw,.madar-spin,.madar-in,.madar-tw,.madar-shake,.madar-conf,.madar-pop,.madar-slide,.madar-trace,.madar-flash,.madar-fade,.madar-rise,.madar-stagger > *,.madar-press{animation:none;transition:none}
 }
 `;
