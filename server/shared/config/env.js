@@ -32,6 +32,13 @@ export const env = {
   google: { clientId: process.env.GOOGLE_CLIENT_ID || "", clientSecret: process.env.GOOGLE_CLIENT_SECRET || "" },
   // التسجيل مغلق ما لم يُفتح صراحةً: الافتراض الآمن أن الباب مقفل
   registrationOpen: process.env.REGISTRATION_OPEN === "true",
+  // حدّ الطلبات مطفأ ما لم يُشغَّل صراحةً. يبقى موصولاً بالمسارات
+  // ليعود بمتغيّر واحد حين يُفتح الموقع للناس.
+  rateLimit: {
+    enabled: process.env.RATE_LIMIT_ENABLED === "true",
+    max: Number(process.env.RATE_LIMIT_MAX || 1000),
+    authMax: Number(process.env.RATE_LIMIT_AUTH_MAX || 50),
+  },
 };
 
 env.pushEnabled = Boolean(env.vapid.publicKey && env.vapid.privateKey);
