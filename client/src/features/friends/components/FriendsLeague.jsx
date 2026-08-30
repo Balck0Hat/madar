@@ -1,16 +1,16 @@
 import { Zap } from "lucide-react";
-import { C, MONO, T } from "../../../shared/constants/theme";
+import { C, MONO, T, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Skeleton, ErrorState } from "../../../shared/components/ui";
 import { personName } from "../utils/friends.utils";
 
 const SR = { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" };
-const TH = { textAlign: "start", padding: "0 10px", fontWeight: 700 };
+const TH = { textAlign: "start", padding: `0 ${S.xl}px`, fontWeight: 600 };
 
 // خصائص الحواف منطقية (start/end) لتنعكس صحيحاً في الاتجاه من اليمين لليسار
 const cell = (me, pos) => ({
   background: me ? C.goldSoft : C.surface,
-  padding: "10px 10px",
+  padding: `${S.xl}px ${S.xl}px`,
   borderBlock: `1px solid ${me ? C.gold : C.line}`,
   borderInlineStart: pos === "start" ? `1px solid ${me ? C.gold : C.line}` : "none",
   borderInlineEnd: pos === "end" ? `1px solid ${me ? C.gold : C.line}` : "none",
@@ -40,13 +40,13 @@ export default function FriendsLeague({ rows, loading, error, onRetry }) {
       <tbody>
         {rows.map((r, k) => (
           <tr key={r.id ?? k}>
-            <td style={{ ...cell(r.me, "start"), fontFamily: MONO, fontWeight: 800, color: k < 3 ? C.gold : C.muted }}>{num(k + 1)}</td>
-            <td style={{ ...cell(r.me, "mid"), fontWeight: r.me ? 800 : 600 }}>
+            <td style={{ ...cell(r.me, "start"), fontFamily: MONO, fontWeight: 700, color: k < 3 ? C.gold : C.muted }}>{num(k + 1)}</td>
+            <td style={{ ...cell(r.me, "mid"), fontWeight: r.me ? 700 : 600 }}>
               {personName(r)}
               {r.me && <span style={{ color: C.muted, fontWeight: 400, fontSize: T.sm }}> (أنت)</span>}
             </td>
-            <td style={{ ...cell(r.me, "end"), fontFamily: MONO, fontWeight: 800, color: C.gold, textAlign: "end" }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Zap size={12} />{num(r.xp ?? 0)}</span>
+            <td style={{ ...cell(r.me, "end"), fontFamily: MONO, fontWeight: 700, color: C.gold, textAlign: "end" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: S.sm }}><Zap size={12} />{num(r.xp ?? 0)}</span>
             </td>
           </tr>
         ))}

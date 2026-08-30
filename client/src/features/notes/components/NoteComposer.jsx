@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { P, FONT, alpha, T, R } from "../../../shared/constants/theme";
+import { P, FONT, alpha, T, R, S } from "../../../shared/constants/theme";
 import { COLOR_KEYS, tintOf } from "../utils/highlight";
 
 const MAX = 500;
@@ -9,7 +9,7 @@ export default function NoteComposer({ value, onChange, color, onColor, onSave, 
   const ref = useRef(null);
   useEffect(() => { ref.current?.focus(); }, []);
   return (
-    <div style={{ display: "grid", gap: 8 }}>
+    <div style={{ display: "grid", gap: S.lg }}>
       <textarea
         ref={ref}
         value={value}
@@ -21,12 +21,12 @@ export default function NoteComposer({ value, onChange, color, onColor, onSave, 
         onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onCancel(); } }}
         style={{
           width: "100%", resize: "vertical", fontFamily: FONT, fontSize: T.md, lineHeight: 1.7,
-          background: P.bg, color: P.ink, border: `1px solid ${P.line}`, borderRadius: R.lg, padding: "8px 10px",
+          background: P.bg, color: P.ink, border: `1px solid ${P.line}`, borderRadius: R.lg, padding: `${S.lg}px ${S.xl}px`,
         }}
       />
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: S.lg }}>
         {showColors && (
-          <div role="radiogroup" aria-label="لون التظليل" style={{ display: "flex", gap: 6 }}>
+          <div role="radiogroup" aria-label="لون التظليل" style={{ display: "flex", gap: S.md }}>
             {COLOR_KEYS.map((key) => (
               <button
                 key={key} type="button" role="radio" aria-checked={color === key} aria-label={`لون ${key}`}
@@ -40,7 +40,7 @@ export default function NoteComposer({ value, onChange, color, onColor, onSave, 
             ))}
           </div>
         )}
-        <div style={{ marginInlineStart: "auto", display: "flex", gap: 6 }}>
+        <div style={{ marginInlineStart: "auto", display: "flex", gap: S.md }}>
           <button type="button" onClick={onCancel} style={{ ...btn, background: "transparent", color: P.muted, border: "none" }}>إلغاء</button>
           <button type="button" disabled={busy} onClick={() => onSave(value.trim())} style={{ ...btn, background: P.ink, color: P.bg, opacity: busy ? 0.5 : 1 }}>
             {busy ? "…" : "حفظ"}
@@ -51,4 +51,4 @@ export default function NoteComposer({ value, onChange, color, onColor, onSave, 
   );
 }
 
-const btn = { fontFamily: FONT, fontWeight: 700, fontSize: T.base, borderRadius: R.md, padding: "7px 12px", border: "none", cursor: "pointer" };
+const btn = { fontFamily: FONT, fontWeight: 600, fontSize: T.base, borderRadius: R.md, padding: `${S.md}px ${S.x2}px`, border: "none", cursor: "pointer" };

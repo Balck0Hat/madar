@@ -1,4 +1,4 @@
-import { C, T } from "../../../shared/constants/theme";
+import { C, T, S } from "../../../shared/constants/theme";
 import { Card, Pill } from "../../../shared/components/ui";
 import { safeUnitInfo, splitMatches } from "../utils/result.utils";
 
@@ -9,15 +9,15 @@ export default function ResultCard({ result, onOpen }) {
 
   return (
     <Card accent={info.color} onClick={() => onOpen(result.unitId)}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-        <div style={{ fontWeight: 800, lineHeight: 1.5 }}>{result.title || info.title}</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: S.lg }}>
+        <div style={{ fontWeight: 700, lineHeight: 1.5 }}>{result.title || info.title}</div>
         {info.domainName && <Pill color={info.color}>{info.domainName}</Pill>}
       </div>
       {result.snippet && (
-        <p style={{ margin: "8px 0 0", fontSize: T.md, lineHeight: 1.8, color: C.muted }}>
+        <p style={{ margin: `${S.lg}px 0 0`, fontSize: T.md, lineHeight: 1.8, color: C.muted }}>
           {parts.map((part, i) =>
             i % 2 === 1
-              ? <strong key={i} style={{ color: C.gold, fontWeight: 800 }}>{part}</strong>
+              ? <strong key={i} style={{ color: C.gold, fontWeight: 700 }}>{part}</strong>
               : <span key={i}>{part}</span>
           )}
         </p>

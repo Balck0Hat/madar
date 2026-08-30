@@ -1,4 +1,4 @@
-import { C, alpha, R } from "../../constants/theme";
+import { C, alpha, R, S } from "../../constants/theme";
 
 // أيقونات المجالات العشرة (viewBox 24×24، خطوط فقط)
 export const ICON = {
@@ -35,7 +35,7 @@ export function PatternBand({ id, color, height = 96, children }) {
         </defs>
         <rect width="100%" height="100%" fill={`url(#${pid})`} />
       </svg>
-      <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center", padding: "0 16px" }}>{children}</div>
+      <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center", padding: `0 ${S.x4}px` }}>{children}</div>
     </div>
   );
 }

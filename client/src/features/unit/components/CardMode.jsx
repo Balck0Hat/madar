@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { C } from "../../../shared/constants/theme";
+import { C, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { Btn } from "../../../shared/components/ui";
 import PageBody from "./PageBody";
@@ -31,14 +31,14 @@ export default function CardMode({ page, pages, content, info, unitId, quizCount
   return (
     <>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
-        <div role="region" aria-live="polite" aria-label={`صفحة ${page + 1} من ${pages.length}`} style={{ flex: 1, padding: "8px 20px 10px" }}>
+        <div role="region" aria-live="polite" aria-label={`صفحة ${page + 1} من ${pages.length}`} style={{ flex: 1, padding: `${S.lg}px ${S.x5}px ${S.xl}px` }}>
           <div key={page} className="madar-slide madar-read" onClick={tap} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ userSelect: "none", WebkitUserSelect: "none" }}>
             <PageBody p={p} index={page} content={content} info={info} quizCount={quizCount} unitId={unitId} />
           </div>
         </div>
         {tools}
       </div>
-      <div style={{ padding: "8px 16px 22px", display: "flex", gap: 8, alignItems: "center" }}>
+      <div style={{ padding: `${S.lg}px ${S.x4}px ${S.x5}px`, display: "flex", gap: S.lg, alignItems: "center" }}>
         <Btn ghost paper full={false} small onClick={() => (page > 0 ? onPrev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>
         <Btn primary color={last ? C.gold : info.color} style={{ color: C.bg }} onClick={() => (last ? onStartQuiz() : onNext())}>
           {last ? `ابدأ الاختبار (${num(quizCount)} أسئلة)` : "التالي"}

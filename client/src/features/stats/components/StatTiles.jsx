@@ -1,5 +1,5 @@
 import { TrendingUp, TrendingDown, Clock, Target } from "lucide-react";
-import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { DOMAINS } from "../../../shared/data/domains";
 
@@ -10,12 +10,12 @@ const domainColor = (id) => DOMAINS.find((d) => d.id === id)?.color || C.gold;
 const toPercent = (v) => (v === null ? null : Math.round(v <= 1 ? v * 100 : v));
 
 const Tile = ({ icon, label, value, color, hint }) => (
-  <div style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: 12, display: "grid", gap: 4 }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted, fontSize: T.sm }}>
+  <div style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: S.x2, display: "grid", gap: S.sm }}>
+    <div style={{ display: "flex", alignItems: "center", gap: S.md, color: C.muted, fontSize: T.sm }}>
       <span style={{ width: 22, height: 22, borderRadius: R.sm, background: alpha(color, 0.15), display: "grid", placeItems: "center" }} aria-hidden="true">{icon}</span>
       {label}
     </div>
-    <div style={{ fontWeight: 800, fontSize: T.x2, color, fontFamily: hint ? MONO : undefined }}>{value}</div>
+    <div style={{ fontWeight: 700, fontSize: T.x2, color, fontFamily: hint ? MONO : undefined }}>{value}</div>
     {hint && <div style={{ color: C.muted, fontSize: T.xs }}>{hint}</div>}
   </div>
 );
@@ -28,7 +28,7 @@ export default function StatTiles({ strongest, weakest, totalMinutes, quizAccura
   const mins = totalMinutes % 60;
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 10 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: S.xl }}>
       <Tile icon={<TrendingUp size={13} color={domainColor(strongest)} />} label="أقوى مجال" value={domainName(strongest)} color={strongest ? domainColor(strongest) : C.muted} />
       <Tile icon={<TrendingDown size={13} color={C.red} />} label="يحتاج تركيزاً" value={domainName(weakest)} color={weakest ? domainColor(weakest) : C.muted} />
       <Tile icon={<Clock size={13} color={C.gold} />} label="دقائق الدراسة" value={hours ? `${num(hours)}س ${num(mins)}د` : `${num(totalMinutes)}د`} color={C.text} hint="مجموع وقت الوحدات" />

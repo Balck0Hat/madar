@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { C, T } from "../../../shared/constants/theme";
+import { C, T, S } from "../../../shared/constants/theme";
 import { Btn } from "../../../shared/components/ui";
 import PersonRow from "./PersonRow";
 import { acceptRequest, dropRequest } from "../services/friends.service";
 
 const Head = ({ children }) => (
-  <div style={{ fontWeight: 800, fontSize: T.md, margin: "4px 0 2px" }}>{children}</div>
+  <div style={{ fontWeight: 700, fontSize: T.md, margin: `${S.sm}px 0 ${S.xs}px` }}>{children}</div>
 );
 
 // الطلبات الواردة والصادرة: كل زر يقفل نفسه أثناء التنفيذ حتى لا يُرسل مرتين
@@ -28,7 +28,7 @@ export default function RequestLists({ incoming, outgoing, onChanged, onToast })
 
   if (!incoming.length && !outgoing.length) return null;
   return (
-    <div style={{ display: "grid", gap: 8 }}>
+    <div style={{ display: "grid", gap: S.lg }}>
       {incoming.length > 0 && <Head>طلبات واردة</Head>}
       {incoming.map((p) => (
         <PersonRow key={p.id} person={p} sub={p.handle}>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C, T } from "../../../shared/constants/theme";
+import { C, T, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { TopBar, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
@@ -32,9 +32,9 @@ export default function SearchScreen({ onBack, onOpenUnit }) {
   const showRecent = !text.trim() && focused;
 
   return (
-    <div className="madar-in" style={{ paddingBottom: 90 }}>
+    <div className="madar-in madar-tabpad madar-col">
       <TopBar title="البحث" onBack={onBack} />
-      <div style={{ padding: "0 16px", display: "grid", gap: 12 }}>
+      <div style={{ padding: `0 ${S.x4}px`, display: "grid", gap: S.x2 }}>
         <SearchInput
           value={text}
           onChange={setText}
@@ -47,13 +47,13 @@ export default function SearchScreen({ onBack, onOpenUnit }) {
         {showRecent && <RecentSearches items={recent} onPick={pick} onClear={() => setRecent(clearRecent())} />}
 
         {!enabled && !showRecent && (
-          <div style={{ color: C.muted, fontSize: T.base, textAlign: "center", padding: "24px 8px", lineHeight: 1.8 }}>
+          <div style={{ color: C.muted, fontSize: T.base, textAlign: "center", padding: `${S.x6}px ${S.lg}px`, lineHeight: 1.8 }}>
             اكتب حرفين على الأقل للبحث في عناوين الوحدات وخلاصاتها.
           </div>
         )}
 
         {/* منطقة النتائج تتغيّر أثناء الكتابة، فنُعلن التغيير لقارئ الشاشة */}
-        <div aria-live="polite" aria-busy={loading} style={{ display: "grid", gap: 10 }}>
+        <div aria-live="polite" aria-busy={loading} style={{ display: "grid", gap: S.xl }}>
           {enabled && loading && <Skeleton lines={4} />}
           {enabled && error && <ErrorState message={error.message} onRetry={reload} />}
           {enabled && !loading && !error && !results.length && (

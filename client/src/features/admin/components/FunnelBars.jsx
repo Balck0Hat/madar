@@ -1,4 +1,4 @@
-import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 
 const W = 320, ROW = 14, BAR = 9;
@@ -23,10 +23,10 @@ export default function FunnelBars({ row }) {
   const summary = `فتحها ${num(row.opens)}، بلغ منتصفها${at} ${num(row.reached)}، بدأ الاختبار ${num(row.quizStarts)}، أنهاها ${num(row.finishes)} — أي ${num(row.completion)}٪.`;
 
   return (
-    <div style={{ display: "grid", gap: 6, paddingBottom: 12, borderBottom: `1px solid ${C.line}` }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
-        <span style={{ fontSize: T.base, fontWeight: 700, lineHeight: 1.5 }}>{row.title}</span>
-        <span style={{ fontFamily: MONO, fontSize: T.base, fontWeight: 800, color: tone, whiteSpace: "nowrap" }}>{num(row.completion)}٪</span>
+    <div style={{ display: "grid", gap: S.md, paddingBottom: S.x2, borderBottom: `1px solid ${C.line}` }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: S.lg }}>
+        <span style={{ fontSize: T.base, fontWeight: 600, lineHeight: 1.5 }}>{row.title}</span>
+        <span style={{ fontFamily: MONO, fontSize: T.base, fontWeight: 700, color: tone, whiteSpace: "nowrap" }}>{num(row.completion)}٪</span>
       </div>
       {/* الرسم زخرفي: الملخّص النصي تحته يحمل الأرقام كاملة لقارئ الشاشة وللعين معاً */}
       <svg viewBox={`0 0 ${W} ${height}`} preserveAspectRatio="xMidYMid meet" width="100%" aria-hidden="true" focusable="false" style={{ display: "block" }}>
@@ -44,7 +44,7 @@ export default function FunnelBars({ row }) {
       </svg>
       <p style={{ margin: 0, color: C.muted, fontSize: T.sm, lineHeight: 1.8 }}>{summary}</p>
       {row.dropOffPage ? (
-        <p style={{ margin: 0, fontSize: T.sm, lineHeight: 1.7, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.3)}`, borderRadius: R.md, padding: "6px 10px" }}>
+        <p style={{ margin: 0, fontSize: T.sm, lineHeight: 1.7, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.3)}`, borderRadius: R.md, padding: `${S.md}px ${S.xl}px` }}>
           يتوقف أكثرهم بعد البطاقة <b style={{ fontFamily: MONO }}>{num(row.dropOffPage)}</b> — {num(row.dropOffShare)}٪ ممن فتحوا الوحدة لم يتجاوزوها.
         </p>
       ) : (

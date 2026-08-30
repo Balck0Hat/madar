@@ -1,20 +1,20 @@
 import { Trash2, Plus } from "lucide-react";
-import { C, inputStyle, T, R } from "../../../shared/constants/theme";
+import { C, inputStyle, T, R, S } from "../../../shared/constants/theme";
 import { Btn } from "../../../shared/components/ui";
 import Art from "../../../shared/components/art/Art";
 import { ART_KEYS } from "../utils/editor.utils";
 
-const small = { ...inputStyle, padding: "9px 12px", fontSize: T.md };
+const small = { ...inputStyle, padding: `${S.lg}px ${S.x2}px`, fontSize: T.md };
 
 // محرّر بطاقات الدرس: عنوان، نص، رسمة
 export default function CardsEditor({ cards, onChange }) {
   const update = (k, patch) => onChange(cards.map((c, i) => (i === k ? { ...c, ...patch } : c)));
   return (
-    <div style={{ display: "grid", gap: 10 }}>
+    <div style={{ display: "grid", gap: S.xl }}>
       {cards.map((c, k) => (
-        <div key={k} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.xl, padding: 12, display: "grid", gap: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontWeight: 800, color: C.gold }}>بطاقة {k + 1}</span>
+        <div key={k} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.xl, padding: S.x2, display: "grid", gap: S.lg }}>
+          <div style={{ display: "flex", alignItems: "center", gap: S.lg }}>
+            <span style={{ fontWeight: 700, color: C.gold }}>بطاقة {k + 1}</span>
             <select aria-label="الرسمة" value={c.art || "wheel"} onChange={(e) => update(k, { art: e.target.value })} style={{ ...small, width: "auto" }}>
               {ART_KEYS.map((a) => <option key={a} value={a}>{a}</option>)}
             </select>
@@ -27,7 +27,7 @@ export default function CardsEditor({ cards, onChange }) {
           <div style={{ color: C.muted, fontSize: T.xs }}>{(c.p || "").trim().split(/\s+/).filter(Boolean).length} كلمة</div>
         </div>
       ))}
-      <Btn small full={false} onClick={() => onChange([...cards, { h: "", p: "", art: "wheel" }])}><span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Plus size={14} />بطاقة جديدة</span></Btn>
+      <Btn small full={false} onClick={() => onChange([...cards, { h: "", p: "", art: "wheel" }])}><span style={{ display: "inline-flex", gap: S.md, alignItems: "center" }}><Plus size={14} />بطاقة جديدة</span></Btn>
     </div>
   );
 }

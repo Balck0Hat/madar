@@ -1,5 +1,5 @@
 import { WifiOff, AlertTriangle } from "lucide-react";
-import { C, P, alpha, T, R } from "../../constants/theme";
+import { C, P, alpha, T, R, S } from "../../constants/theme";
 import Spot from "../art/Spot";
 import Btn from "./Btn";
 
@@ -18,7 +18,7 @@ export function Skeleton({ lines = 4, paper = false }) {
   const base = paper ? alpha(P.ink, 0.08) : C.surface2;
   const shine = paper ? alpha(P.card, 0.9) : alpha(C.text, 0.09);
   return (
-    <div aria-busy="true" aria-live="polite" style={{ display: "grid", gap: 10, padding: "8px 0" }}>
+    <div aria-busy="true" aria-live="polite" style={{ display: "grid", gap: S.xl, padding: `${S.lg}px 0` }}>
       <style>{SHIMMER_CSS}</style>
       {Array.from({ length: lines }).map((_, i) => (
         <div
@@ -53,12 +53,12 @@ export function ErrorState({ message, onRetry, onBack }) {
         background: alpha(tone, 0.12),
         border: `1px solid ${alpha(tone, 0.4)}`,
         borderRadius: R.x2,
-        padding: 16,
+        padding: S.x4,
         display: "grid",
-        gap: 10,
+        gap: S.xl,
       }}
     >
-      <div style={{ fontWeight: 800, display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: S.lg }}>
         <Icon size={16} color={tone} aria-hidden="true" />
         {offline ? "لا يوجد اتصال" : "تعذّر التحميل"}
       </div>
@@ -68,7 +68,7 @@ export function ErrorState({ message, onRetry, onBack }) {
           تحقّق من اتصالك بالإنترنت ثم أعد المحاولة؛ ما أنجزته محفوظ.
         </div>
       )}
-      <div style={{ display: "flex", gap: 8 }}>
+      <div style={{ display: "flex", gap: S.lg }}>
         {onRetry && <Btn primary small full={false} onClick={onRetry}>أعد المحاولة</Btn>}
         {onBack && <Btn ghost small full={false} onClick={onBack}>عودة</Btn>}
       </div>
@@ -81,10 +81,10 @@ export function ErrorState({ message, onRetry, onBack }) {
 // (بطاقة خلاصة حقيقية، رسم بياني، رابط دعوة) نعرضها بلا تفاعل تحت الرسالة.
 export function EmptyState({ title, text, action, onAction, spot, sample }) {
   return (
-    <div className="madar-rise" style={{ textAlign: "center", padding: "36px 16px", display: "grid", gap: 8, justifyItems: "center" }}>
+    <div className="madar-rise" style={{ textAlign: "center", padding: `36px ${S.x4}px`, display: "grid", gap: S.lg, justifyItems: "center" }}>
       {/* بدون spot نُبقي العلامة القديمة حتى لا تتغيّر الشاشات التي لم تُحدَّث بعد */}
       {spot ? <Spot k={spot} size={140} /> : <div style={{ fontSize: T.hero, color: C.gold }} aria-hidden="true">✦</div>}
-      <div style={{ fontWeight: 800, fontSize: T.x2 }}>{title}</div>
+      <div style={{ fontWeight: 700, fontSize: T.x2 }}>{title}</div>
       {text && <div style={{ color: C.muted, fontSize: T.md, lineHeight: 1.7, maxWidth: 320 }}>{text}</div>}
       {action && <Btn primary small full={false} onClick={onAction}>{action}</Btn>}
       {sample && <EmptySample>{sample}</EmptySample>}
@@ -95,8 +95,8 @@ export function EmptyState({ title, text, action, onAction, spot, sample }) {
 // النموذج مُطفأ بصرياً وخارج شجرة الوصول ومنزوع التفاعل، كي لا يُظن بيانات حقيقية
 function EmptySample({ children }) {
   return (
-    <div style={{ width: "100%", maxWidth: 420, marginTop: 14, display: "grid", gap: 8, justifyItems: "stretch" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.muted, fontSize: T.sm }}>
+    <div style={{ width: "100%", maxWidth: 420, marginTop: S.x3, display: "grid", gap: S.lg, justifyItems: "stretch" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: S.lg, color: C.muted, fontSize: T.sm }}>
         <span style={{ height: 1, flex: 1, background: C.line }} aria-hidden="true" />
         هكذا ستبدو
         <span style={{ height: 1, flex: 1, background: C.line }} aria-hidden="true" />
@@ -111,7 +111,7 @@ function EmptySample({ children }) {
           userSelect: "none",
           borderRadius: R.x3,
           border: `1px dashed ${alpha(C.text, 0.18)}`,
-          padding: 10,
+          padding: S.xl,
         }}
       >
         {children}

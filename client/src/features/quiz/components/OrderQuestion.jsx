@@ -1,4 +1,4 @@
-import { C, MONO, alpha, T, R } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Btn } from "../../../shared/components/ui";
 
@@ -8,12 +8,12 @@ export default function OrderQuestion({ items, sel, color, locked, onChange }) {
   const chosen = sel || [];
   return (
     <div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: S.lg, marginBottom: S.x2 }}>
         {items.map((it, k) => {
           const pos = chosen.indexOf(k);
           return (
-            <button key={k} type="button" onClick={() => !locked && pos === -1 && onChange([...chosen, k])} style={{ background: pos >= 0 ? alpha(color, 0.2) : C.surface, border: `1px solid ${pos >= 0 ? color : C.line}`, borderRadius: R.lg, padding: "10px 14px", color: C.text, cursor: "pointer", fontSize: T.lg, display: "flex", gap: 8, alignItems: "center" }}>
-              {pos >= 0 && <span style={{ fontFamily: MONO, color, fontWeight: 800 }}>{num(pos + 1)}</span>}{it}
+            <button key={k} type="button" onClick={() => !locked && pos === -1 && onChange([...chosen, k])} style={{ background: pos >= 0 ? alpha(color, 0.2) : C.surface, border: `1px solid ${pos >= 0 ? color : C.line}`, borderRadius: R.lg, padding: `${S.xl}px ${S.x3}px`, color: C.text, cursor: "pointer", fontSize: T.lg, display: "flex", gap: S.lg, alignItems: "center" }}>
+              {pos >= 0 && <span style={{ fontFamily: MONO, color, fontWeight: 700 }}>{num(pos + 1)}</span>}{it}
             </button>
           );
         })}

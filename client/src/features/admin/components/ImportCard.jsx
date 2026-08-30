@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import { Upload, ShieldCheck } from "lucide-react";
-import { C, inputStyle, alpha, T, R } from "../../../shared/constants/theme";
+import { C, inputStyle, alpha, T, R, S } from "../../../shared/constants/theme";
 import { Btn, Card } from "../../../shared/components/ui";
 import { importUnits } from "../services/admin.service";
 import { parseUnitsPayload } from "../utils/io.utils";
 import ImportReport from "./ImportReport";
 
-const area = { ...inputStyle, padding: "10px 12px", fontSize: T.base, lineHeight: 1.7, resize: "vertical", fontFamily: "monospace", direction: "ltr", textAlign: "left" };
+const area = { ...inputStyle, padding: `${S.xl}px ${S.x2}px`, fontSize: T.base, lineHeight: 1.7, resize: "vertical", fontFamily: "monospace", direction: "ltr", textAlign: "left" };
 
 // الصق أو ارفع، ثم افحص قبل أن تستورد: التقرير يُعرض في الحالتين
 export default function ImportCard({ onToast, onImported }) {
@@ -41,26 +41,26 @@ export default function ImportCard({ onToast, onImported }) {
 
   return (
     <Card>
-      <div style={{ fontWeight: 800, marginBottom: 4 }}>استيراد</div>
-      <div style={{ color: C.muted, fontSize: T.sm, marginBottom: 10, lineHeight: 1.7 }}>
+      <div style={{ fontWeight: 700, marginBottom: S.sm }}>استيراد</div>
+      <div style={{ color: C.muted, fontSize: T.sm, marginBottom: S.xl, lineHeight: 1.7 }}>
         الصق مصفوفة وحدات أو ملف تصدير كامل (حتى 100 وحدة). كل وحدة تُفحص وحدها، ولا يُكتب شيء قبل أن ينجح الفحص.
       </div>
-      <div style={{ display: "grid", gap: 8 }}>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+      <div style={{ display: "grid", gap: S.lg }}>
+        <div style={{ display: "flex", gap: S.lg, alignItems: "center", flexWrap: "wrap" }}>
           <Btn small full={false} onClick={() => fileRef.current?.click()}>
-            <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Upload size={14} />ارفع ملفاً</span>
+            <span style={{ display: "inline-flex", gap: S.md, alignItems: "center" }}><Upload size={14} />ارفع ملفاً</span>
           </Btn>
           <input ref={fileRef} type="file" accept="application/json,.json" onChange={(e) => pickFile(e.target.files?.[0])} style={{ display: "none" }} aria-hidden="true" tabIndex={-1} />
-          <label style={{ display: "inline-flex", gap: 6, alignItems: "center", fontSize: T.base, color: C.muted, cursor: "pointer" }}>
+          <label style={{ display: "inline-flex", gap: S.md, alignItems: "center", fontSize: T.base, color: C.muted, cursor: "pointer" }}>
             <input type="checkbox" checked={force} onChange={(e) => setForce(e.target.checked)} />
             استورد الصالحة وتخطَّ الفاشلة
           </label>
         </div>
         <textarea aria-label="محتوى JSON للاستيراد" value={text} onChange={(e) => { setText(e.target.value); setResult(null); }} rows={8} placeholder='[{"unitId":"earth-1-1", ...}]' style={area} />
-        {err && <div role="alert" style={{ color: C.red, fontSize: T.base, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: R.lg, padding: 10 }}>{err}</div>}
-        <div style={{ display: "flex", gap: 8 }}>
+        {err && <div role="alert" style={{ color: C.red, fontSize: T.base, background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: R.lg, padding: S.xl }}>{err}</div>}
+        <div style={{ display: "flex", gap: S.lg }}>
           <Btn disabled={!!busy || !text.trim()} onClick={() => send(true)}>
-            <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><ShieldCheck size={16} />{busy === "check" ? "يفحص..." : "افحص فقط"}</span>
+            <span style={{ display: "inline-flex", gap: S.md, alignItems: "center" }}><ShieldCheck size={16} />{busy === "check" ? "يفحص..." : "افحص فقط"}</span>
           </Btn>
           <Btn primary disabled={!!busy || !text.trim()} onClick={() => send(false)}>{busy === "import" ? "لحظة..." : "استورد"}</Btn>
         </div>

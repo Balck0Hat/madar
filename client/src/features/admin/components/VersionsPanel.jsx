@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { History, ChevronDown } from "lucide-react";
-import { C, T } from "../../../shared/constants/theme";
+import { C, T, S } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
 import { listVersions, restoreVersion } from "../services/admin.service";
@@ -28,19 +28,19 @@ export default function VersionsPanel({ unitId, current, onRestored, onToast }) 
   };
 
   return (
-    <div style={{ display: "grid", gap: 8 }}>
+    <div style={{ display: "grid", gap: S.lg }}>
       <button
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        style={{ display: "flex", alignItems: "center", gap: 8, background: "transparent", border: "none", color: C.gold, fontWeight: 800, fontSize: T.md, cursor: "pointer", padding: 0, font: "inherit" }}
+        style={{ display: "flex", alignItems: "center", gap: S.lg, background: "transparent", border: "none", color: C.gold, fontWeight: 700, fontSize: T.md, cursor: "pointer", padding: 0, font: "inherit" }}
       >
         <History size={16} aria-hidden="true" />
         النسخ السابقة
         <ChevronDown size={16} aria-hidden="true" style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform .2s ease-out" }} />
       </button>
       {open && (
-        <div style={{ display: "grid", gap: 8 }}>
+        <div style={{ display: "grid", gap: S.lg }}>
           {loading && <Skeleton lines={3} />}
           {error && <ErrorState message={error.message} onRetry={reload} />}
           {data && !data.length && <EmptyState title="لا نسخ بعد" text="تُحفظ نسخة تلقائياً في كل مرة تحفظ فيها وحدة موجودة." />}

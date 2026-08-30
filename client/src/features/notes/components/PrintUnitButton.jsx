@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Printer } from "lucide-react";
-import { C, P, FONT, T, R } from "../../../shared/constants/theme";
+import { C, P, FONT, T, R, S, TAP } from "../../../shared/constants/theme";
 import { contentService } from "../../content";
 import * as notesService from "../services/notes.service";
 import UnitPrintView from "./UnitPrintView";
@@ -35,12 +35,12 @@ export default function PrintUnitButton({ unitId, info, unit: preloaded, small, 
   };
 
   return (
-    <div style={{ display: "grid", gap: 4, justifyItems: "start" }}>
+    <div style={{ display: "grid", gap: S.sm, justifyItems: "start" }}>
       <button
         type="button" onClick={run} disabled={busy}
         style={{
-          display: "flex", alignItems: "center", gap: 6, fontFamily: FONT, fontWeight: 700,
-          fontSize: small ? T.base : T.md, minHeight: small ? 34 : 44, padding: small ? "7px 12px" : "10px 14px",
+          display: "flex", alignItems: "center", gap: S.md, fontFamily: FONT, fontWeight: 600,
+          fontSize: small ? T.base : T.md, minHeight: TAP, padding: small ? `${S.md}px ${S.x2}px` : `${S.xl}px ${S.x3}px`,
           borderRadius: R.lg, cursor: busy ? "default" : "pointer", opacity: busy ? 0.5 : 1,
           background: paper ? P.card : C.surface2, color: paper ? P.ink : C.text, border: `1px solid ${paper ? P.line : C.line}`,
         }}

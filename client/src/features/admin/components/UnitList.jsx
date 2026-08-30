@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Plus, Pencil, Download } from "lucide-react";
-import { C, MONO, inputStyle, T } from "../../../shared/constants/theme";
+import { C, MONO, inputStyle, T, S } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Btn, Card, Pill, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
@@ -26,12 +26,12 @@ export default function UnitList({ onEdit, onCreate, onToast }) {
   const existing = new Set((data || []).map((u) => u.unitId));
   const candidates = ALL_UNIT_IDS.filter((id) => !existing.has(id)).filter((id) => !filter || unitInfo(id).title.includes(filter) || id.includes(filter));
   return (
-    <div style={{ display: "grid", gap: 12 }}>
+    <div style={{ display: "grid", gap: S.x2 }}>
       <Card>
-        <div style={{ fontWeight: 800, marginBottom: 8 }}>وحدة جديدة</div>
-        <input aria-label="بحث في الشجرة" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="ابحث بالعنوان أو المعرّف" style={{ ...inputStyle, padding: "9px 12px", fontSize: T.md, marginBottom: 8 }} />
-        <div style={{ display: "flex", gap: 8 }}>
-          <select aria-label="اختر وحدة" value={pick} onChange={(e) => setPick(e.target.value)} style={{ ...inputStyle, padding: "9px 12px", fontSize: T.md }}>
+        <div style={{ fontWeight: 700, marginBottom: S.lg }}>وحدة جديدة</div>
+        <input aria-label="بحث في الشجرة" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="ابحث بالعنوان أو المعرّف" style={{ ...inputStyle, padding: `${S.lg}px ${S.x2}px`, fontSize: T.md, marginBottom: S.lg }} />
+        <div style={{ display: "flex", gap: S.lg }}>
+          <select aria-label="اختر وحدة" value={pick} onChange={(e) => setPick(e.target.value)} style={{ ...inputStyle, padding: `${S.lg}px ${S.x2}px`, fontSize: T.md }}>
             <option value="">اختر من الشجرة ({candidates.length})</option>
             {candidates.slice(0, 120).map((id) => <option key={id} value={id}>{id} · {unitInfo(id).title}</option>)}
           </select>
@@ -45,13 +45,13 @@ export default function UnitList({ onEdit, onCreate, onToast }) {
         const info = unitInfo(u.unitId);
         return (
           <Card key={u.unitId} accent={info.color} onClick={() => onEdit(u.unitId)}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: S.lg }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 800, lineHeight: 1.5 }}>{u.title}</div>
-                <div style={{ color: C.muted, fontSize: T.sm, marginTop: 2, fontFamily: MONO }}>{u.unitId} · {u.questionCount} سؤال · {new Date(u.updatedAt).toLocaleDateString("ar")}</div>
+                <div style={{ fontWeight: 700, lineHeight: 1.5 }}>{u.title}</div>
+                <div style={{ color: C.muted, fontSize: T.sm, marginTop: S.xs, fontFamily: MONO }}>{u.unitId} · {u.questionCount} سؤال · {new Date(u.updatedAt).toLocaleDateString("ar")}</div>
               </div>
               <Pill color={u.published ? C.green : C.muted}>{u.published ? "منشورة" : "مسودة"}</Pill>
-              <button type="button" aria-label={`تنزيل ${u.unitId}`} onClick={(e) => download(e, u.unitId)} style={{ background: "transparent", border: "none", color: C.muted, cursor: "pointer", padding: 4, display: "inline-flex" }}><Download size={16} /></button>
+              <button type="button" aria-label={`تنزيل ${u.unitId}`} onClick={(e) => download(e, u.unitId)} style={{ background: "transparent", border: "none", color: C.muted, cursor: "pointer", padding: S.sm, display: "inline-flex" }}><Download size={16} /></button>
               <Pencil size={16} color={C.muted} />
             </div>
           </Card>

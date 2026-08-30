@@ -1,11 +1,11 @@
-import { C, T } from "../../constants/theme";
+import { C, T, S } from "../../constants/theme";
 import { DOMAINS } from "../../data/domains";
 import { ring, RADII } from "./geometry";
 
 // شاشة التحميل: العجلة ترسم نفسها قطاعاً قطاعاً — تعريف بالهوية من أول لحظة
 export default function WheelLoader({ size = 200, label = "" }) {
   return (
-    <div style={{ display: "grid", placeItems: "center", gap: 14 }}>
+    <div style={{ display: "grid", placeItems: "center", gap: S.x3 }}>
       <svg viewBox="0 0 360 360" width={size} height={size} aria-label="جارٍ التحميل" role="img">
         <circle cx="180" cy="180" r="168" fill="none" stroke={C.line} strokeWidth="1" />
         {DOMAINS.map((d, di) => {

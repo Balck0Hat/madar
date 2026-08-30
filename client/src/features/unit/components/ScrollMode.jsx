@@ -1,5 +1,5 @@
 import { useRef, useEffect, useMemo } from "react";
-import { C, P } from "../../../shared/constants/theme";
+import { C, P, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { Btn } from "../../../shared/components/ui";
 import { Marked, NoteToolbar, useSelectionNote } from "../../notes";
@@ -32,18 +32,18 @@ export default function ScrollMode({ pages, content, info, unitId, quizCount, ac
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
-      <div ref={host} onClick={notes.onClick} style={{ padding: "4px 20px 12px" }}>
+      <div ref={host} onClick={notes.onClick} style={{ padding: `${S.sm}px ${S.x5}px ${S.x2}px` }}>
         <div ref={notes.ref} className="madar-read">
           {pages.map((p, i) => (
             <section key={i} data-section={i} aria-label={pageTitle(p)}
-              style={{ scrollMarginTop: 58, padding: "14px 0 20px", borderBottom: i < pages.length - 1 ? `1px solid ${P.line}` : "none" }}>
+              style={{ scrollMarginTop: 58, padding: `${S.x3}px 0 ${S.x5}px`, borderBottom: i < pages.length - 1 ? `1px solid ${P.line}` : "none" }}>
               <SectionBody p={p} content={content} info={info} quizCount={quizCount} unitId={unitId} hint={false}
                 mark={(text) => <Marked text={text} notes={byPage.get(i) || []} />} />
             </section>
           ))}
         </div>
         {quizCount > 0 && (
-          <div style={{ marginTop: 18 }}>
+          <div style={{ marginTop: S.x4 }}>
             <Btn primary color={C.gold} style={{ color: C.bg }} onClick={onStartQuiz}>
               {`ابدأ الاختبار (${num(quizCount)} أسئلة)`}
             </Btn>

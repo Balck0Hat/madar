@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { P, MONO, alpha, T, R } from "../../../shared/constants/theme";
+import { P, MONO, alpha, T, R, S } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
@@ -46,7 +46,7 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, re
     return (
       <div style={{ minHeight: "100vh", background: P.bg, color: P.ink }}>
         <TopBar paper title={info.domainName} onBack={onBack} />
-        <div style={{ padding: "8px 20px" }}>{error ? <ErrorState message={error.message} onRetry={reload} onBack={onBack} /> : <Skeleton paper lines={6} />}</div>
+        <div style={{ padding: `${S.lg}px ${S.x5}px` }}>{error ? <ErrorState message={error.message} onRetry={reload} onBack={onBack} /> : <Skeleton paper lines={6} />}</div>
       </div>
     );
   }
@@ -61,7 +61,7 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, re
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: P.bg, color: P.ink, transition: "background .4s", "--unit-color": info.color, backgroundImage: `radial-gradient(140% 60% at 50% 0%, ${alpha(info.color, 0.07)}, transparent 60%)` }}>
-      <div style={{ padding: "12px 12px 0", display: "flex", gap: 3 }}>
+      <div style={{ padding: `${S.x2}px ${S.x2}px 0`, display: "flex", gap: S.xs }}>
         {pages.map((_, i) => <div key={i} style={{ flex: 1, height: 3, borderRadius: R.pill, background: i <= at ? info.color : P.line, transition: "background .3s" }} />)}
       </div>
       <TopBar paper onBack={onBack}

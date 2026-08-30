@@ -1,10 +1,10 @@
 import { BookmarkCheck } from "lucide-react";
-import { C, P, alpha, R } from "../../../shared/constants/theme";
+import { C, P, alpha, R, S, TAP } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 
 const action = (fill) => ({
-  fontFamily: "inherit", fontWeight: 800, fontSize: ".8em", cursor: "pointer",
-  borderRadius: R.md, padding: "7px 12px", minHeight: 34,
+  fontFamily: "inherit", fontWeight: 700, fontSize: ".8em", cursor: "pointer",
+  borderRadius: R.md, padding: `${S.md}px ${S.x2}px`, minHeight: TAP,
   background: fill ? C.gold : "transparent",
   color: fill ? "var(--bg)" : P.muted,
   border: `1px solid ${fill ? "transparent" : P.line}`,
@@ -16,8 +16,8 @@ export default function ResumeBar({ card, total, onResume, onRestart }) {
   const num = useNum();
   return (
     <div className="madar-in" role="status" style={{
-      margin: "8px 16px 0", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
-      background: alpha(C.gold, 0.14), border: `1px solid ${alpha(C.gold, 0.5)}`, borderRadius: R.xl, padding: "8px 10px",
+      margin: `${S.lg}px ${S.x4}px 0`, display: "flex", alignItems: "center", gap: S.lg, flexWrap: "wrap",
+      background: alpha(C.gold, 0.14), border: `1px solid ${alpha(C.gold, 0.5)}`, borderRadius: R.xl, padding: `${S.lg}px ${S.xl}px`,
     }}>
       <BookmarkCheck size={16} color={P.gold} style={{ flexShrink: 0 }} aria-hidden="true" />
       <span style={{ flex: 1, minWidth: 130, fontSize: ".8em", lineHeight: 1.6, color: P.ink }}>

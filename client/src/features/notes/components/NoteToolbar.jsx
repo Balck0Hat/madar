@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Highlighter, MessageSquarePlus, Trash2, Pencil, X } from "lucide-react";
-import { P, C, FONT, READ, alpha, T, R } from "../../../shared/constants/theme";
+import { P, C, FONT, READ, alpha, T, R, S } from "../../../shared/constants/theme";
 import { tintOf } from "../utils/highlight";
 import NoteComposer from "./NoteComposer";
 
@@ -29,15 +29,15 @@ export default function NoteToolbar({ sel, onSave, onEdit, onRemove, onClose, bu
     transform: below ? "translateX(-50%)" : "translate(-50%, -100%)",
     width: Math.min(300, (window.innerWidth || 360) - 24),
     background: P.card, color: P.ink, fontFamily: FONT,
-    border: `1px solid ${P.line}`, borderRadius: R.x2, padding: 10,
-    boxShadow: "0 10px 30px rgba(0,0,0,.28)",
+    border: `1px solid ${P.line}`, borderRadius: R.x2, padding: S.xl,
+    boxShadow: "var(--shadow-2)",
   };
 
   const existing = Boolean(sel.id);
   return createPortal(
     <div dir="rtl" role="dialog" aria-label="أدوات التظليل" style={style} onClick={(e) => e.stopPropagation()}>
-      <div style={{ display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 8 }}>
-        <div style={{ fontFamily: READ, fontSize: T.base, lineHeight: 1.7, color: P.muted, flex: 1, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", borderInlineStart: `3px solid ${tintOf(color)}`, paddingInlineStart: 8 }}>
+      <div style={{ display: "flex", gap: S.md, alignItems: "flex-start", marginBottom: S.lg }}>
+        <div style={{ fontFamily: READ, fontSize: T.base, lineHeight: 1.7, color: P.muted, flex: 1, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", borderInlineStart: `3px solid ${tintOf(color)}`, paddingInlineStart: S.lg }}>
           {sel.text}
         </div>
         <button type="button" aria-label="إغلاق" onClick={onClose} style={{ ...icon, color: P.muted }}><X size={15} /></button>
@@ -51,7 +51,7 @@ export default function NoteToolbar({ sel, onSave, onEdit, onRemove, onClose, bu
           onSave={(text) => (existing ? onEdit(text) : onSave(color, text))}
         />
       ) : (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: S.md }}>
           {existing ? (
             <>
               <button type="button" style={action} onClick={() => setMode("edit")}><Pencil size={14} />{sel.note ? "تعديل الملاحظة" : "أضف ملاحظة"}</button>
@@ -67,13 +67,13 @@ export default function NoteToolbar({ sel, onSave, onEdit, onRemove, onClose, bu
       )}
 
       {existing && sel.note && !mode && (
-        <div style={{ marginTop: 8, fontSize: T.base, lineHeight: 1.7, background: alpha(tintOf(sel.color), 0.14), borderRadius: R.md, padding: "6px 9px" }}>{sel.note}</div>
+        <div style={{ marginTop: S.lg, fontSize: T.base, lineHeight: 1.7, background: alpha(tintOf(sel.color), 0.14), borderRadius: R.md, padding: `${S.md}px ${S.lg}px` }}>{sel.note}</div>
       )}
-      {err && <div role="alert" style={{ marginTop: 8, fontSize: T.sm, color: C.red, lineHeight: 1.6 }}>{err}</div>}
+      {err && <div role="alert" style={{ marginTop: S.lg, fontSize: T.sm, color: C.red, lineHeight: 1.6 }}>{err}</div>}
     </div>,
     document.body,
   );
 }
 
-const icon = { background: "transparent", border: "none", cursor: "pointer", padding: 2, lineHeight: 0 };
-const action = { display: "flex", alignItems: "center", gap: 5, fontFamily: FONT, fontWeight: 700, fontSize: T.base, borderRadius: R.md, padding: "8px 10px", border: "none", cursor: "pointer", background: P.bg, color: P.ink };
+const icon = { background: "transparent", border: "none", cursor: "pointer", padding: S.xs, lineHeight: 0 };
+const action = { display: "flex", alignItems: "center", gap: S.sm, fontFamily: FONT, fontWeight: 600, fontSize: T.base, borderRadius: R.md, padding: `${S.lg}px ${S.xl}px`, border: "none", cursor: "pointer", background: P.bg, color: P.ink };

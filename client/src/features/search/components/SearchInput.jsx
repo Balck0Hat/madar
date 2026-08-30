@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Search, X } from "lucide-react";
-import { C, FONT, alpha, T, R } from "../../../shared/constants/theme";
+import { C, FONT, alpha, T, R, S } from "../../../shared/constants/theme";
 
 // حقل البحث: تركيز تلقائي، مسح بالزر أو بمفتاح Escape، وبحث فوري بمفتاح Enter
 export default function SearchInput({ value, onChange, onSubmit, onClear, onFocus, onBlur }) {
@@ -12,7 +12,7 @@ export default function SearchInput({ value, onChange, onSubmit, onClear, onFocu
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, background: C.surface2, border: `1px solid ${C.line}`, borderRadius: R.xl, padding: "0 12px", height: 48 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: S.lg, background: C.surface2, border: `1px solid ${C.line}`, borderRadius: R.xl, padding: `0 ${S.x2}px`, height: 48 }}>
       <Search size={18} color={C.muted} aria-hidden="true" />
       <input
         ref={ref}

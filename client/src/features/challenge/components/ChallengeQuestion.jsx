@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C, alpha, inputStyle, T, R } from "../../../shared/constants/theme";
+import { C, alpha, inputStyle, T, R, S } from "../../../shared/constants/theme";
 import { Btn } from "../../../shared/components/ui";
 
 const TF = [["صح", true], ["خطأ", false]];
@@ -10,7 +10,7 @@ function Option({ label, picked, isCorrect, locked, onPick }) {
   const bd = locked && isCorrect ? C.green : locked && picked ? C.red : picked ? C.gold : C.line;
   return (
     <button type="button" onClick={locked ? undefined : onPick} disabled={locked} aria-pressed={picked}
-      style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.lg, padding: "10px 12px", color: C.text, textAlign: "start", cursor: locked ? "default" : "pointer", fontSize: T.md, lineHeight: 1.5, fontFamily: "inherit" }}>
+      style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.lg, padding: `${S.xl}px ${S.x2}px`, color: C.text, textAlign: "start", cursor: locked ? "default" : "pointer", fontSize: T.md, lineHeight: 1.5, fontFamily: "inherit" }}>
       {label}
     </button>
   );
@@ -30,7 +30,7 @@ export default function ChallengeQuestion({ question, result, submitting, onSubm
   if (choice) {
     const opts = question.t === "tf" ? TF : (question.opts || []).map((o, k) => [o, k]);
     return (
-      <div style={{ display: "grid", gap: 6, marginTop: 10 }} role="group" aria-label="اختر إجابة">
+      <div style={{ display: "grid", gap: S.md, marginTop: S.xl }} role="group" aria-label="اختر إجابة">
         {opts.map(([label, value]) => (
           <Option key={String(value)} label={label} picked={sel === value} isCorrect={isCorrectOpt(value)} locked={locked || submitting} onPick={() => pick(value)} />
         ))}
@@ -39,11 +39,11 @@ export default function ChallengeQuestion({ question, result, submitting, onSubm
   }
 
   if (!open) {
-    return <div style={{ marginTop: 10 }}><Btn small full={false} onClick={() => setOpen(true)}>جرّب</Btn></div>;
+    return <div style={{ marginTop: S.xl }}><Btn small full={false} onClick={() => setOpen(true)}>جرّب</Btn></div>;
   }
   return (
-    <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-      <input aria-label="إجابتك" value={sel || ""} onChange={(e) => setSel(e.target.value)} placeholder="اكتب إجابتك" disabled={locked || submitting} style={{ ...inputStyle, fontSize: T.md, padding: "10px 12px" }} />
+    <div style={{ display: "flex", gap: S.lg, marginTop: S.xl }}>
+      <input aria-label="إجابتك" value={sel || ""} onChange={(e) => setSel(e.target.value)} placeholder="اكتب إجابتك" disabled={locked || submitting} style={{ ...inputStyle, fontSize: T.md, padding: `${S.xl}px ${S.x2}px` }} />
       <Btn primary small full={false} disabled={!String(sel || "").trim() || locked || submitting} onClick={() => onSubmit(sel)}>أرسل</Btn>
     </div>
   );

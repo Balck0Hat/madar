@@ -1,23 +1,23 @@
 import { List } from "lucide-react";
-import { P, MONO, alpha, T, R } from "../../../shared/constants/theme";
+import { P, MONO, alpha, T, R, S, TAP } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 
 const pill = {
-  pointerEvents: "auto", display: "flex", alignItems: "center", gap: 2, padding: 3, borderRadius: R.pill,
+  pointerEvents: "auto", display: "flex", alignItems: "center", gap: S.xs, padding: S.xs, borderRadius: R.pill,
   background: P.card, border: `1px solid ${P.line}`, boxShadow: `0 6px 18px ${alpha(P.ink, 0.16)}`,
 };
 
 const key = (on) => ({
-  fontFamily: "inherit", fontWeight: 800, fontSize: T.lg, lineHeight: 1,
-  width: 38, height: 38, borderRadius: R.pill, display: "grid", placeItems: "center",
+  fontFamily: "inherit", fontWeight: 700, fontSize: T.lg, lineHeight: 1,
+  width: TAP, height: TAP, borderRadius: R.pill, display: "grid", placeItems: "center",
   background: "transparent", border: 0, color: on ? P.ink : P.muted,
   cursor: on ? "pointer" : "default", opacity: on ? 1 : 0.4,
 });
 
 // زر داخل شريط مجزّأ: المختار يأخذ خلفية داكنة ليُقرأ الفرق دون لون إضافي
 const seg = (on) => ({
-  fontFamily: "inherit", fontWeight: 800, fontSize: 12.5, lineHeight: 1, cursor: "pointer",
-  minHeight: 32, padding: "0 12px", borderRadius: R.pill, border: 0,
+  fontFamily: "inherit", fontWeight: 700, fontSize: T.sm, lineHeight: 1, cursor: "pointer",
+  minHeight: TAP, padding: `0 ${S.x2}px`, borderRadius: R.pill, border: 0,
   background: on ? P.ink : "transparent", color: on ? P.bg : P.muted,
 });
 
@@ -26,12 +26,12 @@ const seg = (on) => ({
 export default function ReaderTools({ font, mode, onMode, onIndex }) {
   const num = useNum();
   return (
-    <div style={{ position: "sticky", bottom: 8, zIndex: 2, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", padding: "0 14px 2px", pointerEvents: "none" }}>
+    <div style={{ position: "sticky", bottom: 8, zIndex: 2, display: "flex", justifyContent: "space-between", alignItems: "center", gap: S.lg, flexWrap: "wrap", padding: `0 ${S.x3}px ${S.xs}px`, pointerEvents: "none" }}>
       <div style={pill}>
-        <button type="button" onClick={onIndex} style={{ ...seg(false), display: "flex", alignItems: "center", gap: 5, color: P.ink }} aria-label="فهرس الدرس">
+        <button type="button" onClick={onIndex} style={{ ...seg(false), display: "flex", alignItems: "center", gap: S.sm, color: P.ink }} aria-label="فهرس الدرس">
           <List size={14} aria-hidden="true" />فهرس
         </button>
-        <span style={{ width: 1, height: 18, background: P.line, margin: "0 2px" }} aria-hidden="true" />
+        <span style={{ width: 1, height: 18, background: P.line, margin: `0 ${S.xs}px` }} aria-hidden="true" />
         <button type="button" onClick={() => onMode("cards")} style={seg(mode === "cards")} aria-pressed={mode === "cards"}>بطاقات</button>
         <button type="button" onClick={() => onMode("scroll")} style={seg(mode === "scroll")} aria-pressed={mode === "scroll"}>تمرير</button>
       </div>

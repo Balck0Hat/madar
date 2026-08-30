@@ -1,5 +1,5 @@
 import { Flame, Zap } from "lucide-react";
-import { C, FONT, MONO, T, R } from "../../../shared/constants/theme";
+import { C, FONT, MONO, T, R, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 
 // السلسلة ونقاط الأسبوع فقط.
@@ -12,13 +12,13 @@ export default function StatsRow({ streak, weeklyXp }) {
     [Zap, "نقاط الأسبوع", num(weeklyXp), C.gold, MONO],
   ];
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: S.lg }}>
       {items.map(([I, l, v, col, font]) => (
-        <div key={l} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: "10px 12px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted, fontSize: T.xs }}>
+        <div key={l} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: `${S.xl}px ${S.x2}px` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: S.md, color: C.muted, fontSize: T.xs }}>
             <I size={13} color={col} aria-hidden="true" />{l}
           </div>
-          <div style={{ fontWeight: 800, fontSize: T.xl, marginTop: 4, fontFamily: font }}>{v}</div>
+          <div style={{ fontWeight: 700, fontSize: T.xl, marginTop: S.sm, fontFamily: font }}>{v}</div>
         </div>
       ))}
     </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C, MONO, inputStyle, alpha, T, R } from "../../../shared/constants/theme";
+import { C, MONO, inputStyle, alpha, T, R, S } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { vibrate } from "../../../shared/utils/text";
 import { useNum } from "../../../shared/context/NumContext";
@@ -58,7 +58,7 @@ export default function QuizRunner({ unitId, questions, saved, onFinish, onBack 
     const bg = locked && isCorrect ? alpha(C.green, 0.2) : locked && isSel ? alpha(C.red, 0.2) : isSel ? alpha(info.color, 0.15) : C.surface;
     const bd = locked && isCorrect ? C.green : locked && isSel ? C.red : isSel ? info.color : C.line;
     return (
-      <button key={key} type="button" className={locked && isSel && !isCorrect ? "madar-shake" : ""} onClick={() => !locked && onPick()} aria-pressed={isSel} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.xl, padding: "13px 14px", color: C.text, textAlign: "start", cursor: "pointer", fontSize: T.lg, lineHeight: 1.5 }}>
+      <button key={key} type="button" className={locked && isSel && !isCorrect ? "madar-shake" : ""} onClick={() => !locked && onPick()} aria-pressed={isSel} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.xl, padding: `${S.x2}px ${S.x3}px`, color: C.text, textAlign: "start", cursor: "pointer", fontSize: T.lg, lineHeight: 1.5 }}>
         {label}
       </button>
     );
@@ -71,11 +71,11 @@ export default function QuizRunner({ unitId, questions, saved, onFinish, onBack 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <TopBar title="الاختبار" onBack={onBack} right={<span style={{ fontFamily: MONO, color: C.muted, fontSize: T.sm }}>{num(i + 1)}/{num(total)}</span>} />
-      <div style={{ padding: "0 16px 8px" }}><Bar value={(i + (locked ? 1 : 0)) / total} color={info.color} h={4} /></div>
-      <div key={i} className="madar-in" style={{ flex: 1, padding: "10px 18px" }}>
-        <div style={{ color: C.muted, fontSize: T.sm, fontWeight: 700 }}>{PROMPT[q.t]}</div>
-        <div style={{ fontSize: T.x3, fontWeight: 800, margin: "8px 0 16px", lineHeight: 1.6 }}>{q.q}</div>
-        <div style={{ display: "grid", gap: 8 }}>
+      <div style={{ padding: `0 ${S.x4}px ${S.lg}px` }}><Bar value={(i + (locked ? 1 : 0)) / total} color={info.color} h={4} /></div>
+      <div key={i} className="madar-in" style={{ flex: 1, padding: `${S.xl}px ${S.x4}px` }}>
+        <div style={{ color: C.muted, fontSize: T.sm, fontWeight: 600 }}>{PROMPT[q.t]}</div>
+        <div style={{ fontSize: T.x3, fontWeight: 700, margin: `${S.lg}px 0 ${S.x4}px`, lineHeight: 1.6 }}>{q.q}</div>
+        <div style={{ display: "grid", gap: S.lg }}>
           {q.t === "mcq" && q.opts.map((o, k) => opt(o, k, k === q.a, sel === k, () => setSel(k)))}
           {q.t === "tf" && [["صح", true], ["خطأ", false]].map(([l, v]) => opt(l, l, v === q.a, sel === v, () => setSel(v)))}
           {q.t === "fill" && <input aria-label="إجابتك" value={sel || ""} onChange={(e) => !locked && setSel(e.target.value)} placeholder="اكتب إجابتك" style={inputStyle} />}
@@ -84,13 +84,13 @@ export default function QuizRunner({ unitId, questions, saved, onFinish, onBack 
         </div>
         {locked && selfOpen && <OpenSelfCheck q={q} mark={mark} onMark={pickMark} />}
         {locked && !selfOpen && (
-          <div className="madar-in" role="status" style={{ marginTop: 16, background: alpha(verdictColor, 0.12), border: `1px solid ${alpha(verdictColor, 0.4)}`, borderRadius: R.xl, padding: "12px 14px" }}>
-            <div style={{ fontWeight: 800, color: verdictColor, marginBottom: 4 }}>{verdict}</div>
+          <div className="madar-in" role="status" style={{ marginTop: S.x4, background: alpha(verdictColor, 0.12), border: `1px solid ${alpha(verdictColor, 0.4)}`, borderRadius: R.xl, padding: `${S.x2}px ${S.x3}px` }}>
+            <div style={{ fontWeight: 700, color: verdictColor, marginBottom: S.sm }}>{verdict}</div>
             {q.t !== "open" && <div style={{ fontSize: T.md, lineHeight: 1.7 }}>{q.why}</div>}
           </div>
         )}
       </div>
-      <div style={{ padding: "8px 16px 22px" }}>
+      <div style={{ padding: `${S.lg}px ${S.x4}px ${S.x5}px` }}>
         {!locked
           ? <Btn primary color={info.color} disabled={!isReady(q, sel)} onClick={check}>تحقق</Btn>
           : <Btn primary disabled={submitting || !canAdvance} onClick={next}>{submitting ? "يُصحَّح..." : i + 1 < total ? "التالي" : "النتيجة"}</Btn>}

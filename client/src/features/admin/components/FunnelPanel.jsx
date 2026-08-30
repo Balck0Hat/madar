@@ -1,4 +1,4 @@
-import { C, T, R } from "../../../shared/constants/theme";
+import { C, T, R, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { Card, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
@@ -15,13 +15,13 @@ export default function FunnelPanel() {
 
   return (
     <Card>
-      <h3 style={{ margin: 0, fontSize: T.lg, fontWeight: 800 }}>أين يتوقف المتعلمون</h3>
-      <p style={{ margin: "4px 0 10px", color: C.muted, fontSize: T.sm, lineHeight: 1.7 }}>
+      <h3 style={{ margin: 0, fontSize: T.lg, fontWeight: 700 }}>أين يتوقف المتعلمون</h3>
+      <p style={{ margin: `${S.sm}px 0 ${S.xl}px`, color: C.muted, fontSize: T.sm, lineHeight: 1.7 }}>
         رحلة كل وحدة من الفتح إلى الإنهاء خلال آخر {num(data?.days || 90)} يوماً، مرتّبة بالأسوأ إتماماً أولاً.
       </p>
-      <ul style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", margin: "0 0 12px", padding: 0, listStyle: "none" }}>
+      <ul style={{ display: "flex", flexWrap: "wrap", gap: `${S.sm}px ${S.x2}px`, margin: `0 0 ${S.x2}px`, padding: 0, listStyle: "none" }}>
         {STAGES.map((s, i) => (
-          <li key={s.key} style={{ display: "flex", alignItems: "center", gap: 5, color: C.muted, fontSize: T.xs }}>
+          <li key={s.key} style={{ display: "flex", alignItems: "center", gap: S.sm, color: C.muted, fontSize: T.xs }}>
             <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: R.pill, background: s.color, display: "inline-block" }} />
             {num(i + 1)}. {s.label}
           </li>
@@ -30,7 +30,7 @@ export default function FunnelPanel() {
       {!units.length ? (
         <EmptyState title="لا رحلات مسجّلة بعد" text="تظهر هنا بعد أن يفتح المتعلمون الوحدات ويقرؤوا بطاقاتها." />
       ) : (
-        <div style={{ display: "grid", gap: 12 }}>
+        <div style={{ display: "grid", gap: S.x2 }}>
           {units.map((row) => <FunnelBars key={row.unitId} row={row} />)}
         </div>
       )}

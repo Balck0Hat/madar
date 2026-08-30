@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { C, inputStyle, alpha, T, R } from "../../../shared/constants/theme";
+import { C, inputStyle, alpha, T, R, S } from "../../../shared/constants/theme";
 import { Btn, TopBar } from "../../../shared/components/ui";
 import { register, login } from "../services/auth.service";
 
@@ -8,9 +8,9 @@ const FIELD_LABEL = { name: "الاسم", email: "البريد الإلكترو�
 function Field({ id, label, error, ...props }) {
   return (
     <div>
-      <label htmlFor={id} style={{ display: "block", fontSize: T.base, fontWeight: 700, marginBottom: 6 }}>{label}</label>
+      <label htmlFor={id} style={{ display: "block", fontSize: T.base, fontWeight: 600, marginBottom: S.md }}>{label}</label>
       <input id={id} aria-describedby={error ? `${id}-err` : undefined} aria-invalid={!!error} style={{ ...inputStyle, borderColor: error ? C.red : C.line }} {...props} />
-      {error && <div id={`${id}-err`} style={{ color: C.red, fontSize: T.sm, marginTop: 6 }}>{error}</div>}
+      {error && <div id={`${id}-err`} style={{ color: C.red, fontSize: T.sm, marginTop: S.md }}>{error}</div>}
     </div>
   );
 }
@@ -55,12 +55,12 @@ export default function AuthScreen({ mode: initialMode = "register", canRegister
   return (
     <div className="madar-in" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <TopBar title={isRegister ? "حساب جديد" : "تسجيل الدخول"} onBack={onBack} />
-      <form onSubmit={submit} noValidate style={{ padding: "8px 22px 32px", display: "grid", gap: 14, flex: 1, alignContent: "start" }}>
+      <form onSubmit={submit} noValidate style={{ padding: `${S.lg}px ${S.x5}px ${S.x7}px`, display: "grid", gap: S.x3, flex: 1, alignContent: "start" }}>
         <div style={{ color: C.muted, fontSize: T.md, lineHeight: 1.7 }}>{isRegister ? "يُحفظ تقدمك على حسابك وتعود إليه من أي جهاز." : canRegister ? "أهلاً بعودتك." : "التسجيل مغلق حالياً، والدخول متاح لأصحاب الحسابات."}</div>
         {isRegister && <Field id="name" label="الاسم" value={form.name} onChange={set("name")} onBlur={() => setErrors((x) => ({ ...x, ...(form.name.trim() ? { name: undefined } : {}) }))} error={errors.name} autoComplete="name" autoFocus />}
         <Field id="email" label="البريد الإلكتروني" type="email" dir="ltr" value={form.email} onChange={set("email")} error={errors.email} autoComplete="email" autoFocus={!isRegister} />
         <Field id="password" label="كلمة المرور" type="password" dir="ltr" value={form.password} onChange={set("password")} error={errors.password} autoComplete={isRegister ? "new-password" : "current-password"} />
-        {topError && <div role="alert" style={{ background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: R.lg, padding: "10px 12px", fontSize: T.base }}>{topError}</div>}
+        {topError && <div role="alert" style={{ background: alpha(C.red, 0.12), border: `1px solid ${alpha(C.red, 0.4)}`, borderRadius: R.lg, padding: `${S.xl}px ${S.x2}px`, fontSize: T.base }}>{topError}</div>}
         <Btn primary disabled={busy} onClick={submit}>{busy ? "لحظة..." : isRegister ? "أنشئ الحساب" : "ادخل"}</Btn>
         {canRegister && (
           <Btn ghost onClick={() => { setMode(isRegister ? "login" : "register"); setErrors({}); setTopError(""); }}>

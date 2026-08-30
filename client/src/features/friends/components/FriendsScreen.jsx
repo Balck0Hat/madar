@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { C, T } from "../../../shared/constants/theme";
+import { C, T, S } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { TopBar, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
 import { getFriends, getFriendsLeague } from "../services/friends.service";
@@ -11,8 +11,8 @@ import FriendsList from "./FriendsList";
 import FriendsLeague from "./FriendsLeague";
 
 const Section = ({ title, children }) => (
-  <section style={{ display: "grid", gap: 8 }}>
-    <h2 style={{ fontWeight: 800, fontSize: T.xl, margin: "6px 0 0" }}>{title}</h2>
+  <section style={{ display: "grid", gap: S.lg }}>
+    <h2 style={{ fontWeight: 700, fontSize: T.xl, margin: `${S.md}px 0 0` }}>{title}</h2>
     {children}
   </section>
 );
@@ -29,9 +29,9 @@ export default function FriendsScreen({ myHandle, onBack, onToast }) {
   const nothing = !friends.length && !incoming.length && !outgoing.length;
 
   return (
-    <div className="madar-in" style={{ paddingBottom: 90 }}>
+    <div className="madar-in madar-tabpad madar-col">
       <TopBar title="الأصدقاء" onBack={onBack} />
-      <div style={{ padding: "0 16px", display: "grid", gap: 12 }}>
+      <div style={{ padding: `0 ${S.x4}px`, display: "grid", gap: S.x2 }}>
         {list.loading && <Skeleton lines={5} />}
         {list.error && <ErrorState message={list.error.message} onRetry={list.reload} onBack={onBack} />}
         {list.data && (

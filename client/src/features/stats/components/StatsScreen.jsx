@@ -4,6 +4,7 @@ import { getStats } from "../services/stats.service";
 import WeeklyXpChart from "./WeeklyXpChart";
 import DomainPanel from "./DomainPanel";
 import StatTiles from "./StatTiles";
+import { S } from "../../../shared/constants/theme";
 
 // إحصاءاتي: النقاط الأسبوعية، إنجاز المجالات، وبطاقات موجزة
 export default function StatsScreen({ onBack }) {
@@ -12,9 +13,9 @@ export default function StatsScreen({ onBack }) {
   const empty = data && !data.weeks.some((w) => w.xp > 0) && !data.byDomain.some((d) => d.done > 0);
 
   return (
-    <div className="madar-in" style={{ paddingBottom: 90 }}>
+    <div className="madar-in madar-tabpad madar-col">
       <TopBar title="إحصاءاتي" onBack={onBack} />
-      <div style={{ padding: "0 16px", display: "grid", gap: 12 }} aria-live="polite" aria-busy={loading}>
+      <div style={{ padding: `0 ${S.x4}px`, display: "grid", gap: S.x2 }} aria-live="polite" aria-busy={loading}>
         {loading && <Skeleton lines={5} />}
         {error && <ErrorState message={error.message} onRetry={reload} onBack={onBack} />}
         {empty && <EmptyState title="لا إحصاءات بعد" text="ابدأ أول وحدة لترى إحصاءاتك." action="إلى الخريطة" onAction={onBack} />}
