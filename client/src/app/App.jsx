@@ -4,7 +4,6 @@ import { C, P, FONT } from "../shared/constants/theme";
 import { nextUnit } from "../shared/utils/progress";
 import { isCenter } from "../shared/utils/units";
 import { PrefsProvider } from "../shared/context/PrefsContext";
-import { I18nProvider, LOCALES, DEFAULT_LOCALE } from "../shared/i18n";
 import { CSS } from "../shared/styles/global";
 import { TabBar, SideNav, Toast, ShortcutsHelp } from "../shared/components/ui";
 import { useShortcuts } from "../shared/hooks/useShortcuts";
@@ -85,7 +84,7 @@ function Shell() {
 
   return (
     <PrefsProvider value={prefs}>
-      <div className="madar madar-app" dir={LOCALES[DEFAULT_LOCALE].dir} style={{ background: paper ? P.bg : C.bg, color: paper ? P.ink : C.text, fontFamily: FONT, transition: "background .4s" }}>
+      <div className="madar madar-app" dir="rtl" style={{ background: paper ? P.bg : C.bg, color: paper ? P.ink : C.text, fontFamily: FONT, transition: "background .4s" }}>
         <style>{CSS}</style>
         {!focus && profile && <SideNav path={pathname} onGo={nav} name={profile.name} />}
         <main className={`madar-main${focus ? " is-focus" : ""}`}>
@@ -154,9 +153,5 @@ function QuizRoute({ finish, nav }) {
 }
 
 export default function App() {
-  return (
-    <I18nProvider locale={DEFAULT_LOCALE}>
-      <BrowserRouter><Shell /></BrowserRouter>
-    </I18nProvider>
-  );
+  return <BrowserRouter><Shell /></BrowserRouter>;
 }

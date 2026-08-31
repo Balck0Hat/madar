@@ -7,14 +7,53 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../shared/data/seed/units");
 const RESERVE = 6;
+const TYPES = ["mcq", "tf", "fill", "order"];
 
 // ترتيب طبيعي (q9 قبل q10) حتى يبقى الاختيار حتمياً ومستقلاً عن ترتيب الملف
 const byQid = (a, b) => String(a.qid).localeCompare(String(b.qid), "en", { numeric: true });
 
-// الأسئلة المفتوحة تُصحَّح نصياً فلا تصلح للامتحان؛ نأخذ آخر 6 مغلقة بترتيب qid
+// حصّة كل نوع بنسبته في البنك، بطريقة أكبر البواقي.
+// الاختيار السابق — آخر ستة بترتيب qid — كان يتبع ترتيب الكتابة لا التوازن،
+// وأسئلة الإكمال والترتيب تُكتب في آخر البنك عادةً، فخرج امتحان 59% منه
+// إكمال وترتيب بينما البنك 14%؛ أي أن المتعلّم يتمرّن على نوع ويُمتحن بآخر.
+export function quota(counts, want = RESERVE) {
+  const total = TYPES.reduce((sum, t) => sum + (counts[t] || 0), 0);
+  if (!total) return {};
+  const exact = {}, take = {};
+  for (const t of TYPES) {
+    exact[t] = ((counts[t] || 0) / total) * want;
+    take[t] = Math.min(counts[t] || 0, Math.floor(exact[t]));
+  }
+  // الباقي للأنواع الأكبر كسراً، ثم الأوفر في البنك، ثم أبجدياً — كله حتمي
+  const rank = [...TYPES].sort((a, b) =>
+    (exact[b] % 1) - (exact[a] % 1) || (counts[b] || 0) - (counts[a] || 0) || a.localeCompare(b));
+  let left = want - TYPES.reduce((sum, t) => sum + take[t], 0);
+  while (left > 0) {
+    const before = left;
+    for (const t of rank) {
+      if (left === 0) break;
+      if (take[t] < (counts[t] || 0)) { take[t]++; left--; }
+    }
+    if (left === before) break; // نفد المتاح: الوحدة أقلّ من الحصة
+  }
+  return take;
+}
+
+// الأسئلة المفتوحة تُصحَّح نصياً فلا تصلح للامتحان
 export function reservedQids(questions) {
   const closed = questions.filter((q) => q.t !== "open" && q.qid).sort(byQid);
-  return new Set(closed.slice(-RESERVE).map((q) => q.qid));
+  const byType = {};
+  for (const q of closed) (byType[q.t] ||= []).push(q);
+  const counts = Object.fromEntries(TYPES.map((t) => [t, (byType[t] || []).length]));
+  const take = quota(counts);
+  const picked = new Set();
+  // من آخر كل نوع: المتأخر في البنك أميل إلى التركيب، والاختيار يبقى حتمياً.
+  // الحصة صفراً تُتخطّى صراحةً: slice(-0) هي slice(0) فتعيد النوع كلّه.
+  for (const t of TYPES) {
+    const n = take[t] || 0;
+    if (n > 0) for (const q of (byType[t] || []).slice(-n)) picked.add(q.qid);
+  }
+  return picked;
 }
 
 // تعديل نصي محض: نُزيل العلامات القديمة ثم نضيفها بعد qid مباشرة.

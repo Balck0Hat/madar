@@ -36,6 +36,10 @@ export const env = {
   // والإطفاء قرار يُتخذ عمداً لا حالة يقع فيها من نسي ضبط البيئة.
   rateLimit: {
     enabled: process.env.RATE_LIMIT_ENABLED !== "false",
+    // مفتاح مستقلّ عمداً: إطفاء الحدّ العام قرار راحة أثناء التصفّح، أما
+    // ترك الدخول بلا سقف فيفتح تخمين كلمات السرّ على الحسابات القائمة.
+    // من أراد إطفاءه فليطفئه صراحةً، ولا يسقط تبعاً لقرار آخر.
+    authEnabled: process.env.RATE_LIMIT_AUTH_ENABLED !== "false",
     max: Number(process.env.RATE_LIMIT_MAX || 1000),
     authMax: Number(process.env.RATE_LIMIT_AUTH_MAX || 50),
   },
