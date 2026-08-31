@@ -6,8 +6,14 @@ export const CSS = `
   --bg:#0B1020; --surface:#141B33; --surface2:#1B2444; --line:#2C3760;
   --text:#F2EFE6; --muted:#8C93AD; --gold:#F2B544; --gold-soft:rgba(242,181,68,.16);
   --green:#3FB68B; --red:#F26B5B;
-  --paper-bg:#F3EBDD; --paper-ink:#1E2235; --paper-muted:#656878; --paper-line:#D5C8B0;
-  --paper-panel:#0B1020; --paper-card:#FBF7EE; --paper-gold:#896115;
+  /* الورق يتبع السمة أيضاً. كان كريمياً في الوضعين، فالوضع الداكن كان يتوقف
+     عند باب الدرس: من يقرأ ليلاً تنفتح في وجهه صفحة فاتحة بملء الشاشة —
+     وهي الشاشة التي يقضي فيها معظم وقته. الحبر أبيض دافئ لا ناصع، والصفحة
+     أفتح قليلاً من خلفية التطبيق لتبقى «ورقة» موضوعة فوقها لا امتداداً لها. */
+  --paper-bg:#151A28; --paper-ink:#E9E4D8; --paper-muted:#8C93AD; --paper-line:#2E3648;
+  --paper-panel:#0E1320; --paper-card:#1C2233; --paper-gold:#F2B544;
+  /* لمعة الهيكل تسير نحو الأفتح، وهي جهة تنقلب مع السمة فلا تُشتق من الحبر */
+  --paper-shine:rgba(233,228,216,.14);
   --shadow-1:0 1px 2px rgba(0,0,0,.35);
   --shadow-2:0 6px 18px rgba(0,0,0,.40);
   --shadow-3:0 18px 48px rgba(0,0,0,.55);
@@ -23,6 +29,7 @@ export const CSS = `
   --green:#1A7352; --red:#B33D2B;
   --paper-bg:#FFFDF7; --paper-ink:#1B2033; --paper-muted:#64697E; --paper-line:#DED4C0;
   --paper-panel:#1B2033; --paper-card:#F6F1E5; --paper-gold:#8A610F;
+  --paper-shine:rgba(255,255,255,.9);
   --shadow-1:0 1px 2px rgba(27,32,51,.08);
   --shadow-2:0 6px 18px rgba(27,32,51,.12);
   --shadow-3:0 18px 48px rgba(27,32,51,.20);

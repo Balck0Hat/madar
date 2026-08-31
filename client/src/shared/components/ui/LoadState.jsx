@@ -16,7 +16,7 @@ const SHIMMER_CSS = `
 export function Skeleton({ lines = 4, paper = false }) {
   // على الورق يكون السطح فاتحاً فاللمعة أفتح منه، وفي الواجهة الداكنة تعتمد على لون النص
   const base = paper ? alpha(P.ink, 0.08) : C.surface2;
-  const shine = paper ? alpha(P.card, 0.9) : alpha(C.text, 0.09);
+  const shine = paper ? "var(--paper-shine)" : alpha(C.text, 0.09);
   return (
     <div aria-busy="true" aria-live="polite" style={{ display: "grid", gap: S.xl, padding: `${S.lg}px 0` }}>
       <style>{SHIMMER_CSS}</style>

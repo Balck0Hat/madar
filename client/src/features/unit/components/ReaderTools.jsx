@@ -1,10 +1,11 @@
 import { List } from "lucide-react";
-import { P, MONO, alpha, T, R, S, TAP } from "../../../shared/constants/theme";
+import { P, MONO, T, R, S, TAP } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 
 const pill = {
   pointerEvents: "auto", display: "flex", alignItems: "center", gap: S.xs, padding: S.xs, borderRadius: R.pill,
-  background: P.card, border: `1px solid ${P.line}`, boxShadow: `0 6px 18px ${alpha(P.ink, 0.16)}`,
+  // الظل من رمز السمة: مشتقّاً من الحبر كان ينقلب إلى هالة مضيئة على ورق داكن
+  background: P.card, border: `1px solid ${P.line}`, boxShadow: "var(--shadow-2)",
 };
 
 const key = (on) => ({

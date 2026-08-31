@@ -106,6 +106,15 @@ describe("palette legibility", () => {
     ["--paper-ink", "--paper-bg"], ["--paper-muted", "--paper-bg"],
     ["--paper-muted", "--paper-card"], ["--paper-gold", "--paper-bg"],
   ];
+  // شاشة الدرس كانت كريمية في السمتين، فالوضع الداكن يقف عند بابها ومن يقرأ
+  // ليلاً تنفتح في وجهه صفحة فاتحة بملء الشاشة. الورق يجب أن يتبع السمة.
+  it("should give the reading surface a night mode of its own", () => {
+    expect(lum(themes.dark["--paper-bg"])).toBeLessThan(lum(themes.dark["--paper-ink"]));
+    expect(lum(themes.light["--paper-bg"])).toBeGreaterThan(lum(themes.light["--paper-ink"]));
+    // وألّا تكون ورقة الليل أفتح من خلفية التطبيق التي وُضعت فوقها
+    expect(lum(themes.dark["--paper-bg"])).toBeLessThan(lum(themes.light["--paper-bg"]));
+  });
+
   for (const [mode, vars] of Object.entries(themes)) {
     for (const [fg, bg] of pairs) {
       it(`should keep ${fg} readable on ${bg} in ${mode}`, () => {
