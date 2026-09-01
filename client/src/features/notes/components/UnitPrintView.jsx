@@ -39,6 +39,8 @@ export default function UnitPrintView({ unit, info, notes = [] }) {
       {(unit.cards || []).map((card, i) => (
         <Block key={i} title={`${i + 1}. ${card.h}`}>
           <p>{card.p}</p>
+          {card.points?.length > 0 && <ul>{card.points.map((t, k) => <li key={k}>{t}</li>)}</ul>}
+          {card.after && <p>{card.after}</p>}
         </Block>
       ))}
       {unit.tryIt && <Block title={`جرّب: ${unit.tryIt.title}`}><p>{unit.tryIt.text}</p></Block>}

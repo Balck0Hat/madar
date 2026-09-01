@@ -2,7 +2,21 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const cardSchema = new Schema({ h: { type: String, trim: true }, p: { type: String, trim: true }, art: { type: String, default: "wheel" }, img: String }, { _id: false });
+// البطاقة ثلاث كتل: نثر، ثم تعداد، ثم نثر بعده. التعداد في هذه المادة يقع
+// وسط الفقرة لا في آخرها، فلو أُلحق في الذيل لخرج عن موضعه من الكلام.
+// الحقلان اختياريان: بطاقة بلا تعداد تبقى نثراً خالصاً كما هي، ولا تُفرض
+// القائمة على ما ليس فيه ما يُعدّ.
+const cardSchema = new Schema(
+  {
+    h: { type: String, trim: true },
+    p: { type: String, trim: true },
+    points: [String],
+    after: { type: String, trim: true },
+    art: { type: String, default: "wheel" },
+    img: String,
+  },
+  { _id: false },
+);
 
 const questionSchema = new Schema(
   {
@@ -45,8 +59,8 @@ const unitSchema = new Schema(
 // فهرس نصي للبحث؛ default_language "none" لأن تجذيع مونغو لا يدعم العربية
 // (البحث الأساسي بـregex لالتقاط الأجزاء، وهذا الفهرس يلتقط الكلمات المتفرقة)
 unitSchema.index(
-  { title: "text", spark: "text", "cards.h": "text", "cards.p": "text", summary: "text" },
-  { name: "unit_text", default_language: "none", weights: { title: 10, "cards.h": 4, summary: 3, spark: 2, "cards.p": 1 } },
+  { title: "text", spark: "text", "cards.h": "text", "cards.p": "text", "cards.points": "text", "cards.after": "text", summary: "text" },
+  { name: "unit_text", default_language: "none", weights: { title: 10, "cards.h": 4, summary: 3, spark: 2, "cards.p": 1, "cards.points": 1, "cards.after": 1 } },
 );
 
 // الأسئلة المعروضة للمتعلم لا تحمل الكلمات المفتاحية.

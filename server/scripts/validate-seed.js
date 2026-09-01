@@ -16,7 +16,8 @@ function checkUnit(u) {
   const parsed = unitBody.strict().safeParse((({ unitId, ...rest }) => rest)(u));
   if (!parsed.success) errs.push(...parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`));
   if ((u.cards || []).length < MIN_CARDS) errs.push(`البطاقات ${u.cards?.length || 0} < ${MIN_CARDS}`);
-  (u.cards || []).forEach((c, i) => { if (words(c.p) > MAX_WORDS) errs.push(`بطاقة ${i + 1}: ${words(c.p)} كلمة > ${MAX_WORDS}`); });
+  // البنود متن أيضاً: تُحسب مع الفقرة كي لا يتسلّل الطول من باب القائمة
+  (u.cards || []).forEach((c, i) => { const w = words(c.p) + words((c.points || []).join(" ")) + words(c.after || ""); if (w > MAX_WORDS) errs.push(`بطاقة ${i + 1}: ${w} كلمة > ${MAX_WORDS}`); });
   const qs = u.questions || [];
   if (qs.length < MIN_Q) errs.push(`الأسئلة ${qs.length} < ${MIN_Q}`);
   const ids = new Set();

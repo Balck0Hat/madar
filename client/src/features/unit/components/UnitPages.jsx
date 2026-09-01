@@ -54,6 +54,22 @@ export function GoalsPage({ goals }) {
   );
 }
 
+// التعداد المحشور في النثر يُقرأ سرداً لا قائمة: العين لا تعدّ ما لا يُرى
+// مفصولاً. البنود هنا صفوف، كل بند سطره، بعلامة مدار صغيرة تحمل لون المجال.
+function Points({ items, color }) {
+  if (!items?.length) return null;
+  return (
+    <ul style={{ ...body, listStyle: "none", margin: `${S.x2}px 0 0`, padding: 0, display: "grid", gap: S.xl }}>
+      {items.map((t, i) => (
+        <li key={i} style={{ display: "flex", gap: S.x2, alignItems: "flex-start" }}>
+          <span aria-hidden="true" style={{ flexShrink: 0, width: 7, height: 7, borderRadius: R.pill, background: color || P.gold, marginTop: "0.62em" }} />
+          <span style={{ minWidth: 0 }}>{t}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function CardPage({ card, index, color, mark = plain }) {
   const num = useNum();
   return (
@@ -62,6 +78,8 @@ export function CardPage({ card, index, color, mark = plain }) {
       <div style={{ color: color || P.gold, fontSize: ".75em", fontWeight: 600, marginTop: S.x3 }}>البطاقة {num(index)}</div>
       <div style={{ fontSize: "1.38em", fontWeight: 700, margin: `${S.sm}px 0 ${S.xl}px`, lineHeight: 1.4 }}>{card.h}</div>
       <div style={body}>{mark(card.p)}</div>
+      <Points items={card.points} color={color} />
+      {card.after && <div style={{ ...body, marginTop: S.x2 }}>{mark(card.after)}</div>}
     </div>
   );
 }
