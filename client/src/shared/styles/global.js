@@ -57,6 +57,10 @@ html { -webkit-text-size-adjust: 100%; }
 /* خلوص الشريط السفلي: رقم واحد بدل تسعين مكرَّرة في ستّ شاشات، ويزيد بمقدار
    منطقة الأمان على الأجهزة التي لها واحدة، ويسقط على سطح المكتب حيث لا شريط. */
 .madar-tabpad{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+
+/* عمود القراءة: كان الحدّ مقصوراً على سطح المكتب، فالسطر على اللوح يبلغ
+   ضعف طوله المريح. 62 محرفاً حدّ العين قبل أن تخطئ بداية السطر التالي. */
+.madar-read{max-width:62ch;margin-inline:auto}
 @media (min-width:${BP.desk}px){
   .madar-app{gap:0}
   .madar-main{max-width:${BP.appMax}px;padding-inline-start:232px;padding-bottom:0}
@@ -68,7 +72,6 @@ html { -webkit-text-size-adjust: 100%; }
   .madar-side{display:flex;position:fixed;inset-block:0;inset-inline-start:calc(50% - 560px);width:216px;flex-direction:column;gap:6px;padding:22px 14px;border-inline-end:1px solid var(--line);background:var(--surface)}
   .madar-wide{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:22px;align-items:start;padding:0 16px}
   .madar-wide > *{min-width:0}
-  .madar-read{max-width:70ch;margin-inline:auto}
   .madar-hide-lg{display:none !important}
 }
 @media (min-width:${BP.desk}px) and (max-width:${BP.narrowDesk}px){

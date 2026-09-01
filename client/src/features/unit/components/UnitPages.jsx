@@ -2,6 +2,7 @@ import { Clock, Check } from "lucide-react";
 import { P, MONO, READ, R, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 import Art from "../../../shared/components/art/Art";
+import Prose from "../../../shared/components/ui/Prose";
 
 // متن الدرس: خط نسخ للقراءة الطويلة وسطر مريح.
 // القياسات نسبية (em) عمداً كي تتبع درجة حجم النص التي يختارها القارئ.
@@ -9,7 +10,7 @@ const body = { fontFamily: READ, fontSize: "1.07em", lineHeight: 1.95 };
 
 // mark: دالة تلفّ النص بتظليلات القارئ. افتراضها الهوية كي تبقى الصفحات
 // قابلة للاستخدام (وللاختبار) بمعزل عن ميزة التظليل.
-const plain = (t) => t;
+const plain = (t) => <Prose text={t} />;
 
 // hint: تعليمة التنقّل بالسحب. تُخفى في وضع التمرير لأنها تصف حركة لا وجود لها هناك.
 export function SparkPage({ info, content, mark = plain, hint = true }) {

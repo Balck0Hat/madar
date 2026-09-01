@@ -1,8 +1,9 @@
+import Prose from "../../../shared/components/ui/Prose";
 import { PrintUnitButton } from "../../notes";
 import ThreadPage from "./ThreadPage";
 import { SparkPage, GoalsPage, CardPage, TryPage, DeepPage, EndPage } from "./UnitPages";
 
-const plain = (t) => t;
+const plain = (t) => <Prose text={t} />;
 
 // متن قسم واحد بلا أي حالة. مفصول عن PageBody عمداً: وضع التمرير يعرض كل
 // الأقسام دفعة واحدة، ولو حمل كل قسم خطّاف التظليل الخاص به لصار لكل درس
