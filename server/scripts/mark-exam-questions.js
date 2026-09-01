@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { allocate } from "../shared/utils/allocate.js";
 
 const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../shared/data/seed/units");
 const RESERVE = 6;
@@ -12,32 +13,11 @@ const TYPES = ["mcq", "tf", "fill", "order"];
 // ترتيب طبيعي (q9 قبل q10) حتى يبقى الاختيار حتمياً ومستقلاً عن ترتيب الملف
 const byQid = (a, b) => String(a.qid).localeCompare(String(b.qid), "en", { numeric: true });
 
-// حصّة كل نوع بنسبته في البنك، بطريقة أكبر البواقي.
+// حصّة كل نوع بنسبته في البنك.
 // الاختيار السابق — آخر ستة بترتيب qid — كان يتبع ترتيب الكتابة لا التوازن،
 // وأسئلة الإكمال والترتيب تُكتب في آخر البنك عادةً، فخرج امتحان 59% منه
 // إكمال وترتيب بينما البنك 14%؛ أي أن المتعلّم يتمرّن على نوع ويُمتحن بآخر.
-export function quota(counts, want = RESERVE) {
-  const total = TYPES.reduce((sum, t) => sum + (counts[t] || 0), 0);
-  if (!total) return {};
-  const exact = {}, take = {};
-  for (const t of TYPES) {
-    exact[t] = ((counts[t] || 0) / total) * want;
-    take[t] = Math.min(counts[t] || 0, Math.floor(exact[t]));
-  }
-  // الباقي للأنواع الأكبر كسراً، ثم الأوفر في البنك، ثم أبجدياً — كله حتمي
-  const rank = [...TYPES].sort((a, b) =>
-    (exact[b] % 1) - (exact[a] % 1) || (counts[b] || 0) - (counts[a] || 0) || a.localeCompare(b));
-  let left = want - TYPES.reduce((sum, t) => sum + take[t], 0);
-  while (left > 0) {
-    const before = left;
-    for (const t of rank) {
-      if (left === 0) break;
-      if (take[t] < (counts[t] || 0)) { take[t]++; left--; }
-    }
-    if (left === before) break; // نفد المتاح: الوحدة أقلّ من الحصة
-  }
-  return take;
-}
+export const quota = (counts, want = RESERVE) => allocate(counts, want);
 
 // الأسئلة المفتوحة تُصحَّح نصياً فلا تصلح للامتحان
 export function reservedQids(questions) {

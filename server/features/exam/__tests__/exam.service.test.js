@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import * as exam from "../exam.service.js";
 import ExamAttempt from "../exam.attempt.model.js";
+import ExamSession from "../exam.session.model.js";
 import * as content from "../../content/content.service.js";
 import User from "../../users/user.model.js";
-import { bank, seedUnits, userWithRing1Done, answersFor, wrongAnswers } from "./exam.fixtures.js";
+import { bank, seedUnits, userWithRing1Done, answersFor, wrongAnswers, answerAll } from "./exam.fixtures.js";
 
 beforeEach(seedUnits);
 
@@ -39,6 +40,7 @@ describe("exam.service", () => {
     const seen = new Set();
     for (let round = 0; round < 3; round++) {
       await ExamAttempt.deleteMany({});
+      await ExamSession.deleteMany({});
       const { questions } = await exam.start(user._id);
       questions.forEach((q) => seen.add(`${q.unitId}:${q.qid}`));
     }
@@ -51,6 +53,7 @@ describe("exam.service", () => {
     const orders = [], moved = [];
     for (let round = 0; round < 4; round++) {
       await ExamAttempt.deleteMany({});
+      await ExamSession.deleteMany({});
       const { questions } = await exam.start(user._id);
       orders.push(questions.map((q) => `${q.unitId}:${q.qid}`).join(","));
       questions.forEach((q) => {
@@ -63,21 +66,22 @@ describe("exam.service", () => {
     expect(moved.filter(Boolean).length).toBeGreaterThan(moved.length / 2);
   });
 
-  it("should issue a certificate on a passing submission and reject a second exam", async () => {
+  it("should issue a certificate on a passing submission and refuse a retake of a perfect score", async () => {
     const user = await userWithRing1Done();
     const { attemptId, questions } = await exam.start(user._id);
-    const out = await exam.submit(user._id, attemptId, answersFor(questions));
+    const out = await answerAll(exam, user._id, attemptId, answersFor(questions)).then(() => exam.submit(user._id, attemptId));
     expect(out.passed).toBe(true);
     expect(out.score).toBe(40);
     expect(out.certificate.code).toMatch(/^MDR-\d{4}-[A-Z0-9]{5}$/);
     expect(await exam.verify(out.certificate.code)).toMatchObject({ valid: true, name: "ليان", proctored: false });
-    await expect(exam.start(user._id)).rejects.toMatchObject({ code: "ALREADY_CERTIFIED" });
+    // الإعادة صارت مسموحة لتحسين العلامة، لكن العلامة الكاملة لا تُحسَّن
+    await expect(exam.start(user._id)).rejects.toMatchObject({ code: "ALREADY_PERFECT" });
   });
 
   it("should fail below 80% without issuing a certificate", async () => {
     const user = await userWithRing1Done();
     const { attemptId, questions } = await exam.start(user._id);
-    const out = await exam.submit(user._id, attemptId, wrongAnswers(questions));
+    const out = await answerAll(exam, user._id, attemptId, wrongAnswers(questions)).then(() => exam.submit(user._id, attemptId));
     expect(out.passed).toBe(false);
     expect(out.certificate).toBeNull();
     expect((await exam.verify("MDR-2026-ZZZZZ")).valid).toBe(false);
@@ -86,7 +90,7 @@ describe("exam.service", () => {
   it("should reject an unknown or reused attempt", async () => {
     const user = await userWithRing1Done();
     const { attemptId, questions } = await exam.start(user._id);
-    await exam.submit(user._id, attemptId, wrongAnswers(questions));
-    await expect(exam.submit(user._id, attemptId, [])).rejects.toMatchObject({ statusCode: 404 });
+    await answerAll(exam, user._id, attemptId, wrongAnswers(questions)).then(() => exam.submit(user._id, attemptId));
+    await expect(exam.submit(user._id, attemptId)).rejects.toMatchObject({ statusCode: 404 });
   });
 });

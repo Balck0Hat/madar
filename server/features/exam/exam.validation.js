@@ -1,9 +1,18 @@
 import { z } from "zod";
 
-const answer = z.object({ unitId: z.string().max(20), qid: z.string().max(24), answer: z.any() });
+// كل إجابة تُحفظ وحدها فور إعطائها، والتسليم لا يحمل إجابات: الخادم
+// يصحّح ما حُفظ عنده، فلا تضيع الإجابات ولا تُقبل حمولة متأخرة تتجاوز المهلة.
+export const answerSchema = {
+  body: z.object({
+    attemptId: z.string().length(24),
+    unitId: z.string().max(20),
+    qid: z.string().max(24),
+    answer: z.any(),
+  }).strict(),
+};
 
 export const submitSchema = {
-  body: z.object({ attemptId: z.string().length(24), answers: z.array(answer).max(60) }).strict(),
+  body: z.object({ attemptId: z.string().length(24) }).strict(),
 };
 
 export const verifySchema = {

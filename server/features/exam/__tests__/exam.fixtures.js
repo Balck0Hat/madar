@@ -36,3 +36,9 @@ function correctAnswer(served) {
 
 export const answersFor = (questions) => questions.map((q) => ({ unitId: q.unitId, qid: q.qid, answer: correctAnswer(q) }));
 export const wrongAnswers = (questions) => questions.map((q) => ({ unitId: q.unitId, qid: q.qid, answer: "خطأ" }));
+
+// الإجابات صارت تُحفظ واحدة واحدة أثناء المحاولة، والتسليم يصحّح ما حُفظ.
+// هذا المساعد يعيد إنتاج المسار الحقيقي في الاختبارات.
+export async function answerAll(exam, userId, attemptId, answers) {
+  for (const a of answers) await exam.saveAnswer(userId, attemptId, a);
+}
