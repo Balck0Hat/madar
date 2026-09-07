@@ -8,6 +8,7 @@ import { useNum } from "../../../shared/context/NumContext";
 import { Bar, TopBar } from "../../../shared/components/ui";
 import { Icon, PatternBand } from "../../../shared/components/icons/Icon";
 import UnitRow from "./UnitRow";
+import DomainPrintButton from "./DomainPrintButton";
 
 export default function DomainScreen({ domainId, ringIdx, progress, authored = [], onBack, onOpenUnit, onRing }) {
   const num = useNum();
@@ -48,6 +49,7 @@ export default function DomainScreen({ domainId, ringIdx, progress, authored = [
             return <UnitRow key={id} index={i} title={title} color={d.color} done={progress[id]} authored={authored.includes(id)} locked={locked} onOpen={() => onOpenUnit(id)} />;
           })}
         </div>
+        <DomainPrintButton domain={d} />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import Unit from "./unit.model.js";
 import QuestionStat from "./questionStat.model.js";
 import { notFound, forbidden } from "../../shared/utils/AppError.js";
 import { sample } from "../../shared/utils/grading.js";
-import { unitUnlocked } from "../../shared/utils/unlock.js";
+import { unitUnlocked, ringUnlocked } from "../../shared/utils/unlock.js";
 import { models, plainMap } from "../../shared/utils/models.js";
 import { cleanUnit } from "./unit.clean.js";
 import { snapshotUnit } from "./version.service.js";
@@ -32,6 +32,35 @@ export async function getPublishedUnit(unitId, userId) {
   if (!unit) throw notFound("الوحدة غير متاحة", "UNIT_NOT_FOUND");
   const pub = unit.toPublic();
   return unitUnlocked(await progressOf(userId), unitId) ? pub : preview(pub);
+}
+
+// كل مادة المجال في طلب واحد، للتنزيل ملفاً. أربع وعشرون وحدة تعني أربعة
+// وعشرين طلباً لو مرّت على مسار الوحدة الواحدة؛ وهذا نداء واحد.
+//
+// الأسئلة مستبعدة عمداً: هي أكثر من نصف حجم الوحدة، ولا تُطبع أصلاً — وفيها
+// بنك الامتحان المحجوز، فإرساله في ملف يُنزَّل يفتحه على مصراعيه.
+//
+// والمدارات المقفلة لا تُرسل: القفل ترتيب تعليمي، ولا يصحّ أن يلتفّ عليه زرّ
+// تنزيل ما لا تفتحه الواجهة.
+const PRINT_FIELDS = "-_id unitId title spark cards tryIt deep summary";
+
+export async function getDomainForPrint(domainId, userId) {
+  const progress = await progressOf(userId);
+  const open = [0, 1, 2].filter((ring) => ringUnlocked(progress, domainId, ring));
+  if (!open.length) throw forbidden("لا مدار مفتوح في هذا المجال بعد", "DOMAIN_LOCKED");
+
+  const docs = await Unit.find({ published: true, unitId: { $regex: `^${domainId}-` } })
+    .select(PRINT_FIELDS)
+    .sort("unitId")
+    .lean();
+
+  const rings = open
+    .map((ring) => ({ ring, units: docs.filter((d) => Number(d.unitId.split("-")[1]) - 1 === ring) }))
+    .filter((r) => r.units.length);
+  if (!rings.length) throw notFound("لا وحدات منشورة في هذا المجال", "NO_UNITS");
+  // ما بقي مقفلاً يُذكر عدده لا محتواه، كي يعرف المتعلّم أن الملف ليس كل شيء
+  const lockedRings = [0, 1, 2].filter((ring) => !open.includes(ring)).length;
+  return { domainId, rings, lockedRings, units: rings.reduce((n, r) => n + r.units.length, 0) };
 }
 
 // اختبار الوحدة: n أسئلة عشوائية من البنك (تُعاد مع الإجابات لعرض التغذية الراجعة فوراً)

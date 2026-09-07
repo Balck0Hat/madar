@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isValidUnitId, parseUnitId } from "../../shared/utils/units.js";
 import { titleOf } from "../../shared/data/tree.js";
+import { DOMAIN_IDS } from "../../shared/data/curriculum.js";
 
 const unitIdParam = z.object({ unitId: z.string().refine(isValidUnitId, "معرّف وحدة غير صالح") });
 
@@ -25,7 +26,15 @@ const question = z
     if (q.t === "order" && !(q.items?.length >= 2 && Array.isArray(q.a) && q.a.length === q.items.length)) ctx.addIssue({ code: "custom", message: "order يحتاج عناصر وترتيباً بنفس الطول", path: ["a"] });
   });
 
-const card = z.object({ h: z.string().trim().min(1).max(120), p: z.string().trim().min(1).max(1200), art: z.string().trim().max(30).optional(), img: z.string().trim().max(200).optional() });
+// البطاقة ثلاث كتل: نثر، ثم تعداد، ثم نثر بعده — والحقلان الأخيران اختياريان
+const card = z.object({
+  h: z.string().trim().min(1).max(120),
+  p: z.string().trim().min(1).max(1200),
+  points: z.array(z.string().trim().min(1).max(300)).max(10).optional(),
+  after: z.string().trim().max(1200).optional(),
+  art: z.string().trim().max(30).optional(),
+  img: z.string().trim().max(200).optional(),
+});
 
 export const unitBody = z.object({
   title: z.string().trim().min(3).max(160),
@@ -103,6 +112,7 @@ export function checkStructure(unit) {
 }
 
 export const getUnitSchema = { params: unitIdParam };
+export const domainSchema = { params: z.object({ domainId: z.string().refine((d) => DOMAIN_IDS.includes(d), "مجال غير معروف") }) };
 export const quizSchema = { params: unitIdParam, query: z.object({ n: z.coerce.number().int().min(1).max(30).default(10) }) };
 export const summariesSchema = { query: z.object({ ids: z.string().max(3000).default("") }) };
 export const upsertUnitSchema = { params: unitIdParam, body: unitBody.strict() };

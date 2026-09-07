@@ -9,6 +9,10 @@ export const getUnit = asyncHandler(async (req, res) => {
   res.json({ success: true, data: { unit: await content.getPublishedUnit(req.params.unitId, req.user?.id) } });
 });
 
+export const getDomain = asyncHandler(async (req, res) => {
+  res.json({ success: true, data: await content.getDomainForPrint(req.params.domainId, req.user.id) });
+});
+
 export const getQuiz = asyncHandler(async (req, res) => {
   res.json({ success: true, data: await content.pickQuiz(req.params.unitId, req.query.n, req.user.id) });
 });

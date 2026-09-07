@@ -1,23 +1,6 @@
 import { createPortal } from "react-dom";
+import { PRINT_CSS } from "../../../shared/styles/print";
 
-// ألوان حرفية عمداً هنا وحدها: صفحة الطباعة ورق دائماً، ورموز السمة قد تكون
-// الوضع الداكن فتخرج صفحة سوداء تلتهم الحبر. ولا نُدرج أي عنصر تنقّل.
-const PRINT_CSS = `
-.madar-print-root{display:none}
-@media print{
-  body > *:not(.madar-print-root){display:none !important}
-  .madar-print-root{display:block !important;background:#fff;color:#000;padding:0;margin:0}
-  .madar-print-root *{color:#000 !important;background:transparent !important;box-shadow:none !important}
-  .madar-print-root mark{background:#eeeeee !important;border-bottom:1px solid #000}
-  .madar-print-root h1{font-size:22pt;margin:0 0 4pt}
-  .madar-print-root h2{font-size:13pt;margin:14pt 0 4pt}
-  .madar-print-root p,.madar-print-root li{font-size:11.5pt;line-height:1.9;margin:0 0 6pt}
-  .madar-print-root section{break-inside:avoid;page-break-inside:avoid}
-  .madar-print-root .quiet{color:#555 !important;font-size:9.5pt}
-  .madar-print-root .rule{border:0;border-top:1px solid #bbb;margin:14pt 0}
-  @page{margin:18mm}
-}
-`;
 
 const Block = ({ title, children }) => (
   <section>
