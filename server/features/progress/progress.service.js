@@ -70,13 +70,13 @@ async function grade(unitId, answers) {
   return graded;
 }
 
-export async function finishUnit(userId, unitId, { answers, correct, total, sim }) {
+export async function finishUnit(userId, unitId, { answers, correct, total, sim, read }) {
   const parsed = parseUnitId(unitId);
   if (!parsed) throw badRequest("معرّف وحدة غير صالح", "BAD_UNIT");
   let graded = null;
   if (answers) { graded = await grade(unitId, answers); ({ correct, total } = scoreOf(graded)); }
   const doc = await loadDoc(userId);
-  const { next, result } = applyFinish(doc.toState(), { unitId, ring: parsed.ring, correct, total, sim });
+  const { next, result } = applyFinish(doc.toState(), { unitId, ring: parsed.ring, correct, total, sim, read });
   Object.assign(doc, { xp: next.xp, weeklyXp: next.weeklyXp, badges: next.badges, studied: next.studied, streak: next.streak, freezes: next.freezes });
   doc.progress = new Map(Object.entries(next.progress));
   doc.attempts = new Map(Object.entries(next.attempts));

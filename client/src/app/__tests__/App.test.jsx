@@ -49,7 +49,14 @@ vi.mock("../../features/progress/services/progress.service", () => ({
   getState: vi.fn(async () => db.state),
   saveResume: vi.fn(async () => ({})),
   getStats: vi.fn(async () => ({ weeks: [], byDomain: [] })),
-  finishUnit: vi.fn(async (unitId, { answers, correct, total, sim }) => {
+  finishUnit: vi.fn(async (unitId, { answers, correct, total, sim, read }) => {
+    // الإنهاء بالقراءة: إتمام بنقاط الدرس وحدها، بلا اختبار
+    if (read) {
+      const fresh = !db.state.progress[unitId];
+      const gain = fresh ? 50 : 0;
+      db.state = { ...db.state, progress: { ...db.state.progress, [unitId]: { read: true, score: 0, total: 0, perfect: false } }, xp: db.state.xp + gain, weeklyXp: db.state.weeklyXp + gain, streak: 1 };
+      return { state: db.state, result: { unitId, correct: 0, total: 0, passed: true, read: true, gain, breakdown: gain ? [["إكمال الدرس", 50]] : [], newBadges: [], newThreads: [], fresh, xpBefore: db.state.xp - gain, graded: null } };
+    }
     let graded = null;
     if (answers) { graded = answers.map((a) => { const q = learningUnit.questions.find((x) => x.qid === a.qid); return { qid: a.qid, ok: q.t === "open" ? String(a.answer).length >= 8 : q.t === "fill" ? q.a.includes(String(a.answer).toLowerCase()) : a.answer === q.a }; }); correct = graded.filter((g) => g.ok).length; total = graded.length; }
     const passed = correct / total >= 0.7, fresh = !db.state.progress[unitId], perfect = correct === total;
@@ -96,9 +103,11 @@ describe("App flow", () => {
   it("should register, onboard, load the API lesson, pass the quiz and show the graded result", async () => {
     await registerToMap();
     fireEvent.click(screen.getByText("ابدأ الوحدة"));
-    await screen.findByText(/ابدأ الاختبار|التالي/);
+    await screen.findByText(/أنهيت الوحدة|التالي/);
     for (let i = 0; i < 9; i++) fireEvent.click(await screen.findByText("التالي"));
-    fireEvent.click(screen.getByText(/ابدأ الاختبار/));
+    // الاختبار اختياريّ: آخر البطاقات تعرض «أنهيت الوحدة» وتحته «اختبر نفسك»
+    expect(screen.getByText("أنهيت الوحدة")).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/اختبر نفسك/));
     fireEvent.click(await screen.findByText("إبنغهاوس")); fireEvent.click(screen.getByText("تحقق")); fireEvent.click(screen.getByText("التالي"));
     fireEvent.click(screen.getByText("خطأ")); fireEvent.click(screen.getByText("تحقق")); fireEvent.click(screen.getByText("التالي"));
     fireEvent.click(screen.getByText("حين توشك أن تنسى")); fireEvent.click(screen.getByText("تحقق")); fireEvent.click(screen.getByText("التالي"));
@@ -113,6 +122,19 @@ describe("App flow", () => {
     fireEvent.click(screen.getByText("النتيجة"));
     await waitFor(() => expect(screen.getByText("علامة كاملة")).toBeInTheDocument());
     expect(screen.getByText("+110")).toBeInTheDocument();
+  });
+
+  // الأسئلة اختياريّة: القراءة إلى آخر الوحدة تُتمّها، والاختبار عرض لا شرط
+  it("should finish a unit by reading it, with no quiz", async () => {
+    await registerToMap();
+    fireEvent.click(screen.getByText("ابدأ الوحدة"));
+    await screen.findByText(/أنهيت الوحدة|التالي/);
+    for (let i = 0; i < 9; i++) fireEvent.click(await screen.findByText("التالي"));
+    fireEvent.click(screen.getByText("أنهيت الوحدة"));
+    expect(await screen.findByRole("status")).toHaveTextContent(/أنهيت الوحدة/);
+    // عاد إلى الخريطة (زرّ الوحدة التالية ظاهر) والوحدة محسوبة
+    expect(await screen.findByText(/ابدأ الوحدة|تابع/)).toBeInTheDocument();
+    expect(db.state.progress["center-1"]).toMatchObject({ read: true, total: 0 });
   });
 
   it("should show the first-run tour to a new learner only once", async () => {

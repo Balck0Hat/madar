@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
 
+// الوحدة تُتمّ بالقراءة (read، وtotal صفر) أو بالاختبار (score/total).
+// الاختبار اختياريّ، فلا يُشترط total ≥ 1 كما كان.
 const unitResultSchema = new mongoose.Schema(
   {
+    read: { type: Boolean, default: true },
     score: { type: Number, required: true, min: 0 },
-    total: { type: Number, required: true, min: 1 },
+    total: { type: Number, required: true, min: 0 },
     perfect: { type: Boolean, default: false },
     sim: { type: Boolean, default: false },
   },

@@ -3,6 +3,7 @@ import { P, MONO, READ, R, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 import Art from "../../../shared/components/art/Art";
 import Prose from "../../../shared/components/ui/Prose";
+import CheckIn from "./CheckIn";
 
 // متن الدرس: خط نسخ للقراءة الطويلة وسطر مريح.
 // القياسات نسبية (em) عمداً كي تتبع درجة حجم النص التي يختارها القارئ.
@@ -70,7 +71,7 @@ function Points({ items, color }) {
   );
 }
 
-export function CardPage({ card, index, color, mark = plain }) {
+export function CardPage({ card, index, color, mark = plain, check = null }) {
   const num = useNum();
   return (
     <div>
@@ -80,6 +81,7 @@ export function CardPage({ card, index, color, mark = plain }) {
       <div style={body}>{mark(card.p)}</div>
       <Points items={card.points} color={color} />
       {card.after && <div style={{ ...body, marginTop: S.x2 }}>{mark(card.after)}</div>}
+      <CheckIn question={check} color={color} />
     </div>
   );
 }

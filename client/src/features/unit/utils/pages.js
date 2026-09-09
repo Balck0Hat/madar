@@ -2,17 +2,21 @@
 // لماذا هنا لا داخل UnitScreen: الوضعان (بطاقات/تمرير) والفهرس يجب أن يروا
 // الترتيب نفسه بالضبط، وإلا اختلف «موضع القراءة» بين الوضعين وضاع الاستئناف.
 
+import { mapChecks } from "./checks";
+
 const LABEL = { spark: "الشرارة", goals: "الأهداف", card: "الدرس", try: "جرّب", deep: "التعمق", thread: "الخيط", end: "الخلاصة" };
 
 // كل قسم مشروط بوجود مادته: الوحدة المقفلة (أو الناقصة) تعود ببعض الحقول فقط،
 // ولا يصح أن تنهار الشاشة على حقل غائب.
 export const buildPages = (content) => {
   const c = content || {};
+  // «سؤال سريع» اختياريّ لكل بطاقة لها سؤال يطابقها في بنك الوحدة
+  const checks = mapChecks(c.cards || [], c.questions || []);
   return [
     { t: "spark" },
     ...(c.goals?.length ? [{ t: "goals" }] : []),
     // n = رقم البطاقة داخل الدرس، لا رقم الصفحة: الأقسام قبلها قد تغيب
-    ...(c.cards || []).map((card, i) => ({ t: "card", c: card, n: i + 1 })),
+    ...(c.cards || []).map((card, i) => ({ t: "card", c: card, n: i + 1, check: checks[i] })),
     ...(c.tryIt ? [{ t: "try" }] : []),
     ...(c.deep ? [{ t: "deep" }] : []),
     ...(c.thread ? [{ t: "thread" }] : []),

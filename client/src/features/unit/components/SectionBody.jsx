@@ -15,13 +15,13 @@ export default function SectionBody({ p, content, info, quizCount, unitId, mark 
     case "goals":
       return <GoalsPage goals={content.goals || []} />;
     case "card":
-      return <CardPage card={p.c} index={p.n} color={info.color} mark={mark} />;
+      return <CardPage card={p.c} index={p.n} color={info.color} mark={mark} check={p.check} />;
     case "try":
       return <TryPage tryIt={content.tryIt} color={info.color} mark={mark} />;
     case "deep":
       return <DeepPage deep={content.deep} mark={mark} />;
     case "thread":
-      return <ThreadPage thread={content.thread} />;
+      return <ThreadPage thread={content.thread} unitId={unitId} />;
     case "end":
       return <EndPage summary={content.summary || []} mark={mark} action={<PrintUnitButton unitId={unitId} unit={content} info={info} paper small />} />;
     default:

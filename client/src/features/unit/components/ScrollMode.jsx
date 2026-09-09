@@ -11,7 +11,7 @@ import SectionBody from "./SectionBody";
 // لماذا يستحق الوجود: البطاقات تمنع المسح السريع، والعودة لفقرة سابقة، وبحث
 // المتصفح (Ctrl+F) — وهي ثلاث حاجات أساسية لمادة يُذاكَر منها.
 // خطّاف التظليل واحد للعمود كله (لا واحد لكل قسم) كي لا تتضاعف طلبات الشبكة.
-export default function ScrollMode({ pages, content, info, unitId, quizCount, active, jump, onSection, onStartQuiz, tools }) {
+export default function ScrollMode({ pages, content, info, unitId, quizCount, active, jump, onSection, onStartQuiz, onFinishRead, done, tools }) {
   const num = useNum();
   const host = useRef(null);
   const notes = useSelectionNote(unitId, active);
@@ -42,13 +42,11 @@ export default function ScrollMode({ pages, content, info, unitId, quizCount, ac
             </section>
           ))}
         </div>
-        {quizCount > 0 && (
-          <div style={{ marginTop: S.x4 }}>
-            <Btn primary color={C.gold} style={{ color: C.bg }} onClick={onStartQuiz}>
-              {`ابدأ الاختبار (${num(quizCount)} أسئلة)`}
-            </Btn>
-          </div>
-        )}
+        {/* الأسئلة اختياريّة: القراءة إلى الآخر تُنهي الوحدة، والاختبار عرض لا شرط */}
+        <div style={{ marginTop: S.x4, display: "grid", gap: S.lg }}>
+          {!done && <Btn primary color={C.gold} style={{ color: C.bg }} onClick={onFinishRead}>أنهيت الوحدة</Btn>}
+          {quizCount > 0 && <Btn paper onClick={onStartQuiz}>{`اختبر نفسك · ${num(quizCount)} أسئلة (اختياري)`}</Btn>}
+        </div>
         <NoteToolbar sel={notes.sel} busy={notes.busy} err={notes.err} onClose={notes.close} onSave={notes.save} onEdit={notes.edit} onRemove={notes.remove} />
       </div>
       {tools}

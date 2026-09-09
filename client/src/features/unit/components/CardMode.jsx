@@ -8,7 +8,7 @@ const SWIPE = 55;
 
 // وضع البطاقات: صفحة واحدة تُقلب بالسحب أو بالنقر على جانبي الشاشة.
 // لم يتغيّر سلوكه عند إضافة وضع التمرير؛ نُقل فقط إلى ملفه ليبقى كل ملف صغيراً.
-export default function CardMode({ page, pages, content, info, unitId, quizCount, onNext, onPrev, onBack, onStartQuiz, tools }) {
+export default function CardMode({ page, pages, content, info, unitId, quizCount, onNext, onPrev, onBack, onStartQuiz, onFinishRead, done, tools }) {
   const num = useNum();
   const touch = useRef(null);
   const p = pages[page];
@@ -38,11 +38,15 @@ export default function CardMode({ page, pages, content, info, unitId, quizCount
         </div>
         {tools}
       </div>
-      <div style={{ padding: `${S.lg}px ${S.x4}px ${S.x5}px`, display: "flex", gap: S.lg, alignItems: "center" }}>
-        <Btn ghost paper full={false} small onClick={() => (page > 0 ? onPrev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>
-        <Btn primary color={last ? C.gold : info.color} style={{ color: C.bg }} onClick={() => (last ? onStartQuiz() : onNext())}>
-          {last ? `ابدأ الاختبار (${num(quizCount)} أسئلة)` : "التالي"}
-        </Btn>
+      {/* الأسئلة اختياريّة: آخر البطاقات تُنهي الوحدة بالقراءة، والاختبار عرض لا شرط */}
+      <div style={{ padding: `${S.lg}px ${S.x4}px ${S.x5}px`, display: "grid", gap: S.lg }}>
+        <div style={{ display: "flex", gap: S.lg, alignItems: "center" }}>
+          <Btn ghost paper full={false} small onClick={() => (page > 0 ? onPrev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>
+          <Btn primary color={last ? C.gold : info.color} style={{ color: C.bg }} onClick={() => (last ? (done ? onBack() : onFinishRead()) : onNext())}>
+            {last ? (done ? "العودة إلى الخريطة" : "أنهيت الوحدة") : "التالي"}
+          </Btn>
+        </div>
+        {last && quizCount > 0 && <Btn paper onClick={onStartQuiz}>{`اختبر نفسك · ${num(quizCount)} أسئلة (اختياري)`}</Btn>}
       </div>
     </>
   );

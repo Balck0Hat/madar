@@ -37,20 +37,31 @@ export function applyFreeze(state) {
   return { ...state, frozenDays: [...frozenDays, yesterday], freezes: freezes - 1, streak: streakFrom(studied, [...frozenDays, yesterday]) };
 }
 
-// يحسب نتيجة إنهاء وحدة على حالة معيّنة ويعيد الحالة الجديدة والنتيجة (دالة نقية)
-export function applyFinish(state, { unitId, ring, correct, total, sim }) {
-  const passed = correct / total >= PASS_RATIO;
+// يحسب نتيجة إنهاء وحدة على حالة معيّنة ويعيد الحالة الجديدة والنتيجة (دالة نقية).
+//
+// طريقان للإنهاء: القراءة إلى آخر الوحدة (read) تُتمّها وتمنح نقاط الدرس، والاختبار
+// اختياريّ يمنح نقاطه وحده عند اجتيازه. كان الاختبار شرط الإتمام، فالمتعلّم الذي
+// قرأ الوحدة كلّها ولم يرد أن يُمتحن لا يُحتسب له شيء — وصاحب التطبيق قرّر أن
+// الأسئلة لا تُفرض، لا بين البطاقات ولا في آخرها.
+export function applyFinish(state, { unitId, ring, correct = 0, total = 0, sim, read = false }) {
+  const existing = state.progress[unitId];
+  const fresh = !existing;
+  const quizDone = Boolean(existing?.total);
   const first = !((state.attempts || {})[unitId] > 0);
-  const fresh = !state.progress[unitId];
-  const perfect = passed && correct === total && first;
+  const passed = read ? true : total > 0 && correct / total >= PASS_RATIO;
+  const perfect = !read && passed && correct === total && first;
   const breakdown = [];
   let gain = 0;
-  if (passed && fresh) {
-    breakdown.push(["إكمال الدرس", XP_LESSON[ring]]); gain += XP_LESSON[ring];
+  if (passed && fresh) { breakdown.push(["إكمال الدرس", XP_LESSON[ring]]); gain += XP_LESSON[ring]; }
+  if (!read && passed && !quizDone) {
     breakdown.push(["اجتياز الاختبار", XP_QUIZ[ring]]); gain += XP_QUIZ[ring];
     if (perfect) { breakdown.push(["علامة كاملة من أول محاولة", XP_QUIZ[ring]]); gain += XP_QUIZ[ring]; }
   }
-  const progress = passed ? { ...state.progress, [unitId]: { score: correct, total, perfect, sim } } : state.progress;
+  // القراءة تُثبّت الإتمام؛ الاختبار يضيف علامته فوقه ولا يمحوها إن جاء بعده
+  const entry = read
+    ? { read: true, score: 0, total: 0, perfect: false, sim: Boolean(sim), ...(existing || {}) }
+    : { ...(existing || {}), read: true, score: correct, total, perfect: Boolean(existing?.perfect) || perfect, sim: Boolean(sim) };
+  const progress = passed ? { ...state.progress, [unitId]: entry } : state.progress;
   const newThreads = [];
   if (passed && fresh) {
     THREADS.forEach(([a, b]) => {
@@ -71,7 +82,7 @@ export function applyFinish(state, { unitId, ring, correct, total, sim }) {
   const next = {
     ...state,
     progress,
-    attempts: { ...(state.attempts || {}), [unitId]: ((state.attempts || {})[unitId] || 0) + 1 },
+    attempts: read ? (state.attempts || {}) : { ...(state.attempts || {}), [unitId]: ((state.attempts || {})[unitId] || 0) + 1 },
     xp: state.xp + gain,
     weeklyXp: state.weeklyXp + gain,
     badges: [...state.badges, ...newBadges],
@@ -79,6 +90,6 @@ export function applyFinish(state, { unitId, ring, correct, total, sim }) {
     streak,
     freezes: (state.freezes || 0) + (earnedFreeze ? 1 : 0),
   };
-  const result = { unitId, correct, total, passed, gain, breakdown, newBadges, newThreads, sim, fresh, xpBefore: state.xp, earnedFreeze };
+  const result = { unitId, correct, total, passed, read, gain, breakdown, newBadges, newThreads, sim, fresh, xpBefore: state.xp, earnedFreeze };
   return { next, result };
 }

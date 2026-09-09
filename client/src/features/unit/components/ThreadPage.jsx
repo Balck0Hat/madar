@@ -2,10 +2,15 @@ import { useState } from "react";
 import { Link2 } from "lucide-react";
 import { C, P, READ, alpha, R, S } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
+import { THREADS } from "../../../shared/data/curriculum";
 import { vibrate } from "../../../shared/utils/text";
 
 // صفحة الخيط: سؤال يربط الوحدة بمجال آخر
-export default function ThreadPage({ thread }) {
+// الوعد «يُضاء الخيط على عجلتك» صادق للأزواج التسعة في THREADS وحدها؛ كان
+// يُعرض تحت كل خيط من 243، فكذب في 225 منها. يُعرض الآن حيث يصدق فقط.
+const rewarded = (from, to) => THREADS.some(([a, b]) => (a === from && b === to) || (a === to && b === from));
+
+export default function ThreadPage({ thread, unitId }) {
   const [sel, setSel] = useState(null);
   const to = unitInfo(thread.to);
   const picked = sel !== null;
@@ -34,7 +39,8 @@ export default function ThreadPage({ thread }) {
       </div>
       {picked && (
         <div className="madar-in" role="status" style={{ marginTop: S.x2, color: P.muted, fontSize: ".88em", lineHeight: 1.7 }}>
-          {thread.why} <span style={{ color: P.gold, fontWeight: 600 }}>يُضاء الخيط على عجلتك عند إكمال الوحدتين.</span>
+          {thread.why}
+          {rewarded(unitId, thread.to) && <span style={{ color: P.gold, fontWeight: 600 }}> يُضاء الخيط على عجلتك عند إكمال الوحدتين.</span>}
         </div>
       )}
     </div>

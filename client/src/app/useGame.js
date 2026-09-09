@@ -80,6 +80,8 @@ export function useGame() {
   }, []);
 
   const simulate = useCallback((unitId) => finishUnit(unitId, { correct: 7 + Math.floor(Math.random() * 4), total: 10, sim: true }), [finishUnit]);
+  // القراءة إلى آخر الوحدة تُتمّها؛ الاختبار اختياريّ بعدها
+  const readUnit = useCallback((unitId) => finishUnit(unitId, { read: true }), [finishUnit]);
   const saveResume = useCallback((unitId, card) => quiet(progressService.saveResume(unitId, card)), []);
   const refreshAuthored = useCallback(async () => { const ids = await quiet(contentService.listAuthoredIds()); if (ids) setAuthored(ids); }, []);
   const refresh = useCallback(() => quiet(hydrate()), [hydrate]);
@@ -87,6 +89,6 @@ export function useGame() {
   return {
     profile, ...state, result, threadsNew, authored, reviewDue, certificate, newSector,
     setCertificate, clearSector: () => setNewSector(null),
-    boot, signIn, signOut, updateSettings, finishUnit, simulate, saveResume, refresh, refreshAuthored,
+    boot, signIn, signOut, updateSettings, finishUnit, readUnit, simulate, saveResume, refresh, refreshAuthored,
   };
 }

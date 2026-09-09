@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { P, MONO, alpha, T, R, S } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
 import { useNum } from "../../../shared/context/PrefsContext";
@@ -21,7 +21,7 @@ import ScrollMode from "./ScrollMode";
 // الدرس: بطاقات كقصص على ورق، أو عمود واحد يُمرَّر ويُبحث فيه.
 // موضع القراءة (page) واحد للوضعين عمداً: هو رقم القسم لا رقم الشريحة، فمن
 // بدّل الوضع يجد نفسه عند القسم ذاته، ومن عاد للدرس يستأنف من حيث توقف.
-export default function UnitScreen({ unitId, authored, resumeCard, fontScale, readMode, onBack, onStartQuiz, onSimulate, onResume, onFontScale, onReadMode }) {
+export default function UnitScreen({ unitId, authored, done = false, resumeCard, fontScale, readMode, onBack, onStartQuiz, onFinishRead, onSimulate, onResume, onFontScale, onReadMode }) {
   const num = useNum();
   const info = unitInfo(unitId);
   const [page, setPage] = useState(0);
@@ -32,7 +32,8 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, re
 
   const font = useFontScale(fontScale, onFontScale);
   const [mode, setMode] = useReadMode(readMode, onReadMode);
-  const pages = content ? buildPages(content) : [];
+  // المطابقة بين الأسئلة والبطاقات تجري مرة لكل محتوى، لا في كل رسم
+  const pages = useMemo(() => (content ? buildPages(content) : []), [content]);
   const goTo = (i) => { setPage(i); setJump({ i, n: Date.now() }); };
   const step = (d) => setPage((i) => (i + d >= 0 && i + d < pages.length ? i + d : i));
   useResume(unitId, page, onResume);
@@ -74,9 +75,9 @@ export default function UnitScreen({ unitId, authored, resumeCard, fontScale, re
       )}
       {mode === "cards"
         ? <CardMode page={at} pages={pages} content={content} info={info} unitId={unitId} quizCount={quizCount}
-            onNext={() => step(1)} onPrev={() => step(-1)} onBack={onBack} onStartQuiz={onStartQuiz} tools={tools} />
+            onNext={() => step(1)} onPrev={() => step(-1)} onBack={onBack} onStartQuiz={onStartQuiz} onFinishRead={onFinishRead} done={done} tools={tools} />
         : <ScrollMode pages={pages} content={content} info={info} unitId={unitId} quizCount={quizCount}
-            active={at} jump={jump} onSection={setPage} onStartQuiz={onStartQuiz} tools={tools} />}
+            active={at} jump={jump} onSection={setPage} onStartQuiz={onStartQuiz} onFinishRead={onFinishRead} done={done} tools={tools} />}
       {sheet && (
         <IndexSheet titles={pageTitles(pages)} current={at}
           onPick={(i) => { setSheet(false); goTo(i); }} onClose={() => setSheet(false)} />
