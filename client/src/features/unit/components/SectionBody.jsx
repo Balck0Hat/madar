@@ -1,7 +1,8 @@
 import Prose from "../../../shared/components/ui/Prose";
 import { PrintUnitButton } from "../../notes";
 import ThreadPage from "./ThreadPage";
-import { SparkPage, GoalsPage, CardPage, TryPage, DeepPage, EndPage } from "./UnitPages";
+import { SparkPage, GoalsPage, TryPage, DeepPage, EndPage } from "./UnitPages";
+import CardPage from "./CardPage";
 
 const plain = (t) => <Prose text={t} />;
 
