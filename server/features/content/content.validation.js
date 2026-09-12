@@ -27,11 +27,20 @@ const question = z
   });
 
 // البطاقة ثلاث كتل: نثر، ثم تعداد، ثم نثر بعده — والحقلان الأخيران اختياريان
+// الأشكال الثلاثة المرسومة من نصّ البطاقة: قيمها وتسمياتها مقتطعة منه حرفياً
+const short = z.string().trim().min(1).max(90);
+const fig = z.discriminatedUnion("t", [
+  z.object({ t: z.literal("timeline"), items: z.array(z.object({ y: short, l: short })).min(3).max(8) }),
+  z.object({ t: z.literal("bars"), unit: short.optional(), items: z.array(z.object({ v: z.number().nonnegative(), l: short })).min(2).max(6) }),
+  z.object({ t: z.literal("layers"), items: z.array(short).min(3).max(6), shape: z.enum(["pyramid", "stack"]).optional() }),
+]);
+
 const card = z.object({
   h: z.string().trim().min(1).max(120),
   p: z.string().trim().min(1).max(1200),
   points: z.array(z.string().trim().min(1).max(300)).max(10).optional(),
   after: z.string().trim().max(1200).optional(),
+  fig: fig.optional(),
   art: z.string().trim().max(30).optional(),
   img: z.string().trim().max(200).optional(),
 });

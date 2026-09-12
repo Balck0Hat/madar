@@ -12,6 +12,9 @@ const cardSchema = new Schema(
     p: { type: String, trim: true },
     points: [String],
     after: { type: String, trim: true },
+    // شكل مرسوم من نصّ البطاقة نفسه (خطّ زمني / أشرطة / طبقات)، يحلّ محلّ الرسمة
+    // العامة. اختياريّ، ويُكتب بعد مراجعة بشرية لمقترح detect-figures.js.
+    fig: { type: mongoose.Schema.Types.Mixed },
     art: { type: String, default: "wheel" },
     img: String,
   },
