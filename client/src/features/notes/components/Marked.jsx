@@ -1,6 +1,7 @@
 import { R, S } from "../../../shared/constants/theme";
 import { paragraphRanges } from "../../../shared/utils/prose";
 import { splitHighlights, tintBg, tintOf } from "../utils/highlight";
+import Decorated, { emphasizeQuotes } from "../../../shared/components/ui/Decorated";
 
 const press = (e) => {
   if (e.key !== "Enter" && e.key !== " ") return;
@@ -31,7 +32,7 @@ const Segment = ({ part }) =>
       {part.text}
     </mark>
   ) : (
-    <span>{part.text}</span>
+    <span>{emphasizeQuotes(part.text)}</span>
   );
 
 // يعرض نصاً مقسَّماً إلى فقرات، مع تظليلات القارئ داخله.
@@ -54,12 +55,16 @@ export default function Marked({ text, notes = [] }) {
     return { ...p, start: from, end: from + p.text.length };
   });
 
-  const inParagraph = (b) =>
-    placed
-      .filter((p) => p.end > b.start && p.start < b.end)
+  // فقرة بلا تظليل تأخذ الزينة كاملة (اقتباس وخطوات)؛ التظليل يقطّع النصّ
+  // مقاطع فلا تُبنى القائمة فوقه، ويبقى للمقاطع إبراز الاقتباس وحده.
+  const inParagraph = (b) => {
+    const here = placed.filter((p) => p.end > b.start && p.start < b.end);
+    if (!here.some((p) => p.note)) return <Decorated text={src.slice(b.start, b.end)} />;
+    return here
       .map((p) => ({ ...p, text: src.slice(Math.max(p.start, b.start), Math.min(p.end, b.end)) }))
       .filter((p) => p.text.trim())
       .map((p) => <Segment key={`${p.key}-${b.start}`} part={p} />);
+  };
 
   // فقرة واحدة: بلا غلاف، كما كان قبل التقسيم
   if (bounds.length === 1) return <>{inParagraph(bounds[0])}</>;

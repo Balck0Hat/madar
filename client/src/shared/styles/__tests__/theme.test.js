@@ -51,7 +51,8 @@ describe("theme variables", () => {
 
   it("should define every variable the code actually uses", () => {
     // --font-scale يضبطه PrefsContext على الجذر لا في ورقة الأنماط
-    const runtime = new Set(["--font-scale"]);
+    // --unit-color تضعه شاشة الوحدة على جذرها بلون المجال
+    const runtime = new Set(["--font-scale", "--unit-color"]);
     const missing = [...used].filter((v) => !runtime.has(v) && !dark.has(v));
     expect(missing).toEqual([]);
   });

@@ -125,6 +125,9 @@ html { -webkit-text-size-adjust: 100%; }
 /* هالة الرسمة تتأخر ذرّة عن النصّ فتُقرأ طبقةً خلفه */
 @keyframes madarTurnDeep{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
 .madar-turn-deep{animation:madarTurnDeep .3s ease-out}
+/* الاقتباس «…» يُسمع: وزن أثقل وأقواس بلون المجال */
+.madar-q{font-weight:600}
+.madar-q-mark{color:var(--unit-color,var(--gold));font-size:1.1em}
 .madar-press{transition:transform .12s ease}
 .madar-press:active{transform:scale(.97)}
 @media (prefers-reduced-motion:reduce){
