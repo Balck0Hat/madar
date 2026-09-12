@@ -2,19 +2,21 @@ import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import Decorated, { ordinalItems, emphasizeQuotes } from "../Decorated";
 
-// أرقام الشارات زينة (aria-hidden) لا نصّاً؛ تُستبعد قبل المقارنة بالأصل
+// الضمانة أن لا حرفاً ضاع: الصفوف عناصر كتلة فلا تُسهم بفراغ في textContent،
+// وأرقام الشارات زينة (aria-hidden) لا نصّاً — فالمقارنة بلا فراغات وبلا شارات.
 const flat = (el) => {
   const clone = el.cloneNode(true);
   clone.querySelectorAll("[aria-hidden]").forEach((n) => n.remove());
-  return clone.textContent.replace(/\s+/g, " ").trim();
+  return clone.textContent.replace(/\s+/g, "");
 };
+const bare = (s) => s.replace(/\s+/g, "");
 
 describe("quotes", () => {
   it("should raise a «…» run of sensible length and keep the text intact", () => {
     const text = "قال أينشتاين: «المادة تخبر الزمكان كيف ينحني، والزمكان يخبر المادة كيف تتحرك». وهذا جوهر النظرية.";
     const { container } = render(<Decorated text={text} />);
     expect(container.querySelector(".madar-q")).not.toBeNull();
-    expect(flat(container)).toBe(text);
+    expect(flat(container)).toBe(bare(text));
   });
 
   it("should leave a short quoted title alone — it is a name, not a saying", () => {
@@ -35,7 +37,7 @@ describe("ordinal steps", () => {
   it("should render numbered rows and lose no text", () => {
     const { container } = render(<Decorated text={text} />);
     expect(container.querySelectorAll("li")).toHaveLength(3);
-    expect(flat(container)).toBe(text);
+    expect(flat(container)).toBe(bare(text));
   });
 
   it("should not treat a single ordinal as a list", () => {
