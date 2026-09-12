@@ -11,6 +11,10 @@ const SWIPE = 55;
 export default function CardMode({ page, pages, content, info, unitId, quizCount, onNext, onPrev, onBack, onStartQuiz, onFinishRead, done, tools }) {
   const num = useNum();
   const touch = useRef(null);
+  // اتجاه آخر قلب: التالي يدخل من جهة والسابق من الأخرى، بدل جهة واحدة للاثنين
+  const dir = useRef(1);
+  const goNext = () => { dir.current = 1; onNext(); };
+  const goPrev = () => { dir.current = -1; onPrev(); };
   const p = pages[page];
   const last = page === pages.length - 1;
 
@@ -18,21 +22,21 @@ export default function CardMode({ page, pages, content, info, unitId, quizCount
     if (e.target.closest && e.target.closest("button,input,textarea,a")) return;
     const r = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width;
-    if (x < 0.38) onNext(); else if (x > 0.62) onPrev();
+    if (x < 0.38) goNext(); else if (x > 0.62) goPrev();
   };
   const onTouchStart = (e) => { touch.current = e.touches[0].clientX; };
   const onTouchEnd = (e) => {
     if (touch.current == null) return;
     const dx = e.changedTouches[0].clientX - touch.current;
     touch.current = null;
-    if (dx > SWIPE) onNext(); else if (dx < -SWIPE) onPrev();
+    if (dx > SWIPE) goNext(); else if (dx < -SWIPE) goPrev();
   };
 
   return (
     <>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
         <div role="region" aria-live="polite" aria-label={`صفحة ${page + 1} من ${pages.length}`} style={{ flex: 1, padding: `${S.lg}px ${S.x5}px ${S.xl}px` }}>
-          <div key={page} className="madar-slide madar-read" onClick={tap} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ userSelect: "none", WebkitUserSelect: "none" }}>
+          <div key={page} className={`${dir.current > 0 ? "madar-turn-next" : "madar-turn-prev"} madar-read`} onClick={tap} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ userSelect: "none", WebkitUserSelect: "none" }}>
             <PageBody p={p} index={page} content={content} info={info} quizCount={quizCount} unitId={unitId} />
           </div>
         </div>
@@ -41,8 +45,8 @@ export default function CardMode({ page, pages, content, info, unitId, quizCount
       {/* الأسئلة اختياريّة: آخر البطاقات تُنهي الوحدة بالقراءة، والاختبار عرض لا شرط */}
       <div style={{ padding: `${S.lg}px ${S.x4}px ${S.x5}px`, display: "grid", gap: S.lg }}>
         <div style={{ display: "flex", gap: S.lg, alignItems: "center" }}>
-          <Btn ghost paper full={false} small onClick={() => (page > 0 ? onPrev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>
-          <Btn primary color={last ? C.gold : info.color} style={{ color: C.bg }} onClick={() => (last ? (done ? onBack() : onFinishRead()) : onNext())}>
+          <Btn ghost paper full={false} small onClick={() => (page > 0 ? goPrev() : onBack())}>{page > 0 ? "السابق" : "خروج"}</Btn>
+          <Btn primary color={last ? C.gold : info.color} style={{ color: C.bg }} onClick={() => (last ? (done ? onBack() : onFinishRead()) : goNext())}>
             {last ? (done ? "العودة إلى الخريطة" : "أنهيت الوحدة") : "التالي"}
           </Btn>
         </div>

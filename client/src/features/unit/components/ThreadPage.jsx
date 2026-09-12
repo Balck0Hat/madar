@@ -31,7 +31,7 @@ export default function ThreadPage({ thread, unitId }) {
           const bg = right ? alpha(C.green, 0.2) : wrong ? alpha(C.red, 0.2) : P.card;
           const bd = right ? C.green : wrong ? C.red : P.line;
           return (
-            <button key={i} type="button" className={wrong ? "madar-shake" : ""} onClick={() => pick(i)} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.xl, padding: `${S.x2}px ${S.x3}px`, color: P.ink, textAlign: "start", cursor: "pointer", fontSize: ".94em", minHeight: 44 }}>
+            <button key={i} type="button" className={`madar-opt ${right && i === sel ? "madar-affirm" : wrong ? "madar-shake" : ""}`} onClick={() => pick(i)} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.xl, padding: `${S.x2}px ${S.x3}px`, color: P.ink, textAlign: "start", cursor: "pointer", fontSize: ".94em", minHeight: 44 }}>
               {o}
             </button>
           );

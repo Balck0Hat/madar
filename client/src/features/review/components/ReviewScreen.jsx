@@ -56,10 +56,11 @@ export default function ReviewScreen({ onBack, onDone }) {
       <div style={{ display: "grid", gap: S.lg }}>
         {options.map(([label, v]) => {
           const right = locked && v === q.a, wrong = locked && v === sel && v !== q.a;
-          return <button key={String(v)} type="button" className={wrong ? "madar-shake" : ""} onClick={() => pick(v)} style={{ background: right ? alpha(C.green, 0.2) : wrong ? alpha(C.red, 0.2) : C.surface, border: `1px solid ${right ? C.green : wrong ? C.red : C.line}`, borderRadius: R.xl, padding: `${S.x2}px ${S.x3}px`, color: C.text, textAlign: "start", cursor: "pointer", fontSize: T.lg }}>{label}</button>;
+          const mine = locked && v === sel;
+          return <button key={String(v)} type="button" className={`madar-opt ${mine ? (right ? "madar-affirm" : "madar-shake") : ""}`} onClick={() => pick(v)} style={{ background: right ? alpha(C.green, 0.2) : wrong ? alpha(C.red, 0.2) : C.surface, border: `1px solid ${right ? C.green : wrong ? C.red : C.line}`, borderRadius: R.xl, padding: `${S.x2}px ${S.x3}px`, color: C.text, textAlign: "start", cursor: "pointer", fontSize: T.lg, minHeight: 44 }}>{label}</button>;
         })}
       </div>
-      {locked && <Card style={{ marginTop: S.x3 }}><div style={{ fontSize: T.md, lineHeight: 1.7 }}>{q.why}</div></Card>}
+      {locked && <Card className="madar-in" style={{ marginTop: S.x3 }}><div style={{ fontSize: T.md, lineHeight: 1.7 }}>{q.why}</div></Card>}
       <div style={{ marginTop: S.x4 }}>{locked && <Btn primary disabled={busy} onClick={next}>{pos + 1 < flat.length ? "التالي" : "إنهاء"}</Btn>}</div>
     </Shell>
   );

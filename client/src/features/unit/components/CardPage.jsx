@@ -13,7 +13,7 @@ function Points({ items, color }) {
   return (
     <ul style={{ ...body, listStyle: "none", margin: `${S.x2}px 0 0`, padding: 0, display: "grid", gap: S.xl }}>
       {items.map((t, i) => (
-        <li key={i} style={{ display: "flex", gap: S.x2, alignItems: "flex-start" }}>
+        <li key={i} style={{ animation: "madarRise .22s cubic-bezier(.2,.7,.3,1) both", animationDelay: `${i * 30}ms`, display: "flex", gap: S.x2, alignItems: "flex-start" }}>
           <span aria-hidden="true" style={{ flexShrink: 0, width: 7, height: 7, borderRadius: R.pill, background: color || P.gold, marginTop: "0.62em" }} />
           <span style={{ minWidth: 0 }}>{t}</span>
         </li>

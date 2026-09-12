@@ -114,6 +114,17 @@ html { -webkit-text-size-adjust: 100%; }
 .madar-stagger > *:nth-child(3){animation-delay:.1s}
 .madar-stagger > *:nth-child(4){animation-delay:.15s}
 .madar-stagger > *:nth-child(5){animation-delay:.2s}
+/* الإجابة الصحيحة تتحرك أيضاً: كان الخطأ يهتزّ والصواب يتلوّن فقط */
+@keyframes madarAffirm{0%{transform:scale(1)}45%{transform:scale(1.02)}100%{transform:scale(1)}}
+.madar-affirm{animation:madarAffirm .22s ease-out}
+.madar-opt{transition:background .18s ease,border-color .18s ease}
+/* قلب البطاقة باتجاه: التالي يأتي من جهة والسابق من الجهة الأخرى (RTL) */
+@keyframes madarTurnPrev{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.madar-turn-next{animation:madarSlide .3s ease-out}
+.madar-turn-prev{animation:madarTurnPrev .3s ease-out}
+/* هالة الرسمة تتأخر ذرّة عن النصّ فتُقرأ طبقةً خلفه */
+@keyframes madarTurnDeep{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+.madar-turn-deep{animation:madarTurnDeep .3s ease-out}
 .madar-press{transition:transform .12s ease}
 .madar-press:active{transform:scale(.97)}
 @media (prefers-reduced-motion:reduce){

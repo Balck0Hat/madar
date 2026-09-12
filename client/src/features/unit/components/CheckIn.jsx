@@ -38,7 +38,7 @@ export default function CheckIn({ question, color = P.gold }) {
           const bg = right ? alpha(C.green, 0.2) : wrong ? alpha(C.red, 0.2) : P.card;
           const bd = right ? C.green : wrong ? C.red : P.line;
           return (
-            <button key={String(v)} type="button" className={wrong ? "madar-shake" : ""} onClick={() => pick(v)} aria-pressed={sel === v}
+            <button key={String(v)} type="button" className={`madar-opt ${right && v === sel ? "madar-affirm" : wrong ? "madar-shake" : ""}`} onClick={() => pick(v)} aria-pressed={sel === v}
               style={{ display: "flex", alignItems: "center", gap: S.lg, background: bg, border: `1px solid ${bd}`, borderRadius: R.xl, padding: `${S.xl}px ${S.x3}px`, color: P.ink, textAlign: "start", cursor: picked ? "default" : "pointer", fontSize: ".92em", minHeight: TAP, fontFamily: "inherit" }}>
               {right && <Check size={15} color={C.green} aria-hidden="true" />}
               {wrong && <X size={15} color={C.red} aria-hidden="true" />}

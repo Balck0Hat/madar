@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { useState } from "react";
 import { C, MONO, inputStyle, alpha, T, R, S } from "../../../shared/constants/theme";
 import { unitInfo } from "../../../shared/utils/units";
@@ -58,8 +59,9 @@ export default function QuizRunner({ unitId, questions, saved, onFinish, onBack 
     const bg = locked && isCorrect ? alpha(C.green, 0.2) : locked && isSel ? alpha(C.red, 0.2) : isSel ? alpha(info.color, 0.15) : C.surface;
     const bd = locked && isCorrect ? C.green : locked && isSel ? C.red : isSel ? info.color : C.line;
     return (
-      <button key={key} type="button" className={locked && isSel && !isCorrect ? "madar-shake" : ""} onClick={() => !locked && onPick()} aria-pressed={isSel} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.xl, padding: `${S.x2}px ${S.x3}px`, color: C.text, textAlign: "start", cursor: "pointer", fontSize: T.lg, lineHeight: 1.5 }}>
-        {label}
+      <button key={key} type="button" className={`madar-opt ${locked && isSel ? (isCorrect ? "madar-affirm" : "madar-shake") : ""}`} onClick={() => !locked && onPick()} aria-pressed={isSel} style={{ background: bg, border: `1px solid ${bd}`, borderRadius: R.xl, padding: `${S.x2}px ${S.x3}px`, color: C.text, textAlign: "start", cursor: "pointer", fontSize: T.lg, lineHeight: 1.5, display: "flex", alignItems: "center", gap: S.lg }}>
+        {locked && isSel && isCorrect && <Check size={16} color={C.green} aria-hidden="true" style={{ flexShrink: 0 }} />}
+        <span style={{ minWidth: 0 }}>{label}</span>
       </button>
     );
   };

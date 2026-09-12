@@ -3,6 +3,7 @@ import { P, MONO, READ, R, S } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 import Art from "../../../shared/components/art/Art";
 import Prose from "../../../shared/components/ui/Prose";
+import HeroNum from "./HeroNum";
 
 // متن الدرس: خط نسخ للقراءة الطويلة وسطر مريح.
 // القياسات نسبية (em) عمداً كي تتبع درجة حجم النص التي يختارها القارئ.
@@ -19,7 +20,7 @@ export function SparkPage({ info, content, mark = plain, hint = true }) {
     <div>
       {content.hero && (
         <div style={{ textAlign: "center", margin: `${S.x4}px 0 ${S.xl}px` }}>
-          <div style={{ fontFamily: MONO, fontSize: "5.2em", fontWeight: 700, color: info.color, lineHeight: 1, letterSpacing: "-0.03em" }}>{num(content.hero.num)}</div>
+          <HeroNum num={content.hero.num} color={info.color} />
           <div style={{ color: P.muted, fontSize: ".88em", marginTop: S.md }}>{content.hero.label}</div>
         </div>
       )}
@@ -44,7 +45,7 @@ export function GoalsPage({ goals }) {
       <div style={{ fontSize: "1.38em", fontWeight: 700, margin: `${S.md}px 0 ${S.x4}px` }}>بعد هذه الوحدة ستستطيع أن</div>
       <div style={{ display: "grid", gap: S.xl }}>
         {goals.map((g, i) => (
-          <div key={i} style={{ display: "flex", gap: S.x2, alignItems: "center", background: P.card, border: `1px solid ${P.line}`, borderRadius: R.x2, padding: `${S.x2}px ${S.x3}px` }}>
+          <div key={i} style={{ animation: "madarRise .22s cubic-bezier(.2,.7,.3,1) both", animationDelay: `${i * 30}ms`, display: "flex", gap: S.x2, alignItems: "center", background: P.card, border: `1px solid ${P.line}`, borderRadius: R.x2, padding: `${S.x2}px ${S.x3}px` }}>
             <span style={{ width: 26, height: 26, borderRadius: R.pill, background: P.ink, color: P.bg, display: "grid", placeItems: "center", fontFamily: MONO, fontWeight: 700, fontSize: ".8em", flexShrink: 0 }}>{num(i + 1)}</span>
             <span style={{ lineHeight: 1.6 }}>{g}</span>
           </div>
@@ -82,7 +83,7 @@ export function EndPage({ summary, mark = plain, action = null }) {
     <div>
       <div style={{ fontSize: "1.38em", fontWeight: 700, margin: `${S.md}px 0 ${S.x3}px` }}>الخلاصة</div>
       <div style={{ display: "grid", gap: S.lg }}>
-        {summary.map((s, i) => <div key={i} style={{ ...body, fontSize: ".97em", lineHeight: 1.8, display: "flex", gap: S.xl }}><Check size={16} color={P.gold} style={{ flexShrink: 0, marginTop: S.sm }} />{mark(s)}</div>)}
+        {summary.map((s, i) => <div key={i} style={{ ...body, animation: "madarRise .22s cubic-bezier(.2,.7,.3,1) both", animationDelay: `${i * 30}ms`, fontSize: ".97em", lineHeight: 1.8, display: "flex", gap: S.xl }}><Check size={16} color={P.gold} style={{ flexShrink: 0, marginTop: S.sm }} />{mark(s)}</div>)}
       </div>
       <div style={{ color: P.muted, fontSize: ".82em", marginTop: S.x4, lineHeight: 1.7 }}>تُحفظ الخلاصة في مكتبتك وتدخل جدول المراجعة: غداً، ثم بعد 3 أيام، ثم أسبوع.</div>
       {action && <div style={{ marginTop: S.x3 }}>{action}</div>}
