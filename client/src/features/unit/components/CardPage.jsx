@@ -29,7 +29,7 @@ export default function CardPage({ card, index, color, mark = plain, check = nul
   const tiles = statTiles(card);
   return (
     <div>
-      {card.fig ? <Figure fig={card.fig} color={color} /> : <Art k={card.art} color={color} />}
+      {card.fig ? <Figure fig={card.fig} art={card.art} color={color} /> : <Art k={card.art} color={color} />}
       {card.img && <div style={{ color: P.muted, fontSize: ".8em", textAlign: "center", marginTop: S.md, lineHeight: 1.5 }}>{card.img}</div>}
       <CardHeading h={card.h} index={index} color={color} />
       <StatTiles tiles={tiles} color={color} />

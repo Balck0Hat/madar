@@ -33,6 +33,16 @@ const fig = z.discriminatedUnion("t", [
   z.object({ t: z.literal("timeline"), items: z.array(z.object({ y: short, l: short })).min(3).max(8) }),
   z.object({ t: z.literal("bars"), unit: short.optional(), items: z.array(z.object({ v: z.number().nonnegative(), l: short })).min(2).max(6) }),
   z.object({ t: z.literal("layers"), items: z.array(short).min(3).max(6), shape: z.enum(["pyramid", "stack"]).optional() }),
+  // صورة من المشاع العام مخزّنة محلياً: المسار داخل /figures وحده، لا روابط خارجية
+  z.object({
+    t: z.literal("image"),
+    src: z.string().regex(/^\/figures\/[\w.-]+\.(?:jpg|jpeg|png|webp)$/, "مسار صورة غير صالح"),
+    w: z.number().int().positive(), h: z.number().int().positive(),
+    alt: z.string().trim().max(200).optional(),
+    credit: z.string().trim().max(200).optional(),
+    license: z.string().trim().max(60).optional(),
+    source: z.string().trim().max(300).optional(),
+  }),
 ]);
 
 const card = z.object({

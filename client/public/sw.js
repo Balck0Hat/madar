@@ -12,7 +12,8 @@ self.addEventListener("activate", (e) => {
 });
 
 const isContent = (url) => url.pathname.startsWith("/api/v1/content/units/") && !url.pathname.endsWith("/quiz");
-const isAsset = (url) => url.pathname.startsWith("/assets/");
+// الصور من المشاع تُخزَّن كالأصول: وحدة قُرئت متصلاً تحتفظ بصورها منقطعاً
+const isAsset = (url) => url.pathname.startsWith("/assets/") || url.pathname.startsWith("/figures/");
 
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
