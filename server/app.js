@@ -30,7 +30,7 @@ function mountClient(app) {
   if (!env.clientDist) return;
   const dist = path.resolve(__dirname, env.clientDist);
   if (!fs.existsSync(path.join(dist, "index.html"))) return;
-  app.use(express.static(dist, { index: false, maxAge: "1h" }));
+  app.use(express.static(dist, { index: false, redirect: false, maxAge: "1h" }));
   app.get(/^(?!\/api\/).*/, (req, res) => res.sendFile(path.join(dist, "index.html")));
 }
 

@@ -1,4 +1,4 @@
-import { Map as MapIcon, Trophy, User, Search, BarChart3, Users } from "lucide-react";
+import { Map as MapIcon, Trophy, User, Search, BarChart3, Users, Landmark } from "lucide-react";
 import { C, FONT, alpha, T, R, S, TAP, BP } from "../../constants/theme";
 import { paths } from "../../../app/routes";
 import OrbitMark from "./OrbitMark";
@@ -11,6 +11,7 @@ export const NAV = [
   { k: paths.league, label: "الترتيب", Icon: Trophy, mobile: true },
   { k: paths.friends, label: "الأصدقاء", Icon: Users, mobile: true },
   { k: paths.me, label: "أنا", Icon: User, mobile: true },
+  { k: paths.figures, label: "الشخصيات", Icon: Landmark },
   { k: paths.stats, label: "إحصاءاتي", Icon: BarChart3 },
 ];
 

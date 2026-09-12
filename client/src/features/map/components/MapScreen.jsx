@@ -11,12 +11,13 @@ import { resumeUnit } from "../utils/resume";
 import PrimaryCard from "./PrimaryCard";
 import TodayStrip from "./TodayStrip";
 import DomainGrid from "./DomainGrid";
+import FiguresEntry from "./FiguresEntry";
 
 // الشاشة الأولى تحمل فعلاً واحداً: العجلة (خريطة المعرفة) ثم بطاقة واحدة تقول
 // «تابع القراءة» أو «ابدأ الوحدة». كل ما عداها مطويّ في شريط «اليوم».
 export default function MapScreen({
   profile, progress, xp, streak, freezes = 0, weeklyXp, reviewDue = 0, resume = {},
-  calm: calmProp, onOpenDomain, onOpenUnit, onProfile, onReview, onToast, threadsNew,
+  calm: calmProp, onOpenDomain, onOpenUnit, onProfile, onReview, onToast, onFigures, threadsNew,
 }) {
   const level = levelFromXp(xp);
   const next = nextUnit(progress, profile.fav);
@@ -64,6 +65,7 @@ export default function MapScreen({
             <TodayStrip streak={streak} weeklyXp={weeklyXp} freezes={freezes} reviewDue={reviewDue} calm={calm} onReview={onReview} onToast={onToast} />
           </div>
           <DomainGrid progress={progress} onOpenDomain={onOpenDomain} />
+          {onFigures && <FiguresEntry onOpen={onFigures} />}
         </div>
       </div>
     </div>

@@ -12,3 +12,5 @@ export const VerifyPage = lazy(() => import("../features/exam").then((m) => ({ d
 export const PublicProfile = lazy(() => import("../features/public").then((m) => ({ default: m.PublicProfile })));
 export const ReviewScreen = lazy(() => import("../features/review").then((m) => ({ default: m.ReviewScreen })));
 export const SectorCelebration = lazy(() => import("../features/celebrate").then((m) => ({ default: m.SectorCelebration })));
+export const FiguresScreen = lazy(() => import("../features/figures").then((m) => ({ default: m.FiguresScreen })));
+export const FigureScreen = lazy(() => import("../features/figures").then((m) => ({ default: m.FigureScreen })));

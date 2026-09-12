@@ -4,7 +4,7 @@ import { AuthScreen } from "../features/auth";
 import { DomainScreen } from "../features/domain";
 import { UnitScreen } from "../features/unit";
 import { QuizScreen } from "../features/quiz";
-import { VerifyPage, PublicProfile } from "./lazyScreens";
+import { VerifyPage, PublicProfile, FigureScreen } from "./lazyScreens";
 import { paths } from "./routes";
 
 // المسارات التي تقرأ معاملاتها من الرابط
@@ -35,3 +35,5 @@ export function QuizRoute({ finish, nav }) {
   return <QuizScreen key={unitId} unitId={unitId} onBack={() => nav(paths.unit(unitId))} onFinish={(answers) => finish(unitId, { answers })} />;
 }
 
+
+export const FigureRoute = ({ onBack }) => <FigureScreen figureId={useParams().figureId} onBack={onBack} />;
