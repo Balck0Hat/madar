@@ -5,6 +5,8 @@ import { useAsync } from "../../../shared/hooks/useAsync";
 import { TopBar, Skeleton, ErrorState, EmptyState } from "../../../shared/components/ui";
 import { useDebounced } from "../hooks/useDebounced";
 import { listFigures } from "../services/figures.service";
+import { groupByPeriod } from "../utils/figureText";
+import { readSet } from "../utils/figureStore";
 import { ERAS, CATEGORIES, colorOf } from "./figures.meta";
 import FigureCard from "./FigureCard";
 
@@ -16,7 +18,9 @@ const Chip = ({ on, color, children, onClick }) => (
   </button>
 );
 
-// قائمة الشخصيات: بحث بالاسم، وفلترة بالعصر والمجال، من غير إعادة تحميل
+// قائمة الشخصيات: بحث بالاسم، وفلترة بالعصر والمجال، من غير إعادة تحميل.
+// البطاقات مجمّعة بحقبتها («الألفية الثانية قبل الميلاد»، «القرن السادس…»)
+// لأن عشرين بطاقة متشابهة بلا فواصل لا تُقرأ، ومن قُرئ يحمل شارة.
 export default function FiguresScreen({ onBack, onOpen }) {
   const [q, setQ] = useState("");
   const [era, setEra] = useState("");
@@ -24,6 +28,8 @@ export default function FiguresScreen({ onBack, onOpen }) {
   const dq = useDebounced(q.trim());
   const { data, loading, error, reload } = useAsync(() => listFigures({ q: dq, era, category }), [dq, era, category]);
   const figures = useMemo(() => data || [], [data]);
+  const groups = useMemo(() => groupByPeriod(figures), [figures]);
+  const read = useMemo(() => readSet(), [figures]);
 
   return (
     <div className="madar-in madar-tabpad madar-col">
@@ -46,11 +52,16 @@ export default function FiguresScreen({ onBack, onOpen }) {
         {error && <ErrorState message={error.message} onRetry={reload} onBack={onBack} />}
         {data && !figures.length && <EmptyState title="لا نتائج" text="جرّب اسماً آخر أو أزل الفلترة." />}
         {figures.length > 0 && (
-          <div style={{ color: C.muted, fontSize: T.xs }}>{figures.length} شخصية</div>
+          <div style={{ color: C.muted, fontSize: T.xs }}>{figures.length} شخصية · قرأت {read.size}</div>
         )}
-        <div style={{ display: "grid", gap: S.lg }}>
-          {figures.map((f) => <FigureCard key={f.figureId} figure={f} onOpen={() => onOpen(f.figureId)} />)}
-        </div>
+        {groups.map((g) => (
+          <section key={g.label} style={{ display: "grid", gap: S.lg }}>
+            <h2 style={{ fontSize: T.sm, fontWeight: 700, color: C.muted, margin: `${S.md}px 0 0`, display: "flex", alignItems: "center", gap: S.lg }}>
+              <span>{g.label}</span><span aria-hidden="true" style={{ flex: 1, height: 1, background: C.line }} />
+            </h2>
+            {g.items.map((f) => <FigureCard key={f.figureId} figure={f} read={read.has(f.figureId)} onOpen={() => onOpen(f.figureId)} />)}
+          </section>
+        ))}
       </div>
     </div>
   );

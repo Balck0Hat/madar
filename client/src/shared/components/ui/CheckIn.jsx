@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, Check, X } from "lucide-react";
-import { C, P, alpha, R, S, TAP } from "../../../shared/constants/theme";
-import { vibrate } from "../../../shared/utils/text";
+import { C, P, alpha, R, S, TAP } from "../../constants/theme";
+import { vibrate } from "../../utils/text";
 
 // «سؤال سريع» في ذيل البطاقة، مطويّ. اختياريّ بالكامل: من يريد أن يقرأ يمرّ
 // عنه، ومن يريد أن يتأكد يفتحه. لا نقاط ولا حفظ ولا خادم — تثبيت للمعلومة فقط.

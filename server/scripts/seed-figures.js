@@ -14,6 +14,9 @@ async function main() {
     if (words(f.quick) < 150) errs.push(`${f.figureId}: الملخص ${words(f.quick)} كلمة < 150`);
     if (story < 900) errs.push(`${f.figureId}: القصة ${story} كلمة < 900`);
     if ((f.story || []).length < 5) errs.push(`${f.figureId}: أقسام القصة ${f.story?.length || 0} < 5`);
+    if (f.image && !/^\/figures\/people\/[\w.-]+\.(?:jpg|png|webp)$/.test(f.image.src)) errs.push(`${f.figureId}: مسار الصورة غير صالح`);
+    if (f.check && !(f.check.opts?.length >= 2 && f.check.opts[f.check.a] !== undefined)) errs.push(`${f.figureId}: سؤال ناقص`);
+    if (f.geo && !(Math.abs(f.geo.lat) <= 90 && Math.abs(f.geo.lon) <= 180)) errs.push(`${f.figureId}: إحداثيات غير صالحة`);
   }
   if (errs.length) { errs.forEach((e) => console.error("✗", e)); process.exit(1); }
   await connectDb();

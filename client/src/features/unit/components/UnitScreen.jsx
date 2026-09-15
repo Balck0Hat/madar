@@ -7,7 +7,7 @@ import { TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
 import { contentService } from "../../content";
 import { useResume } from "../hooks/useResume";
 import { useFontScale } from "../hooks/useFontScale";
-import { usePageKeys } from "../hooks/usePageKeys";
+import { usePageKeys } from "../../../shared/hooks/usePageKeys";
 import { useReadMode } from "../hooks/useReadMode";
 import { buildPages, shortLabel, pageTitles } from "../utils/pages";
 import UnitPlaceholder from "./UnitPlaceholder";

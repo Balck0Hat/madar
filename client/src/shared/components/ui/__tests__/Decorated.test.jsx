@@ -47,4 +47,13 @@ describe("ordinal steps", () => {
   it("should not fire on an ordinal inside a sentence", () => {
     expect(ordinalItems("كان ذلك أولاً ثم صار ثانياً في الترتيب.")).toBeNull();
   });
+
+  it("should set numbers in the numeral face only when asked, keeping the text intact", () => {
+    const t = "في سنة 585 ق.م، وكان الرقم 1,250.5 كبيراً.";
+    const { container } = render(<Decorated text={t} mono />);
+    expect([...container.querySelectorAll(".madar-num")].map((n) => n.textContent)).toEqual(["585", "1,250.5"]);
+    expect(flat(container)).toBe(bare(t));
+    const plain = render(<Decorated text={t} />);
+    expect(plain.container.querySelector(".madar-num")).toBeNull();
+  });
 });

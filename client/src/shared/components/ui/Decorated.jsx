@@ -6,14 +6,25 @@ import { P, MONO, R, S } from "../../constants/theme";
 const QUOTE = /(«[^»]{20,140}»)/;
 const ORD = /(?:^|(?<=[.:؛])\s+)(أولاً|ثانياً|ثالثاً|رابعاً|خامساً)(?=[،:\s])/g;
 
-// الاقتباس بوزن أثقل والأقواس بلون المجال (--unit-color تضعه شاشة الوحدة)
-export function emphasizeQuotes(text) {
-  const parts = String(text || "").split(QUOTE);
+const NUM = /(\d[\d,.]*\d|\d)/;
+
+// الأرقام بخط الأرقام: سيرة تاريخية فيها سنة في كل سطر، والرقم بخط النسخ
+// يذوب في الحروف. اختياري (mono) لأن متن الدروس له بطاقات الأرقام الخاصة به.
+export function emphasizeNumbers(text) {
+  const parts = String(text || "").split(NUM);
   if (parts.length === 1) return text;
+  return parts.map((part, i) => (NUM.test(part) && i % 2 === 1 ? <span key={i} className="madar-num">{part}</span> : <span key={i}>{part}</span>));
+}
+
+// الاقتباس بوزن أثقل والأقواس بلون المجال (--unit-color تضعه شاشة الوحدة)
+export function emphasizeQuotes(text, mono = false) {
+  const plain = (s) => (mono ? emphasizeNumbers(s) : s);
+  const parts = String(text || "").split(QUOTE);
+  if (parts.length === 1) return plain(text);
   return parts.map((part, i) =>
     QUOTE.test(part)
-      ? <span key={i} className="madar-q"><span className="madar-q-mark">«</span>{part.slice(1, -1)}<span className="madar-q-mark">»</span></span>
-      : <span key={i}>{part}</span>,
+      ? <span key={i} className="madar-q"><span className="madar-q-mark">«</span>{plain(part.slice(1, -1))}<span className="madar-q-mark">»</span></span>
+      : <span key={i}>{plain(part)}</span>,
   );
 }
 
@@ -28,17 +39,17 @@ export function ordinalItems(text) {
   return { lead, items };
 }
 
-export default function Decorated({ text }) {
+export default function Decorated({ text, mono = false }) {
   const list = ordinalItems(text);
-  if (!list) return emphasizeQuotes(text);
+  if (!list) return emphasizeQuotes(text, mono);
   return (
     <>
-      {list.lead && <div>{emphasizeQuotes(list.lead)}</div>}
+      {list.lead && <div>{emphasizeQuotes(list.lead, mono)}</div>}
       <ol style={{ listStyle: "none", margin: `${list.lead ? S.x2 : 0}px 0 0`, padding: 0, display: "grid", gap: S.xl }}>
         {list.items.map((item, i) => (
           <li key={i} style={{ display: "flex", gap: S.x2, alignItems: "flex-start", animation: "madarRise .22s cubic-bezier(.2,.7,.3,1) both", animationDelay: `${i * 30}ms` }}>
             <span aria-hidden="true" style={{ width: 26, height: 26, borderRadius: R.pill, background: P.ink, color: P.bg, display: "grid", placeItems: "center", fontFamily: MONO, fontWeight: 700, fontSize: ".75em", flexShrink: 0, marginTop: "0.25em" }}>{i + 1}</span>
-            <span style={{ minWidth: 0 }}>{emphasizeQuotes(item)}</span>
+            <span style={{ minWidth: 0 }}>{emphasizeQuotes(item, mono)}</span>
           </li>
         ))}
       </ol>

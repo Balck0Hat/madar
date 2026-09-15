@@ -41,6 +41,16 @@ describe("FiguresScreen", () => {
     expect(svc.listFigures).toHaveBeenCalledWith(expect.objectContaining({ q: "newt" }));
   });
 
+  it("should group the cards under period headings and badge the ones already read", async () => {
+    localStorage.setItem("madar.figures", JSON.stringify({ read: { newton: 1 } }));
+    render(<FiguresScreen onBack={() => {}} onOpen={() => {}} />);
+    await screen.findByText("حمورابي");
+    expect(screen.getByRole("heading", { name: "الألفية الثانية قبل الميلاد" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "القرن السابع عشر الميلادي" })).toBeInTheDocument();
+    expect(screen.getAllByText("قُرئ")).toHaveLength(1);
+    localStorage.clear();
+  });
+
   it("should open a figure when its card is tapped", async () => {
     const onOpen = vi.fn();
     render(<FiguresScreen onBack={() => {}} onOpen={onOpen} />);

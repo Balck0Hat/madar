@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import CheckIn from "../components/CheckIn";
+import CheckIn from "../CheckIn";
 
 const mcq = { qid: "q1", t: "mcq", q: "كم عدد عظام الإنسان البالغ؟", opts: ["206", "270", "600"], a: 0, why: "الرضيع يولد بنحو 270 قطعة تلتحم." };
 const tf = { qid: "q2", t: "tf", q: "يضخ القلب نحو 5 لترات كل دقيقة.", a: true, why: "نحو خمسة لترات في الدقيقة." };

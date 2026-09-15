@@ -4,7 +4,7 @@ import Figure from "./figures/Figure";
 import { body, plain } from "./UnitPages";
 import CardHeading from "./CardHeading";
 import StatTiles from "./StatTiles";
-import CheckIn from "./CheckIn";
+import CheckIn from "../../../shared/components/ui/CheckIn";
 import { statTiles } from "../utils/cardShape";
 
 // التعداد المحشور في النثر يُقرأ سرداً لا قائمة: العين لا تعدّ ما لا يُرى
