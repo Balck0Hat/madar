@@ -3,8 +3,9 @@ import Art from "../../../shared/components/art/Art";
 import Figure from "./figures/Figure";
 import { body, plain } from "./UnitPages";
 import CardHeading from "./CardHeading";
-import StatTiles from "./StatTiles";
+import StatTiles from "../../../shared/components/ui/StatTiles";
 import CheckIn from "../../../shared/components/ui/CheckIn";
+import FigureChips from "../../../shared/components/ui/FigureChips";
 import { statTiles } from "../utils/cardShape";
 
 // التعداد المحشور في النثر يُقرأ سرداً لا قائمة: العين لا تعدّ ما لا يُرى
@@ -36,6 +37,7 @@ export default function CardPage({ card, index, color, mark = plain, check = nul
       <div style={body}>{mark(card.p)}</div>
       <Points items={card.points} color={color} />
       {card.after && <div style={{ ...body, marginTop: S.x2 }}>{mark(card.after)}</div>}
+      <FigureChips text={`${card.h} ${card.p} ${(card.points || []).join(" ")}`} color={color} />
       <CheckIn question={check} color={color} />
     </div>
   );

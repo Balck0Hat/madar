@@ -4,7 +4,9 @@ import { NOTE_COLORS } from "./note.model.js";
 
 // معرّف Mongo يُتحقَّق منه هنا لا في الخدمة، كي يعود 400 واضحاً بدل CastError
 const objectId = z.string().regex(/^[0-9a-fA-F]{24}$/, "معرّف غير صالح");
-const unitId = z.string().refine(isValidUnitId, "معرّف وحدة غير صالح");
+// التظليل يعمل في الدروس وفي قصص الشخصيات (figure:<معرّف>)
+const FIGURE_ID = /^figure:[a-z0-9-]{2,40}$/;
+const unitId = z.string().refine((id) => isValidUnitId(id) || FIGURE_ID.test(id), "معرّف وحدة غير صالح");
 
 export const createSchema = {
   body: z

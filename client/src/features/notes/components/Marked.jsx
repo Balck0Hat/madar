@@ -9,7 +9,7 @@ const press = (e) => {
   e.currentTarget.click(); // نمرّر النقرة للحاوية التي تعرف كيف تفتح شريط التظليل
 };
 
-const Segment = ({ part }) =>
+const Segment = ({ part, mono }) =>
   part.note ? (
     <mark
       data-note-id={part.note.id}
@@ -32,7 +32,7 @@ const Segment = ({ part }) =>
       {part.text}
     </mark>
   ) : (
-    <span>{emphasizeQuotes(part.text)}</span>
+    <span>{emphasizeQuotes(part.text, mono)}</span>
   );
 
 // يعرض نصاً مقسَّماً إلى فقرات، مع تظليلات القارئ داخله.
@@ -40,7 +40,7 @@ const Segment = ({ part }) =>
 // المطابقة تجري على النصّ الكامل أولاً ثم تُوزَّع مقاطعها على الفقرات: لو
 // قُسّم النصّ أولاً ثم بُحث عن كل تظليل داخل فقرة، لاختفى كل تظليل يعبر حدّ
 // فقرة — لأن البحث عن اقتباسه يفشل في الفقرتين معاً.
-export default function Marked({ text, notes = [] }) {
+export default function Marked({ text, notes = [], mono = false }) {
   const src = String(text ?? "");
   const bounds = paragraphRanges(src);
   if (!bounds.length) return null;
@@ -59,11 +59,11 @@ export default function Marked({ text, notes = [] }) {
   // مقاطع فلا تُبنى القائمة فوقه، ويبقى للمقاطع إبراز الاقتباس وحده.
   const inParagraph = (b) => {
     const here = placed.filter((p) => p.end > b.start && p.start < b.end);
-    if (!here.some((p) => p.note)) return <Decorated text={src.slice(b.start, b.end)} />;
+    if (!here.some((p) => p.note)) return <Decorated text={src.slice(b.start, b.end)} mono={mono} />;
     return here
       .map((p) => ({ ...p, text: src.slice(Math.max(p.start, b.start), Math.min(p.end, b.end)) }))
       .filter((p) => p.text.trim())
-      .map((p) => <Segment key={`${p.key}-${b.start}`} part={p} />);
+      .map((p) => <Segment key={`${p.key}-${b.start}`} part={p} mono={mono} />);
   };
 
   // فقرة واحدة: بلا غلاف، كما كان قبل التقسيم

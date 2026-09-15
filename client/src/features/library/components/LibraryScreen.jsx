@@ -8,7 +8,7 @@ import { S } from "../../../shared/constants/theme";
 const TABS = [{ id: "summaries", label: "الخلاصات" }, { id: "notes", label: "تظليلاتي" }];
 
 // مكتبتي: خلاصات الوحدات المكتملة، وما ظلّله القارئ بنفسه أثناء الدروس
-export default function LibraryScreen({ progress, onBack, onOpenUnit }) {
+export default function LibraryScreen({ progress, onBack, onOpenUnit, onOpenFigure }) {
   const [tab, setTab] = useState("summaries");
   const ids = Object.keys(progress);
   return (
@@ -18,7 +18,7 @@ export default function LibraryScreen({ progress, onBack, onOpenUnit }) {
       <div style={{ padding: `0 ${S.x4}px` }}>
         {tab === "summaries"
           ? <SummaryList ids={ids} onBack={onBack} onOpenUnit={onOpenUnit} />
-          : <MyHighlights onBack={onBack} onOpenUnit={onOpenUnit} />}
+          : <MyHighlights onBack={onBack} onOpenUnit={onOpenUnit} onOpenFigure={onOpenFigure} />}
       </div>
     </div>
   );

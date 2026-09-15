@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { resetFigureProgress } from "../hooks/useFigureProgress";
 import FiguresScreen from "../components/FiguresScreen";
 import * as svc from "../services/figures.service";
 
@@ -9,8 +10,10 @@ const rows = [
 ];
 vi.mock("../services/figures.service", () => ({
   listFigures: vi.fn(async ({ era, category, q } = {}) => rows.filter((r) => (!era || r.era === era) && (!category || r.category === category) && (!q || r.name.includes(q) || r.englishName.toLowerCase().includes(q.toLowerCase())))),
-  getFigure: vi.fn(),
+  getFigure: vi.fn(), getProgress: vi.fn(async () => ({ read: {}, page: {} })), putProgress: vi.fn(),
 }));
+
+beforeEach(() => { vi.clearAllMocks(); resetFigureProgress(); });
 
 describe("FiguresScreen", () => {
   it("should list every figure with its why line", async () => {
@@ -23,11 +26,11 @@ describe("FiguresScreen", () => {
   it("should narrow by era chip and by category chip without a reload", async () => {
     render(<FiguresScreen onBack={() => {}} onOpen={() => {}} />);
     await screen.findByText("حمورابي");
-    fireEvent.click(screen.getByRole("button", { name: "القديم" }));
+    fireEvent.click(screen.getByRole("button", { name: /^القديم/ }));
     await waitFor(() => expect(screen.queryByText("نيوتن")).not.toBeInTheDocument());
     expect(screen.getByText("حمورابي")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "كل العصور" }));
-    fireEvent.click(screen.getByRole("button", { name: "علوم وطب" }));
+    fireEvent.click(screen.getByRole("button", { name: /^علوم وطب/ }));
     await waitFor(() => expect(screen.queryByText("حمورابي")).not.toBeInTheDocument());
     expect(screen.getByText("نيوتن")).toBeInTheDocument();
   });
@@ -42,13 +45,13 @@ describe("FiguresScreen", () => {
   });
 
   it("should group the cards under period headings and badge the ones already read", async () => {
-    localStorage.setItem("madar.figures", JSON.stringify({ read: { newton: 1 } }));
+    svc.getProgress.mockResolvedValueOnce({ read: { newton: "2026-01-01T00:00:00.000Z" }, page: {} });
     render(<FiguresScreen onBack={() => {}} onOpen={() => {}} />);
     await screen.findByText("حمورابي");
     expect(screen.getByRole("heading", { name: "الألفية الثانية قبل الميلاد" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "القرن السابع عشر الميلادي" })).toBeInTheDocument();
-    expect(screen.getAllByText("قُرئ")).toHaveLength(1);
-    localStorage.clear();
+    expect(await screen.findAllByText("قُرئ")).toHaveLength(1);
+    expect(screen.getByRole("button", { name: /^القديم 1/ })).toBeInTheDocument(); // الفلتر يحمل عدده
   });
 
   it("should open a figure when its card is tapped", async () => {

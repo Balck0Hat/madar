@@ -3,6 +3,21 @@
 import { connectDb, disconnectDb } from "../shared/database/connect.js";
 import { seed } from "../features/figures/figures.service.js";
 import { FIGURES } from "../shared/data/figures/index.js";
+import { SEED_UNITS } from "../shared/data/seed/index.js";
+import { mentionCount } from "../shared/utils/mentions.js";
+
+const MAX_UNITS = 6;
+
+// الدروس التي تذكر الشخصية باسمها، الأكثر ذكراً أولاً
+function unitsMentioning(figure) {
+  return SEED_UNITS
+    .filter((u) => u.published !== false)
+    .map((u) => ({ unitId: u.unitId, title: u.title, n: mentionCount([u.spark, ...(u.cards || []).flatMap((c) => [c.h, c.p]), ...(u.summary || [])].join(" "), figure.name) }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n)
+    .slice(0, MAX_UNITS)
+    .map(({ unitId, title }) => ({ unitId, title }));
+}
 
 const words = (s) => String(s || "").trim().split(/\s+/).filter(Boolean).length;
 
@@ -20,7 +35,9 @@ async function main() {
   }
   if (errs.length) { errs.forEach((e) => console.error("✗", e)); process.exit(1); }
   await connectDb();
-  const n = await seed(FIGURES);
+  const linked = FIGURES.map((f) => ({ ...f, units: unitsMentioning(f) }));
+  linked.forEach((f) => f.units.length && console.log(`  ${f.figureId}: ${f.units.map((u) => u.unitId).join(", ")}`));
+  const n = await seed(linked);
   console.log(`[figures] ${n} شخصية زُرعت`);
   await disconnectDb();
 }

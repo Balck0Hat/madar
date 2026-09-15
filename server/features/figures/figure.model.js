@@ -9,7 +9,7 @@ const sectionSchema = new Schema({ h: { type: String, trim: true, required: true
 
 // صورة من المشاع العام بعزوها، وسؤال سريع اختياري واحد، وموضع على الخريطة
 const imageSchema = new Schema(
-  { src: { type: String, trim: true, required: true }, w: Number, h: Number, alt: { type: String, trim: true }, credit: { type: String, trim: true }, license: { type: String, trim: true }, source: { type: String, trim: true } },
+  { src: { type: String, trim: true, required: true }, thumb: { type: String, trim: true }, w: Number, h: Number, alt: { type: String, trim: true }, credit: { type: String, trim: true }, license: { type: String, trim: true }, source: { type: String, trim: true } },
   { _id: false },
 );
 const checkSchema = new Schema(
@@ -17,6 +17,8 @@ const checkSchema = new Schema(
   { _id: false },
 );
 const geoSchema = new Schema({ lat: { type: Number, required: true }, lon: { type: Number, required: true }, place: { type: String, trim: true } }, { _id: false });
+// الدروس التي تذكر الشخصية، تُحسب عند الزرع من نصوص الوحدات
+const unitRefSchema = new Schema({ unitId: { type: String, required: true }, title: { type: String, trim: true } }, { _id: false });
 
 const figureSchema = new Schema(
   {
@@ -37,13 +39,14 @@ const figureSchema = new Schema(
     image: { type: imageSchema, default: null },
     check: { type: checkSchema, default: null },
     geo: { type: geoSchema, default: null },
+    units: { type: [unitRefSchema], default: [] },
     order: { type: Number, default: 0, index: true },
     published: { type: Boolean, default: false, index: true },
   },
   { timestamps: true },
 );
 
-figureSchema.index({ name: "text", englishName: "text", why: "text", "story.h": "text" }, { name: "figure_text", default_language: "none" });
+figureSchema.index({ name: "text", englishName: "text", why: "text", quick: "text", "story.h": "text", "story.p": "text" }, { name: "figure_text", default_language: "none" });
 
 figureSchema.methods.toPublic = function toPublic() {
   const o = this.toObject({ versionKey: false });

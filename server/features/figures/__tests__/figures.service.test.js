@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import * as figures from "../figures.service.js";
 import Figure from "../figure.model.js";
+import FigureProgress from "../figureProgress.model.js";
+import mongoose from "mongoose";
 
 const mk = (over = {}) => ({
   figureId: "hammurabi", name: "حمورابي", englishName: "Hammurabi", tier: "1", born: "~-1810", died: "~-1750",
@@ -8,7 +10,7 @@ const mk = (over = {}) => ({
   story: [{ h: "أ", p: "نصّ." }], published: true, order: 1, ...over,
 });
 
-beforeEach(async () => { await Figure.deleteMany({}); });
+beforeEach(async () => { await Figure.deleteMany({}); await FigureProgress.deleteMany({}); });
 
 describe("figures.service", () => {
   it("should list published figures as cards without the story", async () => {
@@ -50,5 +52,28 @@ describe("figures.service", () => {
     await figures.seed([mk({ why: "نصّ جديد" })]);
     expect(await Figure.countDocuments()).toBe(1);
     expect((await figures.get("hammurabi")).why).toBe("نصّ جديد");
+  });
+
+  it("should find a word that appears only inside the story text, after name matches", async () => {
+    await figures.seed([mk({ story: [{ h: "الطور", p: "كلّمه الله عند جبل الطور." }] }), mk({ figureId: "darius", name: "داريوس", englishName: "Darius", order: 2, story: [{ h: "النقش", p: "نقش بهستون بثلاث لغات." }] })]);
+    await Figure.syncIndexes();
+    expect((await figures.list({ q: "بهستون" })).map((f) => f.figureId)).toEqual(["darius"]);
+    expect((await figures.list({ q: "داري" })).map((f) => f.figureId)).toEqual(["darius"]);
+  });
+
+  it("should keep per-user progress: pages and read marks, empty by default", async () => {
+    const user = new mongoose.Types.ObjectId();
+    expect(await figures.getProgress(user)).toEqual({ read: {}, page: {} });
+    expect(await figures.setProgress(user, "hammurabi", { page: 3 })).toMatchObject({ page: { hammurabi: 3 }, read: {} });
+    const p = await figures.setProgress(user, "hammurabi", { read: true, page: 7 });
+    expect(p.page.hammurabi).toBe(7);
+    expect(p.read.hammurabi).toBeInstanceOf(Date);
+    expect(await figures.getProgress(new mongoose.Types.ObjectId())).toEqual({ read: {}, page: {} });
+  });
+
+  it("should not touch progress when the patch is empty", async () => {
+    const user = new mongoose.Types.ObjectId();
+    expect(await figures.setProgress(user, "hammurabi", {})).toEqual({ read: {}, page: {} });
+    expect(await FigureProgress.countDocuments()).toBe(0);
   });
 });

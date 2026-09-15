@@ -1,5 +1,8 @@
 // ما يُشتقّ من الملف والقائمة بلا محتوى جديد: من ذُكر في نصّه، ومن عاصره،
 // وكم مضى عليه، وفي أي حقبة يقع. كله من الأسماء والسنوات الموجودة أصلاً.
+import { mentionedIn } from "../../../shared/utils/mentions";
+
+export { nameKey } from "../../../shared/utils/mentions";
 
 const THIS_YEAR = new Date().getFullYear();
 const LIFE = 70; // عمر افتراضي لمن لا سنة وفاة له
@@ -16,30 +19,9 @@ export const span = (f) => {
   return { from: b, to: yearNum(f.died) ?? b + LIFE };
 };
 
-// مفتاح البحث عن الاسم في النصوص: أول كلمة، أو كلمتان إن كانت الأولى قصيرة («لاو تسي»)
-export const nameKey = (name) => {
-  const w = String(name || "").trim().split(/\s+/);
-  return w[0]?.length >= 4 ? w[0] : w.slice(0, 2).join(" ");
-};
+const storyText = (figure) => [figure.quick, ...(figure.story || []).map((s) => s.p)].join(" ");
 
-const KUNYA = /(?:أبو|أبي|أبا|أم)\s+$/; // «أبو موسى» ليس موسى
-
-// كم مرة ذُكر كل من في القائمة داخل نصّ هذا الملف
-export function mentions(figure, list) {
-  const text = [figure.quick, ...(figure.story || []).map((s) => s.p)].join(" ");
-  return list
-    .filter((o) => o.figureId !== figure.figureId)
-    .map((o) => {
-      const key = nameKey(o.name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const re = new RegExp(`(?<![\\p{L}])(?:و|ف|ب|ل|ك|وب|ول)?${key}(?![\\p{L}])`, "gu");
-      let n = 0;
-      for (const m of text.matchAll(re)) if (!KUNYA.test(text.slice(Math.max(0, m.index - 6), m.index))) n++;
-      return { figure: o, count: n };
-    })
-    .filter((x) => x.count > 0)
-    .sort((a, b) => b.count - a.count);
-}
-
+export const mentions = (figure, list) => mentionedIn(storyText(figure), list, figure.figureId);
 export const related = (figure, list, max = 3) => mentions(figure, list).slice(0, max).map((x) => x.figure);
 
 // من تقاطع عمره مع عمر هذه الشخصية
@@ -88,3 +70,6 @@ export function groupByPeriod(list) {
   }
   return out;
 }
+
+// عدد كل قيمة في حقل، للفلاتر: قيمة بلا شخصيات لا تُعرض
+export const countBy = (list, key) => list.reduce((m, f) => m.set(f[key], (m.get(f[key]) || 0) + 1), new Map());

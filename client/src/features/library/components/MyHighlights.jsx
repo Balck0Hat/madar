@@ -8,7 +8,11 @@ import { notesService, tintOf } from "../../notes";
 import { groupByUnit } from "../utils/group";
 
 // «تظليلاتي»: كل ما ظلّله القارئ مجموعاً بوحدته، ومن كل تظليل طريق عودة إلى موضعه
-export default function MyHighlights({ onBack, onOpenUnit }) {
+// تظليلات قصص الشخصيات معرّفها «figure:<id>»: لا وحدة لها في الشجرة
+const FIG = "figure:";
+const figureInfo = (id) => ({ title: "قصة شخصية", color: C.gold, domainName: "الشخصيات", figureId: id.slice(FIG.length) });
+
+export default function MyHighlights({ onBack, onOpenUnit, onOpenFigure }) {
   const num = useNum();
   const { data, loading, error, reload } = useAsync(() => notesService.list(), []);
   const groups = groupByUnit(data || []);
@@ -22,7 +26,7 @@ export default function MyHighlights({ onBack, onOpenUnit }) {
   return (
     <div style={{ display: "grid", gap: S.xl }}>
       {groups.map(({ unitId, notes }) => {
-        const info = unitInfo(unitId);
+        const info = unitId.startsWith(FIG) ? figureInfo(unitId) : unitInfo(unitId);
         return (
           <Card key={unitId} accent={info.color}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: S.lg }}>
@@ -35,7 +39,7 @@ export default function MyHighlights({ onBack, onOpenUnit }) {
                   <div style={{ fontFamily: READ, fontSize: T.lg, lineHeight: 1.9, background: alpha(tintOf(n.color), 0.14), borderRadius: R.sm, padding: `${S.xs}px ${S.md}px` }}>{n.text}</div>
                   {n.note && <div style={{ fontSize: T.base, lineHeight: 1.7, color: C.muted, marginTop: S.sm }}>— {n.note}</div>}
                   {/* الوسيط الثاني (الصفحة) اختياري: من يفتح الوحدة قد يتجاهله فتُفتح من أولها */}
-                  <button type="button" onClick={() => onOpenUnit(unitId, n.page)} style={link}>
+                  <button type="button" onClick={() => (info.figureId ? onOpenFigure?.(info.figureId) : onOpenUnit(unitId, n.page))} style={link}>
                     <ArrowUpLeft size={13} aria-hidden="true" />افتح عند الصفحة {num(n.page + 1)}
                   </button>
                 </div>

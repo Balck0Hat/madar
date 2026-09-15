@@ -19,4 +19,5 @@ export const models = {
   Review: lazy("Review"),
   Certificate: lazy("Certificate"),
   PushSubscription: lazy("PushSubscription"),
+  Figure: lazy("Figure"),
 };

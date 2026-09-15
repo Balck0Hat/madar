@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import FigureScreen from "../components/FigureScreen";
+import { resetFigureProgress } from "../hooks/useFigureProgress";
 
 const figure = {
   figureId: "hammurabi", name: "حمورابي", englishName: "Hammurabi", tier: "1", born: "~-1810", died: "~-1750",
@@ -16,9 +17,15 @@ const rows = [
   { figureId: "hammurabi", name: "حمورابي", tier: "1", born: "~-1810", died: "~-1750", category: "قادة وسياسة", why: "الشريعة." },
   { figureId: "akhenaten", name: "أخناتون", tier: "1", born: "~-1380", died: "~-1336", category: "دين وفلسفة", why: "آتون." },
 ];
-vi.mock("../services/figures.service", () => ({ getFigure: vi.fn(async () => figure), listFigures: vi.fn(async () => rows) }));
+const progressState = { read: {}, page: {} };
+vi.mock("../services/figures.service", () => ({
+  getFigure: vi.fn(async () => figure), listFigures: vi.fn(async () => rows), getPublicFigure: vi.fn(async () => figure),
+  getProgress: vi.fn(async () => progressState),
+  putProgress: vi.fn(async (id, patch) => { if (Number.isInteger(patch.page)) progressState.page[id] = patch.page; if (patch.read) progressState.read[id] = new Date(); return progressState; }),
+}));
+import * as svc from "../services/figures.service";
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => { vi.clearAllMocks(); localStorage.clear(); progressState.read = {}; progressState.page = {}; resetFigureProgress(); });
 
 describe("FigureScreen", () => {
   it("should open on the quick summary with the hero number, the why line, and a way into the story", async () => {
@@ -37,7 +44,7 @@ describe("FigureScreen", () => {
     fireEvent.click(screen.getByRole("tab", { name: /القصة الكاملة/ }));
     expect(screen.getByText("بابل قبل حمورابي")).toBeInTheDocument();
     expect(screen.queryByText("المسلّة")).not.toBeInTheDocument();
-    expect(screen.getByText("1 من 2")).toBeInTheDocument();
+    expect(screen.getByText("القسم 1 من 2")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "التالي" }));
     expect(screen.getByText("المسلّة")).toBeInTheDocument();
     expect(screen.getByText(/Van De Mieroop/)).toBeInTheDocument();
@@ -48,17 +55,41 @@ describe("FigureScreen", () => {
     expect(onOpen).toHaveBeenCalledWith("akhenaten");
   });
 
-  it("should remember the last section on the device and mark the figure read at the end", async () => {
+  it("should save the section and the read mark to the account and resume from them", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
     const { unmount } = render(<FigureScreen figureId="hammurabi" onBack={() => {}} />);
     await screen.findByText("حمورابي");
     fireEvent.click(screen.getByRole("tab", { name: /القصة الكاملة/ }));
     fireEvent.click(screen.getByRole("button", { name: "التالي" }));
+    await vi.advanceTimersByTimeAsync(700);
+    expect(svc.putProgress).toHaveBeenCalledWith("hammurabi", expect.objectContaining({ read: true }));
+    vi.useRealTimers();
     unmount();
+    resetFigureProgress();
     render(<FigureScreen figureId="hammurabi" onBack={() => {}} />);
     await screen.findByText("حمورابي");
     fireEvent.click(screen.getByRole("tab", { name: /القصة الكاملة/ }));
-    expect(screen.getByText("2 من 2")).toBeInTheDocument();
+    await screen.findByText("القسم 2 من 2");
     expect(JSON.parse(localStorage.getItem("madar.figures")).read.hammurabi).toBeTruthy();
+  });
+
+  it("should show lesson links at the end and open a lesson", async () => {
+    const onOpenUnit = vi.fn();
+    svc.getFigure.mockResolvedValueOnce({ ...figure, units: [{ unitId: "history-1-2", title: "أول القوانين" }] });
+    render(<FigureScreen figureId="hammurabi" onBack={() => {}} onOpenUnit={onOpenUnit} />);
+    await screen.findByText("حمورابي");
+    fireEvent.click(screen.getByRole("tab", { name: /القصة الكاملة/ }));
+    fireEvent.click(screen.getByRole("button", { name: "التالي" }));
+    fireEvent.click(screen.getByRole("button", { name: /أول القوانين/ }));
+    expect(onOpenUnit).toHaveBeenCalledWith("history-1-2");
+  });
+
+  it("should render the public page from the public endpoint without progress or lessons", async () => {
+    render(<FigureScreen figureId="hammurabi" onBack={() => {}} publicMode />);
+    await screen.findByText("حمورابي");
+    expect(svc.getPublicFigure).toHaveBeenCalledWith("hammurabi");
+    expect(svc.getProgress).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "مشاركة رابط الشخصية" })).toBeInTheDocument();
   });
 
   it("should render the life span, how long ago, the map place, and the contemporaries line", async () => {

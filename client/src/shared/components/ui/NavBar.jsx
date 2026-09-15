@@ -25,7 +25,8 @@ export function TabBar({ path, onGo }) {
       paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
       {MOBILE.map(({ k, label, Icon }) => (
         <button key={k} type="button" onClick={() => onGo(k)} aria-current={path === k ? "page" : undefined} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", padding: `${S.lg}px ${S.xs}px ${S.x2}px`, color: path === k ? C.gold : C.muted, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: S.xs, minHeight: TAP, fontFamily: FONT, fontSize: T.xs, fontWeight: path === k ? 700 : 500 }}>
-          <Icon size={20} /><span style={{ whiteSpace: "nowrap" }}>{label}</span>
+          <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 44, height: 26, borderRadius: R.pill, background: path === k ? C.goldSoft : "transparent", transition: "background .15s" }}><Icon size={20} /></span>
+          <span style={{ whiteSpace: "nowrap" }}>{label}</span>
         </button>
       ))}
     </nav>

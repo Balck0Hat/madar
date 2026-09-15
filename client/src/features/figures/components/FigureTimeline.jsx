@@ -15,7 +15,7 @@ export default function FigureTimeline({ figure, list = [], color }) {
   const hi = Math.ceil(Math.max(...spans.map((s) => s.to)) / 100) * 100;
   const at = (y) => ((y - lo) / (hi - lo)) * 100;
   const peers = contemporaries(figure, list);
-  const yl = (y) => num(yearLabel(String(y)) || y);
+  const yl = (y) => num(y > 0 ? `${y} م` : yearLabel(String(y)) || y); // الميلادي يُعلَّم لأن الطرفين على شريط واحد
 
   return (
     <div style={{ marginTop: S.x4 }}>

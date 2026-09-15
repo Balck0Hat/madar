@@ -1,5 +1,5 @@
-import { P, MONO, S, R } from "../../../shared/constants/theme";
-import { useNum } from "../../../shared/context/PrefsContext";
+import { P, MONO, S, R } from "../../constants/theme";
+import { useNum } from "../../context/PrefsContext";
 
 // أرقام البطاقة كبيرة فوق نثرها — اللحظة التي يعطيها الرقم البطل في أول
 // الوحدة، هنا للبطاقات التي تستحقها (ثلاثة أرقام فأكثر، وهي 5% من البطاقات

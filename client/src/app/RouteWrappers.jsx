@@ -36,4 +36,5 @@ export function QuizRoute({ finish, nav }) {
 }
 
 
-export const FigureRoute = ({ onBack }) => <FigureScreen figureId={useParams().figureId} onBack={onBack} />;
+export const FigureRoute = ({ onBack, onOpen, onOpenUnit }) => <FigureScreen figureId={useParams().figureId} onBack={onBack} onOpen={onOpen} onOpenUnit={onOpenUnit} />;
+export const PublicFigureRoute = ({ onHome }) => <FigureScreen figureId={useParams().figureId} onBack={onHome} publicMode />;

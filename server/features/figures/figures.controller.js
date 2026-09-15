@@ -8,3 +8,11 @@ export const list = asyncHandler(async (req, res) => {
 export const get = asyncHandler(async (req, res) => {
   res.json({ success: true, data: { figure: await figures.get(req.params.figureId) } });
 });
+
+export const getProgress = asyncHandler(async (req, res) => {
+  res.json({ success: true, data: { progress: await figures.getProgress(req.user.id) } });
+});
+
+export const setProgress = asyncHandler(async (req, res) => {
+  res.json({ success: true, data: { progress: await figures.setProgress(req.user.id, req.params.figureId, req.body) } });
+});

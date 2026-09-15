@@ -12,6 +12,7 @@ export const paths = {
   library: "/library",
   figures: "/figures",
   figure: (id) => `/figures/${encodeURIComponent(id)}`,
+  publicFigure: (id) => `/f/${encodeURIComponent(id)}`,
   search: "/search",
   stats: "/stats",
   friends: "/friends",
@@ -26,7 +27,7 @@ export const paths = {
 export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, paths.stats, paths.friends, paths.figures];
 
 // شاشات تملأ العرض بلا شريط جانبي: القراءة والاختبار والصفحات العامة
-const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
+const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
 export const isFocus = (pathname) => FOCUS.some((re) => re.test(pathname));
 
 // إشارات تصل مع رابط العودة من Google
