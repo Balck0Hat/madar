@@ -13,4 +13,6 @@ export const PublicProfile = lazy(() => import("../features/public").then((m) =>
 export const ReviewScreen = lazy(() => import("../features/review").then((m) => ({ default: m.ReviewScreen })));
 export const SectorCelebration = lazy(() => import("../features/celebrate").then((m) => ({ default: m.SectorCelebration })));
 export const FiguresScreen = lazy(() => import("../features/figures").then((m) => ({ default: m.FiguresScreen })));
+export const PoliticsScreen = lazy(() => import("../features/politics").then((m) => ({ default: m.PoliticsScreen })));
+export const CountryScreen = lazy(() => import("../features/politics").then((m) => ({ default: m.CountryScreen })));
 export const FigureScreen = lazy(() => import("../features/figures").then((m) => ({ default: m.FigureScreen })));

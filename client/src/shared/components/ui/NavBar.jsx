@@ -1,4 +1,4 @@
-import { Map as MapIcon, Trophy, User, Search, BarChart3, Users, Landmark } from "lucide-react";
+import { Map as MapIcon, Trophy, User, Search, BarChart3, Users, Landmark, Scale } from "lucide-react";
 import { C, FONT, alpha, T, R, S, TAP, BP } from "../../constants/theme";
 import { paths } from "../../../app/routes";
 import OrbitMark from "./OrbitMark";
@@ -12,6 +12,7 @@ export const NAV = [
   { k: paths.friends, label: "الأصدقاء", Icon: Users, mobile: true },
   { k: paths.me, label: "أنا", Icon: User, mobile: true },
   { k: paths.figures, label: "الشخصيات", Icon: Landmark },
+  { k: "/politics", label: "السياسة", Icon: Scale },
   { k: paths.stats, label: "إحصاءاتي", Icon: BarChart3 },
 ];
 
@@ -35,6 +36,7 @@ export function TabBar({ path, onGo }) {
 
 // شريط جانبي للشاشات الكبيرة
 export function SideNav({ path, onGo, name }) {
+  const on = (k) => path === k || (k !== "/" && path.startsWith(`${k}/`)); // القسم نشط في صفحاته الفرعية أيضاً
   return (
     <nav aria-label="التنقل الرئيسي" className="madar-side">
       <div style={{ display: "flex", alignItems: "center", gap: S.xl, padding: `0 ${S.lg}px ${S.x3}px` }}>
@@ -42,7 +44,7 @@ export function SideNav({ path, onGo, name }) {
         <div><div style={{ fontWeight: 700, fontSize: T.x3, lineHeight: 1 }}>مدار</div><div style={{ color: C.muted, fontSize: T.xs, marginTop: S.xs }}>افهم كل شيء</div></div>
       </div>
       {NAV.map(({ k, label, Icon }) => (
-        <button key={k} type="button" onClick={() => onGo(k)} aria-current={path === k ? "page" : undefined} className="madar-press" style={{ display: "flex", alignItems: "center", gap: S.xl, background: path === k ? C.goldSoft : "transparent", border: `1px solid ${path === k ? alpha(C.gold, 0.33) : "transparent"}`, borderRadius: R.lg, padding: `${S.xl}px ${S.x2}px`, color: path === k ? C.gold : C.text, cursor: "pointer", fontFamily: FONT, fontSize: T.md, fontWeight: path === k ? 700 : 600, textAlign: "start" }}>
+        <button key={k} type="button" onClick={() => onGo(k)} aria-current={on(k) ? "page" : undefined} className="madar-press" style={{ display: "flex", alignItems: "center", gap: S.xl, background: on(k) ? C.goldSoft : "transparent", border: `1px solid ${on(k) ? alpha(C.gold, 0.33) : "transparent"}`, borderRadius: R.lg, padding: `${S.xl}px ${S.x2}px`, color: on(k) ? C.gold : C.text, cursor: "pointer", fontFamily: FONT, fontSize: T.md, fontWeight: on(k) ? 700 : 600, textAlign: "start" }}>
           <Icon size={19} />{label}
         </button>
       ))}

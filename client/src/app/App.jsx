@@ -14,7 +14,7 @@ import { ResultScreen } from "../features/quiz";
 import { LeagueScreen } from "../features/league";
 import { ProfileScreen } from "../features/profile";
 import { AdminScreen, StatsScreen, FriendsScreen, SearchScreen, LibraryScreen, ExamScreen, ReviewScreen, SectorCelebration, FiguresScreen } from "./lazyScreens";
-import { AuthRoute, PublicRoute, VerifyRoute, DomainRoute, UnitRoute, QuizRoute, FigureRoute, PublicFigureRoute } from "./RouteWrappers";
+import { AuthRoute, PublicRoute, VerifyRoute, DomainRoute, UnitRoute, QuizRoute, FigureRoute, PublicFigureRoute, PoliticsRoute, CountryRoute } from "./RouteWrappers";
 import { FirstRunTour, shouldShowTour } from "../features/tour";
 import { useGame } from "./useGame";
 import { paths, NAV_PATHS, isFocus, readFlags, cleanUrl } from "./routes";
@@ -95,7 +95,7 @@ function Shell() {
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/" element={!ready ? <Loading /> : profile
-                ? <MapScreen profile={profile} progress={progress} resume={resume} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={(id, r) => nav(paths.domain(id, r))} onOpenUnit={openUnit} onProfile={() => nav(paths.me)} onReview={() => nav(paths.review)} onToast={setToast} onFigures={() => nav(paths.figures)} threadsNew={threadsNew} />
+                ? <MapScreen profile={profile} progress={progress} resume={resume} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={(id, r) => nav(paths.domain(id, r))} onOpenUnit={openUnit} onProfile={() => nav(paths.me)} onReview={() => nav(paths.review)} onToast={setToast} onFigures={() => nav(paths.figures)} onPolitics={() => nav(paths.politics())} threadsNew={threadsNew} />
                 : <Landing onStart={() => nav(paths.auth("register"))} onLogin={() => nav(paths.auth("login"))} googleUrl={providers.google ? authService.googleUrl() : null} canRegister={providers.registrationOpen} />} />
               <Route path="/auth/:mode" element={<AuthRoute onAuthed={onAuthed} onBack={() => nav(paths.home)} canRegister={providers.registrationOpen} />} />
               <Route path="/welcome" element={priv(profile && <Onboarding name={profile.name} onDone={onOnboarded} />)} />
@@ -112,6 +112,8 @@ function Shell() {
               <Route path="/league" element={priv(<LeagueScreen />)} />
               <Route path="/figures" element={priv(<FiguresScreen onBack={() => nav(paths.home)} onOpen={(id) => nav(paths.figure(id))} />)} />
               <Route path="/figures/:figureId" element={priv(<FigureRoute onBack={() => nav(paths.figures)} onOpen={(id) => nav(paths.figure(id))} onOpenUnit={openUnit} />)} />
+              <Route path="/politics/c/:countryId" element={priv(<CountryRoute nav={nav} />)} />
+              <Route path="/politics/:tab?" element={priv(<PoliticsRoute nav={nav} />)} />
               <Route path="/f/:figureId" element={<PublicFigureRoute onHome={() => nav(paths.home)} />} />
               <Route path="/me" element={priv(profile && <ProfileScreen profile={profile} progress={progress} xp={xp} badges={badges} streak={streak} freezes={freezes} studied={studied} certificate={certificate} onPrefs={onPrefs} onToggleReminders={(v) => onPrefs({ reminders: v })} onToast={setToast} onLogout={onLogout} onStats={() => nav(paths.stats)} onLibrary={() => nav(paths.library)} onExam={() => nav(paths.exam)} onAdmin={() => nav(paths.admin)} />)} />
               <Route path="/admin/*" element={priv(<AdminScreen onBack={() => nav(paths.me)} onToast={setToast} onContentChanged={game.refreshAuthored} />)} />
