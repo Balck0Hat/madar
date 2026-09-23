@@ -39,22 +39,31 @@ export function mergeSequential(status, expected, text, bounds, lookback = 3) {
   let b = bounds.find((x) => cur >= x.from && cur < x.to);
   if (!b) return summary(next, expected);
   const from = Math.max(b.from, cur - lookback);
-  applyAlign(next, from, align(expected.slice(from, b.to), hyp));
+  // الكلمات المسموعة تُستهلك بالترتيب: ما طابق آيةً لا يُعاد استعماله للتي بعدها
+  // (البسملة تنتهي بـ«الرحمن الرحيم» والآية الثالثة تبدأ بهما)
+  let rest = hyp;
+  const consume = (r) => { rest = r.used >= 0 ? rest.slice(r.used + 1) : rest; };
+  const first = align(expected.slice(from, b.to), rest);
+  applyAlign(next, from, first); consume(first);
   const open = (x) => next.slice(x.from, x.to).includes("pending");
   const after = (x) => bounds.find((y) => y.from === x.to);
-  // اكتملت الآية في هذه الدفعة والقارئ مستمر: تابع في التي بعدها من التعرّف نفسه
-  while (!open(b) && after(b)) {
+  // اكتملت الآية في هذه الدفعة والقارئ مستمر: تابع في التي بعدها بما بقي من التعرّف
+  while (!open(b) && after(b) && rest.length) {
     const n = after(b);
-    const r = align(expected.slice(n.from, n.to), hyp);
+    const r = align(expected.slice(n.from, n.to), rest);
     if (r.ok === 0) break;
-    applyAlign(next, n.from, r);
+    applyAlign(next, n.from, r); consume(r);
     b = n;
   }
   const stillOpen = open(b);
   const nextB = after(b);
-  if (stillOpen && nextB) {
-    const head = align(expected.slice(nextB.from, Math.min(nextB.to, nextB.from + 3)), hyp);
-    if (head.ok >= 2) { // بدأ التي بعدها: أغلق الحالية وتقدّم
+  // ما زال في التعرّف كلام من الآية السابقة (المكتملة)؟ استهلكه قبل فحص «هل بدأ التالية»،
+  // وإلا عدّت خاتمة البسملة بدايةً للآية الثالثة
+  const prevB = bounds.find((y) => y.to === b.from);
+  if (stillOpen && prevB && rest.length) { const p = align(expected.slice(prevB.from, prevB.to), rest); if (p.used >= 0) rest = rest.slice(p.used + 1); }
+  if (stillOpen && nextB && rest.length) {
+    const head = align(expected.slice(nextB.from, Math.min(nextB.to, nextB.from + 3)), rest);
+    if (head.ok >= 2) { // بدأ التي بعدها فعلاً: أغلق الحالية وتقدّم
       for (let i = b.from; i < b.to; i++) if (next[i] === "pending") next[i] = "miss";
       applyAlign(next, nextB.from, head);
     }

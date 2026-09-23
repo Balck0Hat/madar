@@ -3,7 +3,7 @@ import { normalize, words, align } from "../arabic.js";
 
 describe("arabic normalize", () => {
   it("should drop diacritics, stop marks and Uthmani glyphs and unify alef, hamza and taa marbuta", () => {
-    expect(normalize("بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ")).toBe("بسم الله الرحمن الرحيم");
+    expect(normalize("بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ")).toBe("بسم الله الرحمان الرحيم"); // الألف الخنجرية ألف
     expect(normalize("ٱلۡقَيُّومُۚ لَا تَأۡخُذُهُۥ سِنَةࣱ")).toBe("القيوم لا تاخذه سنه");
     expect(normalize("أَإِذَا مِتْنَا وَكُنَّا تُرَابًا")).toBe("ااذا متنا وكنا ترابا");
     expect(words("")).toEqual([]);
@@ -29,6 +29,9 @@ describe("align", () => {
   it("should forgive a one-letter recognition slip in a long word but not a different word", () => {
     expect(align("الرحمن الرحيم", "الرحمان الرحيم").status).toEqual(["ok", "ok"]);
     expect(align("مالك يوم الدين", "ملك يوم الدين").status[0]).toBe("ok");
+    expect(align("لا اله الا هو", "لا الا الا هو").status[1]).toBe("miss"); // «اله» و«الا» كلمتان مختلفتان
+    expect(align("اياك نعبد واياك نستعين", "اياك نعبد واياك نستعين").status.every((s) => s === "ok")).toBe(true);
+    expect(align("اياك نعبد", "واياك نعبد").status[0]).toBe("miss"); // واو العطف تصنع كلمة أخرى
     expect(align("قل هو الله احد", "قل هي الله احد").status).toEqual(["ok", "miss", "ok", "ok"]);
   });
 

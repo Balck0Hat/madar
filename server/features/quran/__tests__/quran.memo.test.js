@@ -11,7 +11,7 @@ describe("quran.service text", () => {
     expect(quran.suras()).toHaveLength(114);
     const fatiha = quran.sura(1);
     expect(fatiha.ayahs).toHaveLength(7);
-    expect(fatiha.ayahs[0].n).toBe("بسم الله الرحمن الرحيم");
+    expect(fatiha.ayahs[0].n).toBe("بسم الله الرحمان الرحيم"); // الألف الخنجرية ألف في المطابقة
     expect(quran.page(604).ayahs.map((a) => a.s)).toContain(114);
     expect(() => quran.sura(115)).toThrowError(expect.objectContaining({ code: "SURA_NOT_FOUND" }));
     const sim = quran.similar(2, 173);

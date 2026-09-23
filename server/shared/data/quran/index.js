@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { normalize } from "../../utils/arabic.js";
 
 // نصّ المصحف: الرسم العثماني برواية حفص من مجموعة quran-api المفتوحة (تنزيل/مجمع
 // الملك فهد أصلاً)، مع صفحة مصحف المدينة والجزء لكل آية، ونسخة مطبَّعة للمطابقة.
@@ -13,7 +14,8 @@ export const SIMILAR = read("similar.json");
 
 const stripTail = (name) => name.replace(/[ً-ْ]+$/, ""); // الكسرة الأخيرة من الإضافة في «سورةُ الفاتحةِ»
 export const SURAS = data.suras.map((s) => ({ ...s, name: stripTail(s.name) }));
-export const AYAHS = data.ayahs;
+// النسخة المطبَّعة تُحسب هنا بقاعدة المطابقة نفسها، لا تُقرأ من الملف
+export const AYAHS = data.ayahs.map((a) => ({ ...a, n: normalize(a.t) }));
 
 const bySura = new Map();
 const byPage = new Map();

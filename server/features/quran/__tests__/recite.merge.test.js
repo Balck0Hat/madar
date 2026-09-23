@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mergeStatus, mergeSequential, relevant, cursorOf } from "../recite.merge.js";
-import { words } from "../../../shared/utils/arabic.js";
+import { words, normalize } from "../../../shared/utils/arabic.js";
 
 const E = words("الله لا اله الا هو الحي القيوم لا تاخذه سنه ولا نوم");
 const fresh = () => E.map(() => "pending");
@@ -83,5 +83,36 @@ describe("recite sequential", () => {
   it("should tell relevant speech from noise near the cursor", () => {
     expect(relevant(fresh(), E, "ما السعير")).toBe(false);
     expect(relevant(fresh(), E, "قل")).toBe(true);
+  });
+});
+
+describe("recite sequential on al-Fatiha", () => {
+  const F = ["بسم الله الرحمن الرحيم", "الحمد لله رب العالمين", "الرحمن الرحيم", "مالك يوم الدين"].map(words);
+  const E = F.flat();
+  const bounds = F.reduce((acc, w, i) => { const from = acc.length ? acc[acc.length - 1].to : 0; acc.push({ a: i + 1, from, to: from + w.length }); return acc; }, []);
+  const fresh = () => E.map(() => "pending");
+
+  it("should not let the basmala's «الرحمن الرحيم» open ayah 3 and kill ayah 2", () => {
+    let r = mergeSequential(fresh(), E, "بسم الله الرحمن الرحيم", bounds);
+    expect(r.status.slice(0, 4).every((s) => s === "ok")).toBe(true);
+    expect(r.status.slice(4, 8).every((s) => s === "pending")).toBe(true); // الآية الثانية ما زالت تنتظر
+    r = mergeSequential(r.status, E, "الرحيم الحمد لله رب العالمين الرحمن", bounds);
+    expect(r.status.slice(4, 8).every((s) => s === "ok")).toBe(true);
+    expect(r.miss).toBe(0);
+  });
+
+  it("should match Uthmani dagger-alef words (مَٰلِكِ) against the plain spelling", () => {
+    expect(normalize("مَٰلِكِ يَوۡمِ ٱلدِّينِ")).toBe("مالك يوم الدين");
+    expect(normalize("صِرَٰطَ")).toBe("صراط");
+    const r = mergeSequential(fresh(), E, "بسم الله الرحمن الرحيم الحمد لله رب العالمين الرحمن الرحيم ملك يوم الدين", bounds);
+    expect(r.done).toBe(true);
+    expect(r.miss).toBe(0);
+  });
+
+  it("should not close ayah 2 when a later window still carries the basmala but none of ayah 2", () => {
+    let r = mergeSequential(fresh(), E, "بسم الله الرحمن الرحيم", bounds);
+    r = mergeSequential(r.status, E, "الله الرحمن الرحيم", bounds); // النافذة انزلقت ولم يُسمع من الثانية شيء بعد
+    expect(r.status.slice(4, 8).every((s) => s === "pending")).toBe(true);
+    expect(r.status.slice(8, 10).every((s) => s === "pending")).toBe(true);
   });
 });

@@ -8,10 +8,10 @@ import { ayah as findAyah, suraAyahs } from "../../shared/data/quran/index.js";
 import { env } from "../../shared/config/env.js";
 
 // التسميع المباشر: المتصفح يرسل صوتاً خاماً (PCM 16 بت، 16 كيلوهرتز) قطعةً كل
-// نصف ثانية؛ نحتفظ بآخر ست ثوانٍ ونرسلها كلما وصل صوت جديد لخدمة التعرّف المحلية،
+// نصف ثانية؛ نحتفظ بآخر عشر ثوانٍ ونرسلها كلما وصل صوت جديد لخدمة التعرّف المحلية،
 // ونحاذي النصّ مع كلمات الآية المطلوبة ونعيد حالة كل كلمة. لا يُحفظ الصوت.
 const RATE = 16000;
-const WINDOW = 6 * RATE * 2; // بايتات: ست ثوانٍ، تكفي سياقاً وتُعرَف في نحو ثانية
+const WINDOW = 10 * RATE * 2; // بايتات: عشر ثوانٍ؛ المدود الطويلة (الضالّين عند الحصري) تحتاج سياقاً أطول، والمحرّك السريع يعرفها في نحو ثانية
 const EVERY = 900;
 const ASR = env.asrUrl || "http://127.0.0.1:3106";
 const QUIET = 0.012; // جذر متوسط مربع العيّنات (0..1) الذي دونه القطعة صمت أو أنفاس
@@ -54,7 +54,8 @@ function session(ws) {
     if (busy || !size || !expected.length || (fresh < MIN_NEW && !force)) return;
     busy = true; fresh = 0;
     try {
-      const text = await transcribe(Buffer.concat(chunks));
+      // عند الإيقاف نلحق نصف ثانية صمت: كاشف الكلام يحتاج سكوتاً بعد آخر كلمة ليغلقها
+      const text = await transcribe(Buffer.concat(force ? [...chunks, Buffer.alloc(RATE)] : chunks));
       // كلام لا يخصّ الآية القريبة (ضجيج، أنفاس، آية أخرى) لا يُعرض ولا يُحتسب
       if ((text && relevant(status, expected, text)) || force) {
         const r = merge(text);
