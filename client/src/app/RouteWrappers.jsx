@@ -4,7 +4,7 @@ import { AuthScreen } from "../features/auth";
 import { DomainScreen } from "../features/domain";
 import { UnitScreen } from "../features/unit";
 import { QuizScreen } from "../features/quiz";
-import { VerifyPage, PublicProfile, FigureScreen, PoliticsScreen, CountryScreen, SuraScreen, ReciteScreen } from "./lazyScreens";
+import { VerifyPage, PublicProfile, FigureScreen, PoliticsScreen, CountryScreen, SuraScreen, ReciteScreen, ListenScreen } from "./lazyScreens";
 import { paths } from "./routes";
 
 // المسارات التي تقرأ معاملاتها من الرابط
@@ -39,6 +39,7 @@ export function QuizRoute({ finish, nav }) {
 export const FigureRoute = ({ onBack, onOpen, onOpenUnit }) => <FigureScreen figureId={useParams().figureId} onBack={onBack} onOpen={onOpen} onOpenUnit={onOpenUnit} />;
 export const PoliticsRoute = ({ nav }) => <PoliticsScreen tab={useParams().tab || "countries"} onTab={(t) => nav(paths.politics(t), { replace: true })} onBack={() => nav(paths.home)} onOpenCountry={(id) => nav(paths.country(id))} />;
 export const CountryRoute = ({ nav }) => { const { countryId } = useParams(); return <CountryScreen key={countryId} countryId={countryId} onBack={() => nav(paths.politics())} onOpen={(id) => nav(paths.country(id))} />; };
-export const SuraRoute = ({ nav }) => { const { n } = useParams(); return <SuraScreen key={n} n={Number(n)} onBack={() => nav(paths.quran)} onNext={(m) => nav(paths.sura(m))} onRecite={(ayah) => nav(paths.recite(ayah.s, ayah.a))} onReciteAll={(sn) => nav(paths.recite(sn, "all"))} />; };
-export const ReciteRoute = ({ nav }) => { const { s, a } = useParams(); return <ReciteScreen key={`${s}:${a}`} s={s} a={a} onBack={() => nav(paths.sura(s))} onNext={() => nav(a === "all" ? paths.recite(Number(s) + 1, "all") : paths.recite(s, Number(a) + 1))} />; };
+export const SuraRoute = ({ nav }) => { const { n } = useParams(); return <SuraScreen key={n} n={Number(n)} onBack={() => nav(paths.quran)} onNext={(m) => nav(paths.sura(m))} onRecite={(ayah) => nav(paths.recite(ayah.s, ayah.a))} onReciteAll={(sn) => nav(paths.recite(sn, "all"))} onReciteRange={(sn, f, t) => nav(paths.recite(sn, `${f}-${t}`))} onListen={(sn, f, t) => nav(f ? paths.listen("range", sn, f, t) : paths.listen("sura", sn))} />; };
+export const ReciteRoute = ({ nav }) => { const { s, a } = useParams(); return <ReciteScreen key={`${s}:${a}`} s={s} a={a} onBack={() => nav(paths.sura(s))} onNext={() => nav(a === "all" ? paths.recite(Number(s) + 1, "all") : /-/.test(a) ? paths.recite(s, a) : paths.recite(s, Number(a) + 1))} />; };
+export const ListenRoute = ({ nav }) => { const { mode, n, from, to } = useParams(); return <ListenScreen key={`${mode}-${n}-${from}-${to}`} mode={mode} n={n ? Number(n) : null} from={from ? Number(from) : null} to={to ? Number(to) : null} onBack={() => nav(n ? paths.sura(n) : paths.quran)} />; };
 export const PublicFigureRoute = ({ onHome }) => <FigureScreen figureId={useParams().figureId} onBack={onHome} publicMode />;

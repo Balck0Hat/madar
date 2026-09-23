@@ -15,6 +15,7 @@ export const SectorCelebration = lazy(() => import("../features/celebrate").then
 export const FiguresScreen = lazy(() => import("../features/figures").then((m) => ({ default: m.FiguresScreen })));
 export const QuranScreen = lazy(() => import("../features/quran").then((m) => ({ default: m.QuranScreen })));
 export const SuraScreen = lazy(() => import("../features/quran").then((m) => ({ default: m.SuraScreen })));
+export const ListenScreen = lazy(() => import("../features/quran").then((m) => ({ default: m.ListenScreen })));
 export const ReciteScreen = lazy(() => import("../features/quran").then((m) => ({ default: m.ReciteScreen })));
 export const PoliticsScreen = lazy(() => import("../features/politics").then((m) => ({ default: m.PoliticsScreen })));
 export const CountryScreen = lazy(() => import("../features/politics").then((m) => ({ default: m.CountryScreen })));

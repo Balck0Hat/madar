@@ -26,7 +26,7 @@ describe("ReciteScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "ابدأ التسميع" }));
     await waitFor(() => expect(sockets[0].sent[0]).toContain('"start"'));
     await act(async () => { sockets[0].emit({ t: "state", status: ["ok", "ok", "pending", "pending"], cursor: 2, done: false, text: "قل هو", ok: 2, miss: 0 }); });
-    expect(screen.getByText(/سمعتُ: قل هو/)).toBeInTheDocument();
+    expect(screen.getByText("قل هو")).toBeInTheDocument(); // سطر «سمعتُ» بخط المصحف
     await act(async () => {
       sockets[0].emit({ t: "state", status: ["ok", "ok", "ok", "ok"], cursor: 4, done: true, text: "قل هو الله احد", ok: 4, miss: 0 });
       sockets[0].emit({ t: "done" });

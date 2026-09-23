@@ -1,5 +1,5 @@
-torch (CPU build)
-transformers
+faster-whisper (CTranslate2, int8)
 fastapi
 uvicorn
 numpy
+# للتحويل فقط: transformers + torch (CPU)

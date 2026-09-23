@@ -14,7 +14,7 @@ import { ResultScreen } from "../features/quiz";
 import { LeagueScreen } from "../features/league";
 import { ProfileScreen } from "../features/profile";
 import { AdminScreen, StatsScreen, FriendsScreen, SearchScreen, LibraryScreen, ExamScreen, ReviewScreen, SectorCelebration, FiguresScreen, QuranScreen } from "./lazyScreens";
-import { AuthRoute, PublicRoute, VerifyRoute, DomainRoute, UnitRoute, QuizRoute, FigureRoute, PublicFigureRoute, PoliticsRoute, CountryRoute, SuraRoute, ReciteRoute } from "./RouteWrappers";
+import { AuthRoute, PublicRoute, VerifyRoute, DomainRoute, UnitRoute, QuizRoute, FigureRoute, PublicFigureRoute, PoliticsRoute, CountryRoute, SuraRoute, ReciteRoute, ListenRoute } from "./RouteWrappers";
 import { FirstRunTour, shouldShowTour } from "../features/tour";
 import { useGame } from "./useGame";
 import { paths, NAV_PATHS, isFocus, readFlags, cleanUrl } from "./routes";
@@ -112,9 +112,10 @@ function Shell() {
               <Route path="/league" element={priv(<LeagueScreen />)} />
               <Route path="/figures" element={priv(<FiguresScreen onBack={() => nav(paths.home)} onOpen={(id) => nav(paths.figure(id))} />)} />
               <Route path="/figures/:figureId" element={priv(<FigureRoute onBack={() => nav(paths.figures)} onOpen={(id) => nav(paths.figure(id))} onOpenUnit={openUnit} />)} />
-              <Route path="/quran" element={priv(<QuranScreen onBack={() => nav(paths.home)} onOpenSura={(n) => nav(paths.sura(n))} onRecite={(s, a) => nav(paths.recite(s, a))} />)} />
+              <Route path="/quran" element={priv(<QuranScreen onBack={() => nav(paths.home)} onOpenSura={(n) => nav(paths.sura(n))} onRecite={(s, a) => nav(paths.recite(s, a))} onListenRandom={() => nav(paths.listen("random"))} />)} />
               <Route path="/quran/s/:n" element={priv(<SuraRoute nav={nav} />)} />
               <Route path="/quran/recite/:s/:a" element={priv(<ReciteRoute nav={nav} />)} />
+              <Route path="/quran/listen/:mode/:n?/:from?/:to?" element={priv(<ListenRoute nav={nav} />)} />
               <Route path="/politics/c/:countryId" element={priv(<CountryRoute nav={nav} />)} />
               <Route path="/politics/:tab?" element={priv(<PoliticsRoute nav={nav} />)} />
               <Route path="/f/:figureId" element={<PublicFigureRoute onHome={() => nav(paths.home)} />} />

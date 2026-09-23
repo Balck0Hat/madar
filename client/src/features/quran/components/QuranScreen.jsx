@@ -11,7 +11,7 @@ import TodayDose from "./TodayDose";
 
 // خانة حفظ القرآن: الهدف وجرعة اليوم (مراجعات حان موعدها، ثم آيات جديدة)،
 // وخريطة الأجزاء، وقائمة السور للتصفح.
-export default function QuranScreen({ onBack, onOpenSura, onRecite }) {
+export default function QuranScreen({ onBack, onOpenSura, onRecite, onListenRandom }) {
   const num = useNum();
   const [editing, setEditing] = useState(false);
   const [q, setQ] = useState("");
@@ -52,6 +52,11 @@ export default function QuranScreen({ onBack, onOpenSura, onRecite }) {
               <JuzMap juz={memo.juz} />
             </div>
           </>
+        )}
+        {onListenRandom && (
+          <button type="button" onClick={onListenRandom} className="madar-press" style={{ minHeight: TAP, fontFamily: "inherit", fontWeight: 700, cursor: "pointer", color: C.gold, background: C.goldSoft, border: `1px solid ${alpha(C.gold, 0.4)}`, borderRadius: R.xl, padding: `${S.lg}px ${S.x3}px`, textAlign: "start" }}>
+            استماع عشوائي من المصحف كله، لا يتوقف حتى توقفه
+          </button>
         )}
         {suras.length > 0 && (
           <div style={{ display: "grid", gap: S.lg }}>

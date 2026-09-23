@@ -19,7 +19,8 @@ export function useRecite() {
     let sock;
     try { sock = new WebSocket(wsUrl()); } catch (err) { setPhase("error"); setError("تعذّر فتح قناة التسميع"); reject(err); return; }
     sock.binaryType = "arraybuffer";
-    sock.onopen = () => sock.send(JSON.stringify(a ? { t: "start", s, a } : { t: "start", s })); // بلا آية: السورة كاملة
+    // آية واحدة (رقم)، أو مدى {from,to}، أو بلا شيء: السورة كاملة
+    sock.onopen = () => sock.send(JSON.stringify(a && typeof a === "object" ? { t: "start", s, from: a.from, to: a.to } : a ? { t: "start", s, a } : { t: "start", s }));
     sock.onmessage = (e) => {
       const m = JSON.parse(e.data);
       if (m.t === "ready") { setState((st) => ({ ...st, ayahs: m.ayahs || [] })); setPhase("ready"); resolve(); }
