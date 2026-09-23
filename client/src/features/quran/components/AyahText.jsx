@@ -38,7 +38,7 @@ export default function AyahText({ text, number, hide = "none", status = [], cur
   const body = words.map((w, i) => {
     const masked = hidden.has(i) && !revealed.has(i);
     const isCursor = live && offset + i === cursor && !heard(i);
-    const concealed = live && reveal && !heard(i); // إخفاء التسميع: لا تظهر حتى تُسمع
+    const concealed = reveal && !heard(i); // إخفاء التسميع: مخفية من البداية ولا تظهر حتى تُسمع
     return (
       <span key={i}>
         {masked ? <Blank w={w} K={K} onClick={() => show(i)} />
