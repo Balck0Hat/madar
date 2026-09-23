@@ -11,10 +11,11 @@ export const cursorOf = (status) => {
   return m === -1 ? p : Math.min(p, m);
 };
 
-export function mergeStatus(status, expected, text, lookback = 2) {
+// lookahead: سورة كاملة قد تكون آلاف الكلمات، والنافذة الصوتية لا تحمل أكثر من عشرات، فالمطابقة محلية
+export function mergeStatus(status, expected, text, lookback = 2, lookahead = 80) {
   const next = status.slice();
   const from = Math.max(0, cursorOf(next) - lookback);
-  const r = align(expected.slice(from), words(text));
+  const r = align(expected.slice(from, from + lookahead), words(text));
   r.status.forEach((st, k) => {
     const i = from + k;
     if (next[i] === "ok") return;

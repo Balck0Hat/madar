@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const wsUrl = () => `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/ws/recite`;
 
 export function useRecite() {
-  const [state, setState] = useState({ status: [], cursor: 0, done: false, text: "", ok: 0, miss: 0 });
+  const [state, setState] = useState({ status: [], cursor: 0, done: false, text: "", ok: 0, miss: 0, ayahs: [] });
   const [phase, setPhase] = useState("idle"); // idle | connecting | ready | done | error
   const [error, setError] = useState("");
   const ws = useRef(null);
@@ -15,15 +15,15 @@ export function useRecite() {
   const begin = useCallback((s, a) => new Promise((resolve, reject) => {
     close();
     setError(""); setPhase("connecting");
-    setState({ status: [], cursor: 0, done: false, text: "", ok: 0, miss: 0 });
+    setState({ status: [], cursor: 0, done: false, text: "", ok: 0, miss: 0, ayahs: [] });
     let sock;
     try { sock = new WebSocket(wsUrl()); } catch (err) { setPhase("error"); setError("تعذّر فتح قناة التسميع"); reject(err); return; }
     sock.binaryType = "arraybuffer";
-    sock.onopen = () => sock.send(JSON.stringify({ t: "start", s, a }));
+    sock.onopen = () => sock.send(JSON.stringify(a ? { t: "start", s, a } : { t: "start", s })); // بلا آية: السورة كاملة
     sock.onmessage = (e) => {
       const m = JSON.parse(e.data);
-      if (m.t === "ready") { setPhase("ready"); resolve(); }
-      else if (m.t === "state") setState({ status: m.status, cursor: m.cursor, done: m.done, text: m.text, ok: m.ok, miss: m.miss });
+      if (m.t === "ready") { setState((st) => ({ ...st, ayahs: m.ayahs || [] })); setPhase("ready"); resolve(); }
+      else if (m.t === "state") setState((st) => ({ ...st, status: m.status, cursor: m.cursor, done: m.done, text: m.text, ok: m.ok, miss: m.miss }));
       else if (m.t === "done") setPhase("done");
       else if (m.t === "error") { setError(m.message); }
     };

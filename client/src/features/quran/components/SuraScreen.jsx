@@ -11,7 +11,7 @@ const HIDES = [["none", "عرض"], ["third", "أخفِ الثلث"], ["half", "�
 
 // سورة كاملة للحفظ: وضع الإخفاء للسورة كلها، وكل آية ببطاقتها. «أتقنتها/أخطأت»
 // يحدّثان جدول المراجعة فوراً.
-export default function SuraScreen({ n, onBack, onRecite, onNext }) {
+export default function SuraScreen({ n, onBack, onRecite, onReciteAll, onNext }) {
   const num = useNum();
   const [hide, setHide] = useState("none");
   const [items, setItems] = useState({});
@@ -50,6 +50,11 @@ export default function SuraScreen({ n, onBack, onRecite, onNext }) {
         ))}
       </div>
       {hide !== "none" && <div style={{ color: P.muted, fontSize: T.xs, marginBottom: S.md }}>اضغط على أي فراغ لتكشف كلمته.</div>}
+      {onReciteAll && (
+        <button type="button" onClick={() => onReciteAll(data.n)} className="madar-press" style={{ width: "100%", minHeight: TAP, margin: `${S.md}px 0 ${S.x2}px`, fontFamily: "inherit", fontWeight: 700, cursor: "pointer", color: P.bg, background: P.gold, border: 0, borderRadius: R.x2 }}>
+          سمّع السورة كاملة بالصوت
+        </button>
+      )}
       {data.n !== 9 && data.n !== 1 && <p className="madar-quran" dir="rtl" style={{ textAlign: "center", fontSize: "1.4em", margin: `${S.x2}px 0`, color: P.muted }}>بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</p>}
       {data.ayahs.map((a) => <AyahCard key={a.a} ayah={a} hide={hide} item={items[keyOf(a.s, a.a)]} audio={audio} onReview={review} onRecite={onRecite} />)}
       {onNext && data.n < 114 && (

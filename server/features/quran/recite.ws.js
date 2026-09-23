@@ -4,7 +4,7 @@ import { verifyAccess } from "../../shared/utils/tokens.js";
 import { ACCESS_COOKIE } from "../../shared/utils/cookies.js";
 import { mergeStatus } from "./recite.merge.js";
 import { words } from "../../shared/utils/arabic.js";
-import { ayah as findAyah } from "../../shared/data/quran/index.js";
+import { ayah as findAyah, suraAyahs } from "../../shared/data/quran/index.js";
 import { env } from "../../shared/config/env.js";
 
 // التسميع المباشر: المتصفح يرسل صوتاً خاماً (PCM 16 بت، 16 كيلوهرتز) قطعةً كل
@@ -66,7 +66,14 @@ function session(ws) {
     if (!isBinary) {
       try {
         const m = JSON.parse(data.toString());
-        if (m.t === "start") { const target = findAyah(m.s, m.a); expected = target ? words(target.n) : []; status = expected.map(() => "pending"); finished = false; chunks = []; size = 0; send({ t: "ready", words: expected.length, s: m.s, a: m.a }); }
+        if (m.t === "start") {
+          // آية واحدة {s,a} أو مدى {s,from,to} (سورة كاملة إن لم يُحدَّد المدى)؛ نحفظ حدود كل آية ليعرف العميل أين هو
+          const list = m.a ? [findAyah(m.s, m.a)].filter(Boolean) : suraAyahs(m.s).filter((x) => x.a >= (m.from || 1) && x.a <= (m.to || 999));
+          const ayahs = []; expected = [];
+          for (const x of list) { const w = words(x.n); ayahs.push({ a: x.a, from: expected.length, to: expected.length + w.length }); expected.push(...w); }
+          status = expected.map(() => "pending"); finished = false; chunks = []; size = 0;
+          send({ t: "ready", words: expected.length, s: m.s, ayahs });
+        }
         if (m.t === "stop") run(true).then(() => { chunks = []; size = 0; });
       } catch { send({ t: "error", message: "رسالة غير مفهومة" }); }
       return;
