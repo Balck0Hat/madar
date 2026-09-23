@@ -127,6 +127,8 @@ html { -webkit-text-size-adjust: 100%; }
 .madar-turn-deep{animation:madarTurnDeep .3s ease-out}
 /* الاقتباس «…» يُسمع: وزن أثقل وأقواس بلون المجال */
 .madar-q{font-weight:600}
+/* نصّ المصحف: خط أميري القرآن يرسم علامات الرسم العثماني، والبديل نسخ */
+.madar-quran{font-family:"Amiri Quran","Noto Naskh Arabic","SF Arabic",serif;font-weight:400;word-spacing:.12em}
 .madar-num{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.9em;letter-spacing:-.01em}
 .madar-q-mark{color:var(--unit-color,var(--gold));font-size:1.1em}
 .madar-press{transition:transform .12s ease}

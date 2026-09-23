@@ -4,6 +4,7 @@ import { createApp } from "./app.js";
 import { startScheduler } from "./shared/jobs/scheduler.js";
 import { seedUnits } from "./features/content/content.service.js";
 import { SEED_UNITS } from "./shared/data/seed/index.js";
+import { attachRecite } from "./features/quran/recite.ws.js";
 
 async function main() {
   await connectDb();
@@ -20,6 +21,7 @@ async function main() {
   const server = app.listen(env.port, "0.0.0.0", () => {
     console.log(`[madar] ${env.nodeEnv} server on http://0.0.0.0:${env.port} · ai=${Boolean(env.anthropicKey)} push=${env.pushEnabled} google=${env.googleEnabled}`);
   });
+  attachRecite(server); // التسميع المباشر على /ws/recite، بكوكي الدخول نفسها
   const shutdown = async (signal) => {
     console.log(`[madar] ${signal} received, shutting down`);
     jobs.forEach((j) => j.stop());

@@ -28,6 +28,7 @@ export const env = {
   adminEmails: list(process.env.ADMIN_EMAILS),
   vapid: { publicKey: process.env.VAPID_PUBLIC_KEY || "", privateKey: process.env.VAPID_PRIVATE_KEY || "", subject: process.env.VAPID_SUBJECT || "mailto:admin@example.com" },
   anthropicKey: process.env.ANTHROPIC_API_KEY || "",
+  asrUrl: process.env.ASR_URL || "http://127.0.0.1:3106",
   aiModel: process.env.AI_MODEL || "claude-opus-5",
   google: { clientId: process.env.GOOGLE_CLIENT_ID || "", clientSecret: process.env.GOOGLE_CLIENT_SECRET || "" },
   // التسجيل مغلق ما لم يُفتح صراحةً: الافتراض الآمن أن الباب مقفل

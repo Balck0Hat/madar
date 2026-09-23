@@ -12,6 +12,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",
     "bcryptjs": "^2.4.3",
+    "cookie": "^1.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -23,6 +24,7 @@
     "mongoose": "^8.9.5",
     "node-cron": "^4.6.0",
     "web-push": "^3.6.7",
+    "ws": "^8.21.3",
     "zod": "^3.24.1"
   },
   "devDependencies": {

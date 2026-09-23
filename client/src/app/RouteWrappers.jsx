@@ -4,7 +4,7 @@ import { AuthScreen } from "../features/auth";
 import { DomainScreen } from "../features/domain";
 import { UnitScreen } from "../features/unit";
 import { QuizScreen } from "../features/quiz";
-import { VerifyPage, PublicProfile, FigureScreen, PoliticsScreen, CountryScreen } from "./lazyScreens";
+import { VerifyPage, PublicProfile, FigureScreen, PoliticsScreen, CountryScreen, SuraScreen, ReciteScreen } from "./lazyScreens";
 import { paths } from "./routes";
 
 // المسارات التي تقرأ معاملاتها من الرابط
@@ -39,4 +39,6 @@ export function QuizRoute({ finish, nav }) {
 export const FigureRoute = ({ onBack, onOpen, onOpenUnit }) => <FigureScreen figureId={useParams().figureId} onBack={onBack} onOpen={onOpen} onOpenUnit={onOpenUnit} />;
 export const PoliticsRoute = ({ nav }) => <PoliticsScreen tab={useParams().tab || "countries"} onTab={(t) => nav(paths.politics(t), { replace: true })} onBack={() => nav(paths.home)} onOpenCountry={(id) => nav(paths.country(id))} />;
 export const CountryRoute = ({ nav }) => { const { countryId } = useParams(); return <CountryScreen key={countryId} countryId={countryId} onBack={() => nav(paths.politics())} onOpen={(id) => nav(paths.country(id))} />; };
+export const SuraRoute = ({ nav }) => { const { n } = useParams(); return <SuraScreen key={n} n={Number(n)} onBack={() => nav(paths.quran)} onNext={(m) => nav(paths.sura(m))} onRecite={(ayah) => nav(paths.recite(ayah.s, ayah.a))} />; };
+export const ReciteRoute = ({ nav }) => { const { s, a } = useParams(); return <ReciteScreen key={`${s}:${a}`} s={s} a={a} onBack={() => nav(paths.sura(s))} onNext={() => nav(paths.recite(s, Number(a) + 1))} />; };
 export const PublicFigureRoute = ({ onHome }) => <FigureScreen figureId={useParams().figureId} onBack={onHome} publicMode />;

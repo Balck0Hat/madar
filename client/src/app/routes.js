@@ -13,6 +13,9 @@ export const paths = {
   figures: "/figures",
   figure: (id) => `/figures/${encodeURIComponent(id)}`,
   publicFigure: (id) => `/f/${encodeURIComponent(id)}`,
+  quran: "/quran",
+  sura: (n) => `/quran/s/${n}`,
+  recite: (s, a) => `/quran/recite/${s}/${a}`,
   politics: (tab) => (tab && tab !== "countries" ? `/politics/${tab}` : "/politics"),
   country: (id) => `/politics/c/${encodeURIComponent(id)}`,
   search: "/search",
@@ -26,10 +29,10 @@ export const paths = {
 };
 
 // أقسام التنقّل الرئيسية (شريط سفلي/جانبي)
-export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, paths.stats, paths.friends, paths.figures, "/politics", "/politics/titles", "/politics/systems"];
+export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, paths.stats, paths.friends, paths.figures, "/quran", "/politics", "/politics/titles", "/politics/systems"];
 
 // شاشات تملأ العرض بلا شريط جانبي: القراءة والاختبار والصفحات العامة
-const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
+const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/quran\/(?:s|recite)\//, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
 export const isFocus = (pathname) => FOCUS.some((re) => re.test(pathname));
 
 // إشارات تصل مع رابط العودة من Google

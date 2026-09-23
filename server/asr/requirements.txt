@@ -1,0 +1,5 @@
+torch (CPU build)
+transformers
+fastapi
+uvicorn
+numpy
