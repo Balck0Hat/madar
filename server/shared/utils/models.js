@@ -21,5 +21,6 @@ export const models = {
   PushSubscription: lazy("PushSubscription"),
   QuranMemo: lazy("QuranMemo"),
   BookProgress: lazy("BookProgress"),
+  Placement: lazy("Placement"),
   Figure: lazy("Figure"),
 };

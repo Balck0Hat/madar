@@ -13,6 +13,8 @@ export const paths = {
   figures: "/figures",
   figure: (id) => `/figures/${encodeURIComponent(id)}`,
   publicFigure: (id) => `/f/${encodeURIComponent(id)}`,
+  english: "/english",
+  placement: "/english/placement",
   books: "/books",
   book: (id) => `/books/${encodeURIComponent(id)}`,
   chapter: (id, n) => `/books/${encodeURIComponent(id)}/${n}`,
@@ -33,7 +35,7 @@ export const paths = {
 };
 
 // أقسام التنقّل الرئيسية (شريط سفلي/جانبي)
-export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, paths.stats, paths.friends, paths.figures, "/books", "/quran", "/politics", "/politics/titles", "/politics/systems"];
+export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, paths.stats, paths.friends, paths.figures, "/english", "/books", "/quran", "/politics", "/politics/titles", "/politics/systems"];
 
 // شاشات تملأ العرض بلا شريط جانبي: القراءة والاختبار والصفحات العامة
 const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/quran\/(?:s|recite|listen)\//, /^\/books\/[^/]+\/\d/, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];

@@ -1,4 +1,4 @@
-import { Map as MapIcon, Trophy, User, Search, BarChart3, Users, Landmark, Scale, BookOpenText, BookMarked } from "lucide-react";
+import { Map as MapIcon, Trophy, User, Search, BarChart3, Users, Landmark, Scale, BookOpenText, BookMarked, Languages } from "lucide-react";
 import { C, FONT, alpha, T, R, S, TAP, BP } from "../../constants/theme";
 import { paths } from "../../../app/routes";
 import OrbitMark from "./OrbitMark";
@@ -15,6 +15,7 @@ export const NAV = [
   { k: "/politics", label: "السياسة", Icon: Scale },
   { k: "/quran", label: "حفظ القرآن", Icon: BookOpenText },
   { k: "/books", label: "الكتب", Icon: BookMarked },
+  { k: "/english", label: "الإنجليزية", Icon: Languages },
   { k: paths.stats, label: "إحصاءاتي", Icon: BarChart3 },
 ];
 
