@@ -14,12 +14,13 @@ import DomainGrid from "./DomainGrid";
 import FiguresEntry from "./FiguresEntry";
 import PoliticsEntry from "./PoliticsEntry";
 import QuranEntry from "./QuranEntry";
+import BooksEntry from "./BooksEntry";
 
 // الشاشة الأولى تحمل فعلاً واحداً: العجلة (خريطة المعرفة) ثم بطاقة واحدة تقول
 // «تابع القراءة» أو «ابدأ الوحدة». كل ما عداها مطويّ في شريط «اليوم».
 export default function MapScreen({
   profile, progress, xp, streak, freezes = 0, weeklyXp, reviewDue = 0, resume = {},
-  calm: calmProp, onOpenDomain, onOpenUnit, onProfile, onReview, onToast, onFigures, onPolitics, onQuran, threadsNew,
+  calm: calmProp, onOpenDomain, onOpenUnit, onProfile, onReview, onToast, onFigures, onPolitics, onQuran, onBooks, threadsNew,
 }) {
   const level = levelFromXp(xp);
   const next = nextUnit(progress, profile.fav);
@@ -68,6 +69,7 @@ export default function MapScreen({
           </div>
           <DomainGrid progress={progress} onOpenDomain={onOpenDomain} />
           {onQuran && <QuranEntry onOpen={onQuran} />}
+          {onBooks && <BooksEntry onOpen={onBooks} />}
           {onFigures && <FiguresEntry onOpen={onFigures} />}
           {onPolitics && <PoliticsEntry onOpen={onPolitics} />}
         </div>

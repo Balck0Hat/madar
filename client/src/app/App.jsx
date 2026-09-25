@@ -13,8 +13,8 @@ import { MapScreen } from "../features/map";
 import { ResultScreen } from "../features/quiz";
 import { LeagueScreen } from "../features/league";
 import { ProfileScreen } from "../features/profile";
-import { AdminScreen, StatsScreen, FriendsScreen, SearchScreen, LibraryScreen, ExamScreen, ReviewScreen, SectorCelebration, FiguresScreen, QuranScreen } from "./lazyScreens";
-import { AuthRoute, PublicRoute, VerifyRoute, DomainRoute, UnitRoute, QuizRoute, FigureRoute, PublicFigureRoute, PoliticsRoute, CountryRoute, SuraRoute, ReciteRoute, ListenRoute } from "./RouteWrappers";
+import { AdminScreen, StatsScreen, FriendsScreen, SearchScreen, LibraryScreen, ExamScreen, ReviewScreen, SectorCelebration, FiguresScreen, QuranScreen, BooksScreen } from "./lazyScreens";
+import { AuthRoute, PublicRoute, VerifyRoute, DomainRoute, UnitRoute, QuizRoute, FigureRoute, PublicFigureRoute, PoliticsRoute, CountryRoute, SuraRoute, ReciteRoute, ListenRoute, BookRoute, ChapterRoute } from "./RouteWrappers";
 import { FirstRunTour, shouldShowTour } from "../features/tour";
 import { useGame } from "./useGame";
 import { paths, NAV_PATHS, isFocus, readFlags, cleanUrl } from "./routes";
@@ -95,7 +95,7 @@ function Shell() {
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/" element={!ready ? <Loading /> : profile
-                ? <MapScreen profile={profile} progress={progress} resume={resume} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={(id, r) => nav(paths.domain(id, r))} onOpenUnit={openUnit} onProfile={() => nav(paths.me)} onReview={() => nav(paths.review)} onToast={setToast} onFigures={() => nav(paths.figures)} onPolitics={() => nav(paths.politics())} onQuran={() => nav(paths.quran)} threadsNew={threadsNew} />
+                ? <MapScreen profile={profile} progress={progress} resume={resume} xp={xp} streak={streak} freezes={freezes} weeklyXp={weeklyXp} reviewDue={reviewDue} onOpenDomain={(id, r) => nav(paths.domain(id, r))} onOpenUnit={openUnit} onProfile={() => nav(paths.me)} onReview={() => nav(paths.review)} onToast={setToast} onFigures={() => nav(paths.figures)} onPolitics={() => nav(paths.politics())} onQuran={() => nav(paths.quran)} onBooks={() => nav(paths.books)} threadsNew={threadsNew} />
                 : <Landing onStart={() => nav(paths.auth("register"))} onLogin={() => nav(paths.auth("login"))} googleUrl={providers.google ? authService.googleUrl() : null} canRegister={providers.registrationOpen} />} />
               <Route path="/auth/:mode" element={<AuthRoute onAuthed={onAuthed} onBack={() => nav(paths.home)} canRegister={providers.registrationOpen} />} />
               <Route path="/welcome" element={priv(profile && <Onboarding name={profile.name} onDone={onOnboarded} />)} />
@@ -105,13 +105,16 @@ function Shell() {
               <Route path="/result" element={priv(result ? <ResultScreen key={result.unitId + xp} result={result} xp={xp} progress={progress} hasNext={Boolean(next)} onMap={backToMap} onNext={() => openUnit(next)} /> : <Navigate to={paths.home} replace />)} />
               <Route path="/review" element={priv(<ReviewScreen onBack={backToMap} onDone={backToMap} />)} />
               <Route path="/exam" element={priv(<ExamScreen onBack={() => { game.refresh(); nav(paths.me); }} onCertified={(c) => game.setCertificate(c)} />)} />
-              <Route path="/library" element={priv(<LibraryScreen progress={progress} onBack={() => nav(paths.me)} onOpenUnit={openUnit} onOpenFigure={(id) => nav(paths.figure(id))} />)} />
+              <Route path="/library" element={priv(<LibraryScreen progress={progress} onBack={() => nav(paths.me)} onOpenUnit={openUnit} onOpenFigure={(id) => nav(paths.figure(id))} onOpenBookChapter={(id, n) => nav(paths.chapter(id, n))} />)} />
               <Route path="/search" element={priv(<SearchScreen onBack={() => nav(paths.home)} onOpenUnit={openUnit} />)} />
               <Route path="/stats" element={priv(<StatsScreen onBack={() => nav(paths.home)} />)} />
               <Route path="/friends" element={priv(profile && <FriendsScreen myHandle={profile.handle} onBack={() => nav(paths.home)} onToast={setToast} />)} />
               <Route path="/league" element={priv(<LeagueScreen />)} />
               <Route path="/figures" element={priv(<FiguresScreen onBack={() => nav(paths.home)} onOpen={(id) => nav(paths.figure(id))} />)} />
               <Route path="/figures/:figureId" element={priv(<FigureRoute onBack={() => nav(paths.figures)} onOpen={(id) => nav(paths.figure(id))} onOpenUnit={openUnit} />)} />
+              <Route path="/books" element={priv(<BooksScreen onBack={() => nav(paths.home)} onOpen={(id) => nav(paths.book(id))} />)} />
+              <Route path="/books/:bookId" element={priv(<BookRoute nav={nav} />)} />
+              <Route path="/books/:bookId/:n" element={priv(<ChapterRoute nav={nav} />)} />
               <Route path="/quran" element={priv(<QuranScreen onBack={() => nav(paths.home)} onOpenSura={(n) => nav(paths.sura(n))} onRecite={(s, a) => nav(paths.recite(s, a))} onListenRandom={() => nav(paths.listen("random"))} />)} />
               <Route path="/quran/s/:n" element={priv(<SuraRoute nav={nav} />)} />
               <Route path="/quran/recite/:s/:a" element={priv(<ReciteRoute nav={nav} />)} />

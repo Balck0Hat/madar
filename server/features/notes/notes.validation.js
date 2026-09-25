@@ -6,7 +6,8 @@ import { NOTE_COLORS } from "./note.model.js";
 const objectId = z.string().regex(/^[0-9a-fA-F]{24}$/, "معرّف غير صالح");
 // التظليل يعمل في الدروس وفي قصص الشخصيات (figure:<معرّف>)
 const FIGURE_ID = /^figure:[a-z0-9-]{2,40}$/;
-const unitId = z.string().refine((id) => isValidUnitId(id) || FIGURE_ID.test(id), "معرّف وحدة غير صالح");
+const BOOK_ID = /^book:[a-z0-9-]{2,40}:\d{1,2}$/; // فصل كتاب: book:<الكتاب>:<رقم الفصل>
+const unitId = z.string().refine((id) => isValidUnitId(id) || FIGURE_ID.test(id) || BOOK_ID.test(id), "معرّف وحدة غير صالح");
 
 export const createSchema = {
   body: z
