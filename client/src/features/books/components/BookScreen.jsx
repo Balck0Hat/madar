@@ -1,4 +1,4 @@
-import { Check, Circle } from "lucide-react";
+import { Check, Circle, ChevronDown } from "lucide-react";
 import { C, R, S, T, TAP, alpha, READ } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { useNum } from "../../../shared/context/PrefsContext";
@@ -7,6 +7,9 @@ import { getBook } from "../services/books.service";
 import { useBookProgress } from "../hooks/useBookProgress";
 import BookCover from "./BookCover";
 import BookPrintButton from "./BookPrintButton";
+
+// سطر مرجع: الاسم بالعربية ثم عنوان أجنبي؛ العنوان في عزل اتجاهي وإلا تاه رقمه («168 Hours» يصير «Hours 168»)
+export const SourceLine = ({ text }) => { const [who, ...rest] = String(text).split(" — "); return rest.length ? <>{who} — <bdi dir="auto">{rest.join(" — ")}</bdi></> : text; };
 
 // صفحة الكتاب: الغلاف والوعد والمقدمة، ثم الفهرس بعلامات المقروء، وزر «تابع»
 export default function BookScreen({ bookId, onBack, onOpenChapter }) {
@@ -36,7 +39,7 @@ export default function BookScreen({ bookId, onBack, onOpenChapter }) {
         <p style={{ fontFamily: READ, fontSize: T.xl, lineHeight: 1.9, margin: 0, borderInlineStart: `3px solid ${color}`, paddingInlineStart: S.x3 }}>{b.tagline}</p>
         <Btn primary color={color} style={{ color: C.bg }} onClick={() => onOpenChapter(resume)}>{done === 0 ? "ابدأ الفصل الأول" : done === b.chapters ? "أعد القراءة من البداية" : `تابع: الفصل ${num(resume)}`}</Btn>
         {b.promise && <div style={{ background: alpha(color, 0.08), border: `1px solid ${alpha(color, 0.3)}`, borderRadius: R.x2, padding: S.x3, fontSize: T.sm, lineHeight: 1.8 }}><span style={{ fontWeight: 700 }}>ستخرج بـ: </span>{b.promise}</div>}
-        {b.intro && <details><summary style={{ cursor: "pointer", fontWeight: 700, fontSize: T.sm, minHeight: TAP, display: "flex", alignItems: "center" }}>مقدمة الكتاب</summary><p style={{ fontFamily: READ, fontSize: T.lg, lineHeight: 1.9, color: C.text, marginTop: S.md }}>{b.intro}</p></details>}
+        {b.intro && <details><summary style={{ cursor: "pointer", fontWeight: 700, fontSize: T.sm, minHeight: TAP, display: "flex", alignItems: "center", gap: S.md, listStyle: "none" }}><ChevronDown size={16} aria-hidden="true" />مقدمة الكتاب</summary><p style={{ fontFamily: READ, fontSize: T.lg, lineHeight: 1.9, color: C.text, marginTop: S.md }}>{b.intro}</p></details>}
         <div>
           <div style={{ fontWeight: 700, fontSize: T.sm, color: C.muted, margin: `${S.md}px 0 ${S.lg}px` }}>الفصول</div>
           <div style={{ display: "grid", gap: S.md }}>
@@ -55,7 +58,7 @@ export default function BookScreen({ bookId, onBack, onOpenChapter }) {
           </div>
         </div>
         <BookPrintButton bookId={bookId} />
-        {b.sources?.length > 0 && <div style={{ color: C.muted, fontSize: T.xs, lineHeight: 1.8 }}><div style={{ fontWeight: 700 }}>بُني على</div>{b.sources.map((s, i) => <div key={i}>· {s}</div>)}</div>}
+        {b.sources?.length > 0 && <div style={{ color: C.muted, fontSize: T.xs, lineHeight: 1.8 }}><div style={{ fontWeight: 700 }}>بُني على</div>{b.sources.map((s, i) => <div key={i}>· <SourceLine text={s} /></div>)}</div>}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { PRINT_CSS } from "../../../shared/styles/print";
+import { SourceLine } from "./BookScreen";
 
 // الكتاب كاملاً للطباعة/الحفظ PDF: غلاف ومقدمة وفهرس، ثم كل فصل بأقسامه وتمرينه وخلاصته
 export default function BookPrintView({ book }) {
@@ -14,7 +15,7 @@ export default function BookPrintView({ book }) {
       <hr className="rule" />
       <section>
         <h2>المحتويات</h2>
-        <ul className="toc">{book.chapters.map((c) => <li key={c.chapterId}>{c.order}. {c.title}</li>)}</ul>
+        <ul className="toc" style={{ listStyle: "none", paddingInlineStart: 0 }}>{book.chapters.map((c) => <li key={c.chapterId}>{c.order}. {c.title}</li>)}</ul>
       </section>
       {book.chapters.map((c) => (
         <div className="unit" key={c.chapterId}>
@@ -26,7 +27,7 @@ export default function BookPrintView({ book }) {
           {c.takeaways?.length > 0 && <section><h2>الخلاصة</h2><ul>{c.takeaways.map((t, i) => <li key={i}>{t}</li>)}</ul></section>}
         </div>
       ))}
-      {book.sources?.length > 0 && <section><h2>بُني على</h2><ul>{book.sources.map((s, i) => <li key={i}>{s}</li>)}</ul></section>}
+      {book.sources?.length > 0 && <section><h2>بُني على</h2><ul>{book.sources.map((s, i) => <li key={i}><SourceLine text={s} /></li>)}</ul></section>}
     </div>,
     document.body,
   );
