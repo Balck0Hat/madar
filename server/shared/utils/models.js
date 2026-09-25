@@ -22,5 +22,6 @@ export const models = {
   QuranMemo: lazy("QuranMemo"),
   BookProgress: lazy("BookProgress"),
   Placement: lazy("Placement"),
+  ItemStat: lazy("ItemStat"),
   Figure: lazy("Figure"),
 };

@@ -12,6 +12,15 @@ async function load(rel) {
   return (await import(pathToFileURL(file).href)).default;
 }
 
+// مجلد فيه ملف لكل مستوى (grammar/a1.js …)، تُضمّ بترتيب الاسم
+async function loadDir(rel) {
+  const dir = path.join(here, rel);
+  if (!fs.existsSync(dir)) return [];
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith(".js")).sort();
+  const parts = await Promise.all(files.map((f) => load(path.join(rel, f))));
+  return parts.flat();
+}
+
 export const LEVELS = ["A1", "A2", "B1", "B2", "C1"];
 export const levelIndex = (l) => Math.max(0, LEVELS.indexOf(l));
 
@@ -26,7 +35,7 @@ export const BANDS = {
 };
 
 export const PLACEMENT = {
-  grammar: await load("placement/grammar.js"),
+  grammar: await loadDir("placement/grammar"),
   reading: await load("placement/reading.js"),
   listening: await load("placement/listening.js"),
   writing: await load("placement/writing.js"),

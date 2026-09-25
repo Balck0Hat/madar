@@ -1,9 +1,12 @@
 import { LEVELS, levelIndex, BANDS } from "../../shared/data/english/index.js";
 
 // منطق اختبار المستوى، خالٍ من قاعدة البيانات ليُختبر وحده.
-export const GRAMMAR_ITEMS = 20;
+export const GRAMMAR_MIN = 12; // لا يتوقف قبلها
+export const GRAMMAR_MAX = 24; // ولا يتجاوزها
+export const GRAMMAR_ITEMS = GRAMMAR_MAX;
 const START = 2; // B1
 const WINDOW = 12; // آخر كم إجابة تدخل في التقدير
+const SETTLE = 6; // كم سؤالاً متتالياً يجب أن يتأرجح بين مستويين متجاورين ليُعدّ المستوى مستقراً
 
 // السلّم التكيّفي: إجابتان صحيحتان متتاليتان تصعد مستوى، وخطأ واحد ينزل مستوى
 export function nextLevel(answers) {
@@ -16,26 +19,59 @@ export function nextLevel(answers) {
   return LEVELS[level];
 }
 
+const span = (answers, k) => { const ls = answers.slice(-k).map((a) => levelIndex(a.level)); return ls.length ? Math.max(...ls) - Math.min(...ls) + 1 : 0; };
+
+// قاعدة الإيقاف: بعد الحد الأدنى يتوقف حين تستقر آخر ستة أسئلة بين مستويين متجاورين
+// (أو مستوى واحد عند القمة والقاع)، وإلا يستمر حتى الحد الأقصى.
+export const shouldStop = (answers) => answers.length >= GRAMMAR_MAX || (answers.length >= GRAMMAR_MIN && span(answers, SETTLE) <= 2);
+
+const stats = (answers) => {
+  const out = {};
+  for (const a of answers) { const s = out[a.level] || (out[a.level] = { n: 0, ok: 0 }); s.n++; if (a.correct) s.ok++; }
+  return out;
+};
+
 // المستوى المقدَّر من الإجابات: أعلى مستوى أصاب فيه القارئ 60% فأكثر من ثلاثة أسئلة فأكثر،
 // وإلا أدنى مستوى حاوله. تُؤخذ آخر 12 إجابة لأن البداية استكشاف.
 export function estimateLevel(answers) {
   const recent = answers.slice(-WINDOW);
   if (!recent.length) return null;
-  const stats = {};
-  for (const a of recent) { const s = stats[a.level] || (stats[a.level] = { n: 0, ok: 0 }); s.n++; if (a.correct) s.ok++; }
+  const st = stats(recent);
   let best = null;
-  for (const l of LEVELS) { const s = stats[l]; if (s && s.n >= 3 && s.ok / s.n >= 0.6) best = l; }
+  for (const l of LEVELS) { const s = st[l]; if (s && s.n >= 3 && s.ok / s.n >= 0.6) best = l; }
   if (best) return best;
-  const tried = LEVELS.filter((l) => stats[l]);
+  const tried = LEVELS.filter((l) => st[l]);
   return tried[0] || LEVELS[START];
 }
 
-// اختيار مقاطع القراءة/الاستماع: مقطع بمستوى التقدير وآخر أعلى منه بدرجة (أو أدنى إن كان في القمة)
-export function pickTwo(pool, level) {
+// ثقة التقدير ومداه: عالية حين يستقر السلّم ويصيب القارئ مستواه بوضوح ويخفق فيما فوقه،
+// متوسطة حين يستقر بلا حسم، منخفضة حين لم يستقر أو الأسئلة قليلة (انتهى الوقت مثلاً).
+export function confidence(answers) {
+  const level = estimateLevel(answers);
+  if (!level) return { level: null, confidence: "low", range: [] };
   const i = levelIndex(level);
-  const at = (k) => pool.filter((p) => levelIndex(p.level) === k);
-  const first = at(i)[0] || pool[0];
-  const second = at(Math.min(LEVELS.length - 1, i + 1)).find((p) => p !== first) || at(Math.max(0, i - 1)).find((p) => p !== first) || pool.find((p) => p !== first);
+  const st = stats(answers.slice(-WINDOW));
+  const rate = (l) => { const s = st[l]; return s && s.n >= 2 ? s.ok / s.n : null; };
+  const stable = span(answers, 8) <= 2;
+  const above = rate(LEVELS[i + 1]);
+  const here = rate(level) ?? 0;
+  let c = "medium";
+  if (!stable || answers.length < 8) c = "low";
+  else if (answers.length >= GRAMMAR_MIN && here >= 0.7 && (above === null || above <= 0.35 || i === LEVELS.length - 1)) c = "high";
+  const lo = i > 0 && here < 0.7 && c !== "high" ? i - 1 : i;
+  const hi = i < LEVELS.length - 1 && above !== null && above > 0.35 && c !== "high" ? i + 1 : i;
+  return { level, confidence: c, range: [LEVELS[lo], LEVELS[hi]] };
+}
+
+// اختيار مقاطع القراءة/الاستماع: مقطع بمستوى التقدير وآخر أعلى منه بدرجة (أو أدنى إن كان في القمة).
+// يُفضَّل ما لم يره المستخدم في جلسة سابقة، والاختيار عشوائي بين المرشحين.
+export function pickTwo(pool, level, seen = new Set(), rnd = Math.random) {
+  const i = levelIndex(level);
+  const fresh = (list) => (list.some((p) => !seen.has(p.id)) ? list.filter((p) => !seen.has(p.id)) : list);
+  const at = (k, not) => fresh(pool.filter((p) => levelIndex(p.level) === k && p !== not));
+  const pick = (list) => list[Math.floor(rnd() * list.length)];
+  const first = pick(at(i)) || pool[0];
+  const second = pick(at(Math.min(LEVELS.length - 1, i + 1), first)) || pick(at(Math.max(0, i - 1), first)) || pool.find((p) => p !== first);
   return [first, second].filter(Boolean);
 }
 

@@ -3,10 +3,18 @@ import { env } from "../config/env.js";
 import { dayKey } from "../utils/game.js";
 import { models } from "../utils/models.js";
 
-// المهام المجدولة: تذكير صباحي بالمراجعة، تذكير مسائي بالسلسلة، وتدوير الدوري كل اثنين
-export function startScheduler({ push, reviews, progress, league }) {
+// المهام المجدولة: تذكير صباحي بالمراجعة، تذكير مسائي بالسلسلة، تدوير الدوري كل اثنين،
+// ومعايرة بنك أسئلة الإنجليزية ليلاً من إجابات المستخدمين
+export function startScheduler({ push, reviews, progress, league, english }) {
   if (env.isTest) return [];
   const jobs = [];
+
+  if (english) {
+    jobs.push(cron.schedule("30 3 * * *", async () => {
+      try { console.log("[jobs] english calibrate", await english.calibrate()); }
+      catch (err) { console.error("[jobs] english calibrate failed", err); }
+    }));
+  }
 
   jobs.push(cron.schedule("0 8 * * *", async () => {
     try {

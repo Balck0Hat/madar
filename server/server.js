@@ -11,13 +11,15 @@ async function main() {
   const app = await createApp();
   await seedUnits(SEED_UNITS);
   // المهام المجدولة تُحقن بخدمات الميزات من هنا (لا تستورد الميزات بعضها)
-  const [push, reviews, progress, league] = await Promise.all([
+  const [push, reviews, progress, league, english] = await Promise.all([
     import("./features/push/push.service.js"),
     import("./features/reviews/reviews.service.js"),
     import("./features/progress/progress.service.js"),
     import("./features/league/league.service.js"),
+    import("./features/english/placement.service.js"),
   ]);
-  const jobs = startScheduler({ push, reviews, progress, league });
+  await english.loadOverrides(); // مستويات الأسئلة المعايرة من بيانات المستخدمين
+  const jobs = startScheduler({ push, reviews, progress, league, english });
   const server = app.listen(env.port, "0.0.0.0", () => {
     console.log(`[madar] ${env.nodeEnv} server on http://0.0.0.0:${env.port} · ai=${Boolean(env.anthropicKey)} push=${env.pushEnabled} google=${env.googleEnabled}`);
   });
