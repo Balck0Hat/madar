@@ -16,7 +16,7 @@ const writingSchema = new Schema(
 const practiceSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
-    kind: { type: String, enum: ["module", "lesson", "weak", "writing"], required: true },
+    kind: { type: String, enum: ["module", "lesson", "weak", "boss", "writing"], required: true },
     track: { type: String, enum: ["general", "ielts", "toefl"], required: true },
     refId: { type: String, required: true }, // معرّف الوحدة أو الوسم أو مهمة الكتابة
     itemIds: { type: [String], default: [] }, // أسئلة التمرين المختارة (للدرس ونقطة الضعف)

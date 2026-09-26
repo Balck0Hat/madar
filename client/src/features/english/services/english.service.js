@@ -21,6 +21,10 @@ export const getAttempt = (id) => get(`/english/practice/${id}`).then((d) => d.a
 export const getWritingTask = (id) => get(`/english/tracks/writing/${id}`);
 export const submitTaskWriting = (id, text) => post(`/english/tracks/writing/${id}`, { text }).then((d) => d.attempt);
 
+// عالم القواعد
+export const getWorld = () => get("/english/tracks/world");
+export const startBoss = (island) => post(`/english/tracks/world/${island}/boss/start`, {});
+
 // لوحة المعايرة (مشرف)
 export const getCalibration = () => get("/english/admin/calibration");
 export const runCalibration = () => post("/english/admin/calibrate", {});

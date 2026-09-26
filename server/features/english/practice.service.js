@@ -51,7 +51,7 @@ export async function startPractice(userId, kind, ref) {
 
 // إجابة سؤال تمرين واحد؛ حين تكتمل الأسئلة تُحسب النسبة وتُغلق المحاولة
 export async function answerPractice(userId, attemptId, { itemId, choice }) {
-  const a = await Practice.findOne({ _id: attemptId, user: userId, kind: { $in: ["lesson", "weak"] } });
+  const a = await Practice.findOne({ _id: attemptId, user: userId, kind: { $in: ["lesson", "weak", "boss"] } });
   if (!a) throw notFound("المحاولة غير موجودة", "PRACTICE_NOT_FOUND");
   if (a.finishedAt) throw badRequest("انتهت هذه المحاولة");
   const q = itemOf(itemId);

@@ -5,6 +5,7 @@ import { validate } from "../../shared/middleware/validate.js";
 import { asyncHandler } from "../../shared/middleware/asyncHandler.js";
 import * as tracks from "./tracks.service.js";
 import * as practice from "./practice.service.js";
+import * as world from "./world.service.js";
 import { calibrate, summary } from "./placement.calibrate.js";
 import { PLACEMENT } from "../../shared/data/english/index.js";
 
@@ -28,6 +29,9 @@ router.post("/tracks/lessons/:tag/start", requireAuth, validate({ params: z.obje
 router.post("/tracks/weak/:tag/start", requireAuth, validate({ params: z.object({ tag: slug }) }), asyncHandler(async (req, res) => ok(res, await practice.startPractice(req.user.id, "weak", req.params.tag), 201)));
 router.post("/practice/:id/answer", requireAuth, validate(answerSchema), asyncHandler(async (req, res) => ok(res, await practice.answerPractice(req.user.id, req.params.id, req.body))));
 router.get("/practice/:id", requireAuth, validate({ params: z.object({ id: oid }) }), asyncHandler(async (req, res) => ok(res, { attempt: await practice.getAttempt(req.user.id, req.params.id) })));
+
+router.get("/tracks/world", requireAuth, asyncHandler(async (req, res) => ok(res, await world.getWorld(req.user.id))));
+router.post("/tracks/world/:island/boss/start", requireAuth, validate({ params: z.object({ island: slug }) }), asyncHandler(async (req, res) => ok(res, await world.startBoss(req.user.id, req.params.island), 201)));
 
 router.get("/tracks/writing/:id", requireAuth, validate({ params: z.object({ id: slug }) }), asyncHandler(async (req, res) => ok(res, { task: practice.getWritingTask(req.params.id), history: await practice.writingHistory(req.user.id, req.params.id) })));
 router.post("/tracks/writing/:id", requireAuth, validate(textSchema), asyncHandler(async (req, res) => ok(res, { attempt: await practice.submitWriting(req.user.id, req.params.id, req.body.text) }, 201)));
