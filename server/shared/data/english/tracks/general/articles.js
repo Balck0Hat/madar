@@ -1,0 +1,19 @@
+export default {
+  id: "articles", tag: "articles", title: "أدوات التعريف", level: "A2", minutes: 12,
+  explain: [
+    { h: "a وan: المفرد المعدود المذكور لأول مرة", p: "الاسم المفرد المعدود لا يقف وحده في الإنجليزية؛ لا بد قبله من أداة أو صفة ملكية. نستعمل a/an [indefinite article] لشيء غير محدد أو مذكور لأول مرة، ومع المهن والصفات: «She is a doctor». العربية لا تملك أداة تنكير فيحذفها المتعلم: «He is teacher» خطأ. نختار an قبل صوت متحرك لا حرف: an hour (الـ h صامتة) لكن a university (تُنطق يو).", ex: [{ en: "I saw a cat in the garden.", ar: "رأيت قطة في الحديقة (أول ذكر، غير محددة)." }, { en: "My cousin is an engineer.", ar: "ابن عمي مهندس (an قبل صوت متحرك، ولا نحذف الأداة مع المهنة)." }, { en: "We waited for an hour.", ar: "انتظرنا ساعة (an لأن h في hour صامتة)." }] },
+    { h: "the: المعروف عند المتكلم والسامع", p: "نستعمل the [definite article] حين يعرف السامع ما نقصد: شيء ذُكر سابقاً (a cat … the cat)، أو وحيد في سياقه (the sun, the door, the manager)، أو مع صيغ التفضيل والترتيب (the best, the first)، أو مع same وonly. وتلزم the مع الأنهار والبحار والجبال والدول الجمع: the Nile, the Red Sea, the Alps, the UAE؛ لكن لا تُستعمل مع معظم المدن والدول: Cairo, Egypt.", ex: [{ en: "I bought a phone and a case. The case was cheap.", ar: "اشتريت هاتفاً وغطاءً. الغطاء كان رخيصاً (الذكر الثاني بـ the)." }, { en: "Please close the door.", ar: "أغلق الباب من فضلك (باب معروف في المكان)." }, { en: "The Nile flows through Egypt.", ar: "يجري النيل في مصر (the مع النهر، لا مع الدولة)." }] },
+    { h: "بلا أداة: الجمع والمعاني العامة", p: "حين نتكلم عن شيء بعامة (كل أفراده) نستعمل الجمع أو غير المعدود بلا أداة: «Cats are clean», «Life is beautiful», «I like coffee». هنا يخطئ العربي لأن لغته تضع «ال» للعموم: «The life is beautiful» خطأ. كذلك لا أداة مع الوجبات (have breakfast) واللغات (speak Arabic) والمواد الدراسية (study maths) وأيام الأسبوع والشهور.", ex: [{ en: "Money doesn't buy happiness.", ar: "المال لا يشتري السعادة (معنى عام، بلا the)." }, { en: "Children learn languages quickly.", ar: "الأطفال يتعلمون اللغات بسرعة (جمع عام)." }, { en: "We usually have lunch at one.", ar: "نتغدّى عادةً في الواحدة (لا أداة مع الوجبة)." }] },
+    { h: "تعابير ثابتة تُحفظ", p: "بعض التعابير لها أداة ثابتة أو لا أداة أصلاً: go to school / work / bed / hospital (بمعنى الغرض الأصلي) وat home وby car / bus بلا أداة؛ لكن the مع الآلات الموسيقية (play the piano) والراديو والسينما (go to the cinema)؛ وبلا أداة مع الرياضات (play football). وحين نقول go to the school فالقصد المبنى لا الدراسة.", ex: [{ en: "She goes to work by bus.", ar: "تذهب إلى العمل بالحافلة (بلا أداة مع work وbus)." }, { en: "My brother plays the guitar and football.", ar: "أخي يعزف الغيتار ويلعب كرة القدم (the مع الآلة، بلا أداة مع الرياضة)." }] },
+  ],
+  qs: [
+    { q: "My cousin works as ___ engineer in Dammam.", opts: ["a", "an", "the", "—"], a: 1, why: "المهنة تحتاج أداة، وengineer تبدأ بصوت متحرك: an." },
+    { q: "I bought a shirt and a jacket. ___ jacket was expensive.", opts: ["A", "An", "The", "—"], a: 2, why: "الذكر الثاني لشيء عُرف: The." },
+    { q: "___ life in a big city can be stressful.", opts: ["—", "The", "A", "Some"], a: 0, why: "معنى عام مع اسم غير معدود: بلا أداة؛ وThe life خطأ بتأثير «ال» العربية." },
+    { q: "We waited for ___ hour at the airport.", opts: ["a", "an", "the", "—"], a: 1, why: "hour تُنطق بصوت متحرك لأن h صامتة: an." },
+    { q: "Cairo is ___ largest city in Africa.", opts: ["a", "an", "the", "—"], a: 2, why: "صيغة التفضيل largest تسبقها the دائماً." },
+    { q: "She plays ___ piano very well.", opts: ["—", "a", "an", "the"], a: 3, why: "الآلات الموسيقية تأخذ the: play the piano." },
+    { q: "I'd like ___ glass of water, please.", opts: ["an", "some", "the", "a"], a: 3, why: "glass مفرد معدود مذكور لأول مرة: a glass." },
+    { q: "___ Nile is the longest river in ___ world.", opts: ["The / the", "— / the", "The / —", "A / a"], a: 0, why: "الأنهار تأخذ the، وworld وحيد في سياقه فيأخذ the." },
+  ],
+};

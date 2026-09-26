@@ -115,6 +115,22 @@ describe("placement.service", () => {
     expect(after.writing.corrections).toHaveLength(1);
   }, 30000);
 
+  it("should start a retake from the last level and compare the new result with it", async () => {
+    const user = new mongoose.Types.ObjectId();
+    const first = await play(user, "B1");
+    const d1 = await placement.writing(user, first.id, { skip: true });
+    expect(d1.result.previous).toBeUndefined();
+    const second = await placement.start(user);
+    expect((await Placement.findById(second.id)).startLevel).toBe(d1.result.level); // السلّم يبدأ من آخر مستوى
+    expect(second.item.level).toBe(d1.result.level);
+    let s = second;
+    while (s.stage === "grammar") { const it = G.get(s.item.id); s = (await placement.answer(user, s.id, { itemId: it.id, choice: it.a })).next; }
+    for (const stage of ["reading", "listening"]) while (s.stage === stage) { const p = (stage === "reading" ? R : L).get(s.part.id); for (let i = s.part.from; i < p.qs.length; i++) s = (await placement.answer(user, s.id, { itemId: `${p.id}#${i}`, choice: right(p.qs[i]) })).next; }
+    const d2 = await placement.writing(user, s.id, { skip: true });
+    expect(d2.result.previous.level).toBe(d1.result.level);
+    expect(d2.result.previous.delta).toBe(["A1", "A2", "B1", "B2", "C1"].indexOf(d2.result.level) - ["A1", "A2", "B1", "B2", "C1"].indexOf(d1.result.level));
+  }, 30000);
+
   it("should reject an unexpected item and a wrong stage", async () => {
     const user = new mongoose.Types.ObjectId();
     const s = await placement.start(user);

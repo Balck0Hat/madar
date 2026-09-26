@@ -1,4 +1,4 @@
-import { PLACEMENT, BANDS } from "../../shared/data/english/index.js";
+import { PLACEMENT, BANDS, levelIndex } from "../../shared/data/english/index.js";
 import { GRAMMAR_MIN, GRAMMAR_MAX, nextLevel, estimateLevel, confidence, pickTwo, partLevel, overall, recommend, shouldStop } from "./placement.logic.js";
 import { skills, kinds, plan } from "./placement.report.js";
 import { effectiveLevel } from "./placement.calibrate.js";
@@ -18,7 +18,7 @@ const timer = (s) => (BUDGET[s.stage] ? { startedAt: s[s.stage].startedAt, budge
 // سؤال قواعد تالٍ بمستوى السلّم (بعد المعايرة)، من غير تكرار
 export function nextGrammar(s) {
   const asked = new Set(s.grammar.ids);
-  const level = nextLevel(s.grammar.answers);
+  const level = nextLevel(s.grammar.answers, levelIndex(s.startLevel || "B1"));
   const pool = PLACEMENT.grammar.filter((it) => effectiveLevel(it) === level && !asked.has(it.id));
   const item = pool[Math.floor(Math.random() * pool.length)] || PLACEMENT.grammar.find((it) => !asked.has(it.id));
   return item ? { item: strip(item), n: s.grammar.answers.length + 1, min: GRAMMAR_MIN, max: GRAMMAR_MAX } : null;

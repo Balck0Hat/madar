@@ -16,6 +16,7 @@ const placementSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     stage: { type: String, enum: ["grammar", "reading", "listening", "writing", "done"], default: "grammar", index: true },
+    startLevel: { type: String, default: "B1" }, // بداية السلّم: مستوى آخر نتيجة إن وُجدت
     grammar: { type: partSchema, default: () => ({ startedAt: new Date() }) },
     reading: { type: partSchema, default: () => ({}) },
     listening: { type: partSchema, default: () => ({}) },

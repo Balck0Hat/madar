@@ -1,0 +1,20 @@
+export default {
+  id: "future", tag: "future", title: "المستقبل", level: "A2", minutes: 12,
+  explain: [
+    { h: "will: القرار اللحظي والوعد والتوقع", p: "نستعمل will + الفعل الأساسي لقرار نتخذه لحظة الكلام (سأفتح الباب)، وللوعود والعروض (I'll help you)، وللتوقعات المبنية على الرأي مع think, probably, sure. الصيغة ثابتة مع كل الضمائر ولا تأخذ to ولا s: «She will goes» و«will to go» خطأ. النفي won't، والاختصار 'll.", ex: [{ en: "It's cold. I'll close the window.", ar: "الجو بارد. سأغلق النافذة (قرار اتُّخذ الآن)." }, { en: "I think Egypt will win tonight.", ar: "أظن أن مصر ستفوز الليلة (توقع بالرأي)." }, { en: "Don't worry, I won't tell anyone.", ar: "لا تقلق، لن أخبر أحداً (وعد بالنفي won't)." }] },
+    { h: "going to: الخطة والدليل الظاهر", p: "be going to + الفعل الأساسي لخطة قررناها قبل الكلام (I'm going to study medicine)، وللتوقع المبني على دليل نراه الآن (سماء ملبّدة → It's going to rain). لا تنسَ فعل be قبل going: «I going to travel» خطأ شائع. قارن: «I'll call him» (قررت الآن) مع «I'm going to call him» (كنت أنوي ذلك).", ex: [{ en: "We're going to move to a bigger flat next year.", ar: "سننتقل إلى شقة أكبر السنة القادمة (خطة مسبقة)." }, { en: "Look at the time! We're going to be late.", ar: "انظر إلى الساعة! سنتأخر (توقع من دليل ظاهر)." }] },
+    { h: "المضارع المستمر والبسيط للمستقبل", p: "للموعد المحدد والمرتَّب مع أشخاص أو أماكن نستعمل المضارع المستمر: «I'm meeting Sara at six» (الموعد مثبت). أما جداول المواعيد الثابتة كالقطارات والدروس والأفلام فبالمضارع البسيط: «The train leaves at 8.15». لا تستعمل will لهذه الجداول.", ex: [{ en: "I'm having lunch with my manager tomorrow.", ar: "سأتغدّى مع مديري غداً (موعد مرتَّب)." }, { en: "The lesson starts at nine on Sunday.", ar: "يبدأ الدرس في التاسعة يوم الأحد (جدول ثابت بالمضارع البسيط)." }] },
+    { h: "لا will بعد when وif", p: "بعد روابط الزمن والشرط (when, as soon as, before, after, until, if) نستعمل المضارع البسيط ولو كان المعنى مستقبلاً؛ وwill تكون في الجملة الأخرى. «When I will arrive» خطأ شائع جداً بتأثير الترجمة الحرفية، والصواب «When I arrive, I'll call you».", ex: [{ en: "I'll text you as soon as the plane lands.", ar: "سأراسلك حالما تهبط الطائرة (lands بالمضارع بعد as soon as)." }, { en: "We won't start until everyone is here.", ar: "لن نبدأ حتى يحضر الجميع (is لا will be بعد until)." }] },
+    { h: "Shall للعرض والاقتراح", p: "Shall I …? للعرض (هل أساعدك؟) وShall we …? للاقتراح (هل نذهب؟)، وتُستعمل غالباً مع I وwe فقط. أما won't فتفيد الرفض أيضاً: «The car won't start» أي ترفض أن تشتغل. في الإنجليزية الحديثة shall نادرة خارج هذين الاستعمالين.", ex: [{ en: "Shall I open the window?", ar: "هل أفتح النافذة؟ (عرض للمساعدة)." }, { en: "Shall we take a break?", ar: "ما رأيكم باستراحة؟ (اقتراح)." }] },
+  ],
+  qs: [
+    { q: "Wait a minute, I ___ you with those bags.", opts: ["help", "will help", "am helping", "helps"], a: 1, why: "عرض للمساعدة قُرّر لحظة الكلام: will help." },
+    { q: "Look at those dark clouds! It ___.", opts: ["will rain", "rains", "is going to rain", "is raining"], a: 2, why: "توقع مبني على دليل مرئي (الغيوم): is going to rain." },
+    { q: "We ___ dinner with my parents on Friday; it's all arranged.", opts: ["will have", "have", "are going have", "are having"], a: 3, why: "موعد مرتَّب ومثبت: المضارع المستمر are having." },
+    { q: "The film ___ at 7.30, so don't be late.", opts: ["starts", "will start", "is going to start", "starting"], a: 0, why: "جدول ثابت لموعد فيلم: المضارع البسيط starts." },
+    { q: "I'll send you the photos when I ___ home.", opts: ["will get", "get", "am getting", "got"], a: 1, why: "بعد when لا نستعمل will: المضارع البسيط get." },
+    { q: "She ___ a doctor; she has already chosen her university.", opts: ["will be", "is being", "is going to be", "be"], a: 2, why: "خطة مقررة مسبقاً (اختارت جامعتها): is going to be." },
+    { q: "I don't think they ___ the match tonight.", opts: ["will win", "are winning", "win", "won"], a: 0, why: "توقع بالرأي بعد I don't think: will win." },
+    { q: "___ I carry that for you?", opts: ["Will", "Do", "Am", "Shall"], a: 3, why: "عرض المساعدة بصيغة السؤال مع I: Shall I …?" },
+  ],
+};

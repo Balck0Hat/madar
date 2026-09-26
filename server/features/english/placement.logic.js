@@ -9,8 +9,8 @@ const WINDOW = 12; // آخر كم إجابة تدخل في التقدير
 const SETTLE = 6; // كم سؤالاً متتالياً يجب أن يتأرجح بين مستويين متجاورين ليُعدّ المستوى مستقراً
 
 // السلّم التكيّفي: إجابتان صحيحتان متتاليتان تصعد مستوى، وخطأ واحد ينزل مستوى
-export function nextLevel(answers) {
-  let level = START;
+export function nextLevel(answers, start = START) {
+  let level = Math.max(0, Math.min(LEVELS.length - 1, start));
   let streak = 0;
   for (const a of answers) {
     if (a.correct) { streak++; if (streak >= 2) { level = Math.min(LEVELS.length - 1, level + 1); streak = 0; } }

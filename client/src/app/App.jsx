@@ -13,7 +13,7 @@ import { MapScreen } from "../features/map";
 import { ResultScreen } from "../features/quiz";
 import { LeagueScreen } from "../features/league";
 import { ProfileScreen } from "../features/profile";
-import { AdminScreen, StatsScreen, FriendsScreen, SearchScreen, LibraryScreen, ExamScreen, ReviewScreen, SectorCelebration, FiguresScreen, QuranScreen, BooksScreen, EnglishScreen, PlacementScreen } from "./lazyScreens";
+import { AdminScreen, StatsScreen, FriendsScreen, SearchScreen, LibraryScreen, ExamScreen, ReviewScreen, SectorCelebration, FiguresScreen, QuranScreen, BooksScreen, EnglishRouter } from "./lazyScreens";
 import { AuthRoute, PublicRoute, VerifyRoute, DomainRoute, UnitRoute, QuizRoute, FigureRoute, PublicFigureRoute, PoliticsRoute, CountryRoute, SuraRoute, ReciteRoute, ListenRoute, BookRoute, ChapterRoute } from "./RouteWrappers";
 import { FirstRunTour, shouldShowTour } from "../features/tour";
 import { useGame } from "./useGame";
@@ -112,8 +112,7 @@ function Shell() {
               <Route path="/league" element={priv(<LeagueScreen />)} />
               <Route path="/figures" element={priv(<FiguresScreen onBack={() => nav(paths.home)} onOpen={(id) => nav(paths.figure(id))} />)} />
               <Route path="/figures/:figureId" element={priv(<FigureRoute onBack={() => nav(paths.figures)} onOpen={(id) => nav(paths.figure(id))} onOpenUnit={openUnit} />)} />
-              <Route path="/english" element={priv(<EnglishScreen onBack={() => nav(paths.home)} onPlacement={() => nav(paths.placement)} />)} />
-              <Route path="/english/placement" element={priv(<PlacementScreen onBack={() => nav(paths.english)} onGo={() => nav(paths.english)} />)} />
+              <Route path="/english/*" element={priv(<EnglishRouter nav={nav} paths={paths} isAdmin={profile?.role === "admin"} />)} />
               <Route path="/books" element={priv(<BooksScreen onBack={() => nav(paths.home)} onOpen={(id) => nav(paths.book(id))} />)} />
               <Route path="/books/:bookId" element={priv(<BookRoute nav={nav} />)} />
               <Route path="/books/:bookId/:n" element={priv(<ChapterRoute nav={nav} />)} />

@@ -31,6 +31,12 @@ export default function ResultView({ result, writing, onRetake, onGo }) {
           {result.confidence === "low" ? "الأسئلة لم تستقر على مستوى واضح أو كانت قليلة؛ أعد الاختبار في يوم آخر لتقدير أدق." : "تقدير من اختبار قصير لا درجة رسمية؛ الامتحان الحقيقي أطول وأدق."}
         </div>
       </div>
+      {result.previous && (
+        <div role="status" style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: S.x3, lineHeight: 1.8, fontSize: T.sm }}>
+          <b>مقارنة بآخر مرة:</b> كنت {result.previous.level}{result.previous.confidence ? ` (${CONF[result.previous.confidence]})` : ""} في {num(new Date(result.previous.finishedAt).toLocaleDateString("ar"))}، والآن {result.level}.{" "}
+          {result.previous.delta > 0 ? <span style={{ color: C.green, fontWeight: 700 }}>تقدّم بمقدار {num(result.previous.delta)} مستوى.</span> : result.previous.delta < 0 ? <span style={{ color: C.red, fontWeight: 700 }}>تراجع بمقدار {num(-result.previous.delta)} مستوى؛ قد يكون اختلاف الأسئلة، أعد الاختبار بعد أيام.</span> : <span style={{ color: C.muted }}>المستوى نفسه، والسلّم بدأ هذه المرة من مستواك السابق.</span>}
+        </div>
+      )}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: S.lg }}>
         {Object.entries(PART).map(([k, label]) => (
           <div key={k} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: S.x3, textAlign: "center" }}>

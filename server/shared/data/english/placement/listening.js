@@ -61,7 +61,7 @@ export default [
       { k: "detail", q: "How long does the course last?", opts: ["Six weeks", "Eight weeks", "Ten weeks", "Twelve weeks"], a: 1, why: "المرأة تقول: The course runs on Wednesday evenings for eight weeks." },
       { k: "detail", q: "What happens in the first two weeks of the course?", opts: ["Students cook full meals", "Students visit a restaurant", "Students choose their own recipes", "Students learn basic skills"], a: 3, why: "الأسبوعان الأولان للمهارات الأساسية مثل استخدام السكين وطهي الأرز والمعكرونة، ثم تأتي الوجبات الكاملة." },
       { k: "detail", q: "What is included in the price of the course?", opts: ["The ingredients", "A food container", "Parking", "A cookbook"], a: 0, why: "المرأة تقول إن السعر يشمل كل المكونات، أما الحاوية فيحضرها الطالب بنفسه." },
-      { k: "inference", q: "What does the woman suggest about getting to the centre?", opts: ["Arrive by car before six thirty", "Walk from the station", "Take the bus", "Share a car with another student"], a: 2, why: "قالت إن موقف السيارات يمتلئ مبكراً وإن الحافلة تقف أمام المركز، وأكثر الناس يأتون بها." },
+      { k: "inference", q: "What does the woman suggest about getting to the centre?", opts: ["Park on the street near the centre", "Walk from the station", "Take the bus", "Share a car with another student"], a: 2, why: "قالت إن موقف السيارات يمتلئ مبكراً وإن الحافلة تقف أمام المركز، وأكثر الناس يأتون بها." },
     ] },
   { id: "l-b1-2", level: "B1", accent: "gb", kind: "monologue",
     lines: [

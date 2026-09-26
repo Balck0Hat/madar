@@ -15,7 +15,7 @@ export default function Choice({ q, opts, picked, answer, onPick, why, compact =
             <button key={i} type="button" dir="ltr" disabled={done} onClick={() => { onPick(i); vibrate([15]); }} aria-pressed={picked === i} className="madar-press"
               style={{ display: "flex", alignItems: "center", gap: S.lg, minHeight: TAP, textAlign: "left", fontFamily: "Georgia, serif", fontSize: T.lg, cursor: done ? "default" : "pointer", color: C.text, padding: `${S.xl}px ${S.x3}px`, borderRadius: R.xl,
                 background: right ? alpha(C.green, 0.16) : wrong ? alpha(C.red, 0.16) : C.surface, border: `1px solid ${right ? C.green : wrong ? C.red : C.line}` }}>
-              <span style={{ width: 22, height: 22, borderRadius: R.pill, border: `1px solid ${C.line}`, display: "grid", placeItems: "center", fontSize: T.xs, color: C.muted, flexShrink: 0 }}>{right ? <Check size={14} color={C.green} /> : wrong ? <X size={14} color={C.red} /> : "ABCD"[i]}</span>
+              <span style={{ width: 22, height: 22, borderRadius: R.pill, border: `1px solid ${C.line}`, display: "grid", placeItems: "center", fontSize: T.xs, color: C.muted, flexShrink: 0 }}>{right ? <Check size={14} color={C.green} /> : wrong ? <X size={14} color={C.red} /> : String.fromCharCode(65 + i)}</span>
               <span style={{ minWidth: 0 }}>{o}</span>
             </button>
           );
