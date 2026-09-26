@@ -8,7 +8,7 @@ export default {
     { h: "المصدر بلا to والمصدر للغرض", p: "بعد make وlet وhelp (اختيارياً) يأتي المفعول ثم الفعل الأصلي بلا to: «She made me wait»، «Let him go». أما want/ask/tell/allow/expect فيليها المفعول ثم to: «She asked me to wait». وللتعبير عن الغرض نستعمل to + الفعل لا for: «I went out to buy bread» لا «for buy». وبعد الصفات يأتي to: happy to help, easy to use, too tired to walk.", ex: [{ en: "My parents let me stay out late.", ar: "سمح لي والداي بالبقاء خارجاً حتى وقت متأخر (let + me + stay بلا to)" }, { en: "The teacher allowed us to leave early.", ar: "سمح لنا المعلم بالمغادرة مبكراً (allow + us + to leave)" }, { en: "I'm saving money to travel.", ar: "أدّخر المال لأسافر (to travel للغرض، لا for travel)" }] },
   ],
   qs: [
-    { q: "I finished ___ the report at midnight.", opts: ["to write", "write", "wrote", "writing"], a: 3, why: "finish من الأفعال التي يليها الاسم الفعلي: finished writing." },
+    { q: "Have you finished ___ your essay yet?", opts: ["to write", "write", "wrote", "writing"], a: 3, why: "finish من الأفعال التي يليها الاسم الفعلي: finished writing." },
     { q: "We decided ___ at home because of the rain.", opts: ["staying", "to stay", "stay", "to staying"], a: 1, why: "decide يليها المصدر to + الفعل: decided to stay." },
     { q: "She is good at ___ problems quickly.", opts: ["solving", "solve", "to solve", "solves"], a: 0, why: "بعد حرف الجر at يأتي الفعل بصيغة -ing دائماً." },
     { q: "Don't forget ___ the door when you leave.", opts: ["locking", "lock", "to lock", "locked"], a: 2, why: "forget to do = واجب مقبل يجب ألا تنساه؛ forget locking تعني نسيان ذكرى ماضية." },

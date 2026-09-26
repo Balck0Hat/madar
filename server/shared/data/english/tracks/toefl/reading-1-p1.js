@@ -34,9 +34,9 @@ export default {
     { k: "purpose", q: "Why does the author mention 'the teeth of an enormous file' in paragraph 2?",
       opts: ["To show how thick glacial ice can become.", "To illustrate how rocks frozen into the ice grind the bedrock.", "To explain why glaciers move so slowly.", "To describe the shape of grooves left in the rock."], a: 1,
       why: "التشبيه يوضح كيف تُجرّ الصخور المتجمدة في قاعدة الجليد «like the teeth of an enormous file» فتخدش الصخر وتصقله." },
-    { k: "insert", q: "Look at the four squares [1]–[4] in paragraph 4 that indicate where the following sentence could be added: 'Unlike sediment sorted by a river, this material is a jumble of particle sizes dropped all at once.' Where would the sentence best fit?",
+    { k: "insert", q: "Look at the four squares [1]–[4] in paragraph 4 that indicate where the following sentence could be added: 'The term sets it apart from river sediment, which is sorted by size, whereas till is a jumble of particles dropped all at once.' Where would the sentence best fit?",
       opts: ["Position 1", "Position 2", "Position 3", "Position 4"], a: 1,
-      why: "عبارة «this material» تعود على «till» الذي عُرّف في الجملة السابقة مباشرة للموضع الثاني، وبعده تنتقل الفقرة إلى الحديث عن الركامات (moraines)." },
+      why: "عبارة «The term» تعود على «is called till» في الجملة السابقة مباشرة للموضع الثاني؛ قبل الموضع الأول لم يُذكر أي مصطلح، وبعد الموضع الثاني تنتقل الفقرة إلى الركامات (moraines)." },
     { k: "summary", type: "multi", pick: 3,
       q: "An introductory sentence for a brief summary of the passage is provided below. Complete the summary by selecting the THREE answer choices that express the most important ideas in the passage. Glaciers have shaped much of Earth's landscape through both erosion and deposition.",
       opts: [

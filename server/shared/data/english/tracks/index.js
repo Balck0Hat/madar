@@ -21,8 +21,8 @@ export const TRACKS = {
 };
 
 export const MODULES = {
-  ielts: await list(["ielts/reading-1.js", "ielts/listening-1.js"]),
-  toefl: await list(["toefl/reading-1.js", "toefl/listening-1.js"]),
+  ielts: await list(["ielts/reading-1.js", "ielts/reading-2.js", "ielts/listening-1.js", "ielts/listening-2.js"]),
+  toefl: await list(["toefl/reading-1.js", "toefl/reading-2.js", "toefl/listening-1.js", "toefl/listening-2.js"]),
 };
 export const WRITING = { ielts: (await load("ielts/writing.js")) || [], toefl: (await load("toefl/writing.js")) || [] };
 export const LESSONS = (await list(TAG_IDS.map((t) => `general/${t}.js`)));

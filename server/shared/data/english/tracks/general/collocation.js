@@ -12,9 +12,9 @@ export default {
     { q: "Could you ___ a photo of us, please?", opts: ["make", "do", "take", "have"], a: 2, why: "take a photo = يلتقط صورة، لا make أو do." },
     { q: "There was ___ traffic, so we were an hour late.", opts: ["strong", "big", "heavy", "high"], a: 2, why: "heavy traffic = ازدحام شديد؛ strong وbig لا تلازمان traffic." },
     { q: "This coffee is too ___; can I have some milk?", opts: ["strong", "heavy", "hard", "powerful"], a: 0, why: "strong coffee = قهوة ثقيلة/مركزة؛ heavy لا تُستعمل مع القهوة." },
-    { q: "We must ___ the deadline or we'll lose the client.", opts: ["catch", "reach", "get", "meet"], a: 3, why: "meet a deadline = يلتزم بالموعد النهائي." },
-    { q: "Please ___ attention; this part is important.", opts: ["give", "make", "take", "pay"], a: 3, why: "pay attention = ينتبه، وهي متلازمة لا تُترجم حرفياً." },
-    { q: "She ___ a promise, and she always keeps her word.", opts: ["made", "did", "gave", "took"], a: 0, why: "make a promise = يقطع وعداً؛ وبعدها keep a promise = يفي به." },
+    { q: "If we don't ___ the deadline, we'll lose the client.", opts: ["catch", "reach", "get", "meet"], a: 3, why: "meet a deadline = يلتزم بالموعد النهائي." },
+    { q: "Students who don't ___ attention in class miss important details.", opts: ["give", "make", "take", "pay"], a: 3, why: "pay attention = ينتبه، وهي متلازمة لا تُترجم حرفياً." },
+    { q: "She ___ a promise, and she always keeps her word.", opts: ["made", "did", "put", "took"], a: 0, why: "make a promise = يقطع وعداً؛ وبعدها keep a promise = يفي به." },
     { q: "I'm ___ aware of the risks, but I want to try.", opts: ["strongly", "fully", "highly", "heavily"], a: 1, why: "fully aware = مدرك تماماً؛ highly تلازم recommended وlikely لا aware." },
   ],
 };

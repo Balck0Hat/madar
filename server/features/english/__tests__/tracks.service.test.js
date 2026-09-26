@@ -19,7 +19,8 @@ describe("tracks + practice services", () => {
   it("should list the three tracks with modules, writing tasks and lessons", async () => {
     const o = await tracks.overview(new mongoose.Types.ObjectId());
     expect(o.tracks.map((t) => t.id)).toEqual(["general", "ielts", "toefl"]);
-    expect(o.tracks[1].modules.map((m) => m.skill)).toEqual(["reading", "listening"]);
+    expect(new Set(o.tracks[1].modules.map((m) => m.skill))).toEqual(new Set(["reading", "listening"]));
+    expect(o.tracks[1].modules.length).toBeGreaterThanOrEqual(2);
     expect(o.tracks[1].writing.length).toBe(4);
     expect(o.tracks[0].lessons.length).toBe(LESSONS.length);
     expect(o.weak).toEqual([]);
@@ -45,7 +46,7 @@ describe("tracks + practice services", () => {
     expect(last.score.band.scale).toBe("ielts");
     await expect(tracks.submitSection(user, a.id, { sectionId: "s1", answers: [] })).rejects.toMatchObject({ code: "PRACTICE_BAD_STEP" });
     const o = await tracks.overview(user);
-    expect(o.tracks[1].modules[1].best.pct).toBe(last.score.pct);
+    expect(o.tracks[1].modules.find((m) => m.id === "ielts-listening-1").best.pct).toBe(last.score.pct);
   }, 30000);
 
   it("should run a lesson practice one item at a time and finish with a percentage", async () => {

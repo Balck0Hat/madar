@@ -11,7 +11,7 @@ export default {
     { q: "The woman ___ lives next door is a nurse.", opts: ["which", "who", "whose", "where"], a: 1, why: "الموصوف عاقل (the woman) وهي فاعل الفعل lives، فنستعمل who." },
     { q: "This is the phone ___ I bought last week.", opts: ["who", "where", "whose", "which"], a: 3, why: "the phone غير عاقل، فالاسم الموصول which (أو that)." },
     { q: "That's the boy ___ father owns the bakery.", opts: ["whose", "who", "which", "that"], a: 0, why: "الملكية: والد الولد، فنستعمل whose يليها الاسم father مباشرة." },
-    { q: "Do you remember the day ___ we first met?", opts: ["where", "which", "that", "when"], a: 3, why: "the day زمان، فنستعمل when بمعنى «الذي … فيه»." },
+    { q: "Do you remember the day ___ we first met?", opts: ["where", "which", "whose", "when"], a: 3, why: "the day زمان، فنستعمل when بمعنى «الذي … فيه»؛ where للمكان لا للزمان." },
     { q: "The film ___ was really long.", opts: ["we watched it", "that we watched it", "we watched", "which we watched it"], a: 2, why: "الاسم الموصول مفعول به فيجوز حذفه، ولا نكرر الضمير it بعد watched كما في العربية." },
     { q: "My cousin, ___ works in Dubai, is visiting us next week.", opts: ["who", "that", "whom", "which"], a: 0, why: "جملة غير محدِّدة بين فاصلتين عن عاقل، فنستعمل who ولا يجوز that بعد الفاصلة." },
     { q: "The people ___ I work are very friendly.", opts: ["with who", "with whom", "whom with", "with whose"], a: 1, why: "بعد حرف الجر with نستعمل صيغة المفعول whom: the people with whom I work." },

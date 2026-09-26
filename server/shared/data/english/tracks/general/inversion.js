@@ -11,7 +11,7 @@ export default {
     { q: "Never ___ such a beautiful sunset.", opts: ["I have seen", "I saw", "did I saw", "have I seen"], a: 3, why: "بعد never في أول الجملة نقدّم الفعل المساعد على الفاعل: have I seen." },
     { q: "Only after the meeting ___ the real problem.", opts: ["we understood", "understood we", "did we understand", "we did understand"], a: 2, why: "بعد only after يحدث القلب بإضافة did قبل الفاعل والفعل الأصلي: did we understand." },
     { q: "Hardly had we sat down ___ the phone rang.", opts: ["than", "that", "when", "then"], a: 2, why: "hardly يليها when؛ أما than فتأتي مع no sooner." },
-    { q: "___ any questions, please contact the office.", opts: ["Should you have", "If you should have had", "You should have", "Had you"], a: 0, why: "الشرط الأول الرسمي بحذف if وتقديم should: Should you have = If you have." },
+    { q: "___ you require further information, please call this number.", opts: ["Should", "Would", "Had", "If should"], a: 0, why: "الشرط الأول الرسمي بحذف if وتقديم should على الفاعل: Should you require = If you require." },
     { q: "Little ___ that the company would close a month later.", opts: ["she knew", "did she know", "knew she", "she did know"], a: 1, why: "little في أول الجملة بمعنى النفي يتطلب قلباً بـ did: Little did she know." },
     { q: "___ I known about the delay, I would have taken the train.", opts: ["If", "Would", "Have", "Had"], a: 3, why: "الشرط الثالث بالقلب: Had I known = If I had known؛ ولا تصلح If لأن بعدها known بلا had." },
     { q: "Rarely ___ so hard for an exam.", opts: ["I have studied", "have I studied", "I studied", "did I studied"], a: 1, why: "بعد rarely نقدّم have على I؛ وdid I studied خطأ لأن الفعل بعد did يبقى أصلياً." },

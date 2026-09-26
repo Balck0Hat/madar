@@ -10,11 +10,11 @@ export default {
   qs: [
     { q: "If you ___ water, it boils.", opts: ["heat", "will heat", "heated", "would heat"], a: 0, why: "حقيقة علمية: الشرط صفر بالمضارع البسيط في الجملتين." },
     { q: "If she ___ early, she'll catch the first train.", opts: ["will leave", "leaves", "left", "would leave"], a: 1, why: "الشرط الأول: مضارع بسيط بعد if، وwill في النتيجة." },
-    { q: "We ___ the match if we practise every day.", opts: ["win", "would win", "will win", "won"], a: 2, why: "شرط واقعي (practise بالمضارع) فالنتيجة will win." },
+    { q: "We ___ the match on Saturday if we practise every day this week.", opts: ["win", "would win", "will win", "won"], a: 2, why: "شرط واقعي لنتيجة مستقبلية محددة (on Saturday): will win؛ وwin وحدها للحقائق العامة." },
     { q: "If I ___ a million dollars, I would travel around the world.", opts: ["have", "will have", "would have", "had"], a: 3, why: "خيال في الحاضر: الشرط الثاني بالماضي البسيط had مع would في النتيجة." },
     { q: "If I ___ you, I would accept the offer.", opts: ["am", "was being", "were", "would be"], a: 2, why: "صيغة النصيحة الثابتة: If I were you." },
     { q: "They ___ the flight if they had left home earlier.", opts: ["wouldn't miss", "wouldn't have missed", "didn't miss", "hadn't missed"], a: 1, why: "الشرط الثالث (had left) ونتيجته would have + التصريف الثالث." },
-    { q: "I won't go to the party ___ you come with me.", opts: ["unless", "if", "when", "until"], a: 0, why: "المعنى «إلا إذا جئت معي»: unless = if not." },
+    { q: "I won't go to the party ___ you come with me; I don't want to go alone.", opts: ["unless", "if", "when", "until"], a: 0, why: "المعنى «إلا إذا جئت معي»: unless = if not؛ وif تقلب المعنى." },
     { q: "If he had studied harder at school, he ___ a better job now.", opts: ["has", "had", "would have had", "would have"], a: 3, why: "شرط مختلط: ماضٍ في الشرط ونتيجة حاضرة (now) بـ would + الفعل الأساسي." },
   ],
 };

@@ -18,7 +18,7 @@ export default [
       "التماسك: خصّص فقرة لكل خط أو لكل مجموعة متشابهة، واستعمل روابط زمنية (over the period, by 2010, thereafter) لتسلسل واضح.",
       "المفردات والقواعد: استخدم أفعال وأسماء الاتجاه (climbed steadily, fell sharply, fluctuated, peaked at) مع ظروف الدرجة، وتجنب تكرار increase."] },
   { id: "ielts-w2-1", task: 2, title: "Task 2 · Essay", minutes: 40, words: 250, rubric: "ielts-task2",
-    prompt: "Some people believe that the best way to reduce crime is to give longer prison sentences. Others think that there are better ways to solve this problem. To what extent do you agree or disagree with the view that longer sentences are the best solution? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.",
+    prompt: "Some people believe that the most effective way to reduce crime is to give offenders longer prison sentences. To what extent do you agree or disagree? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.",
     tips: ["الاستجابة للمهمة: حدّد موقفك بوضوح في المقدمة (أوافق جزئياً/تماماً) وحافظ عليه حتى الخاتمة، وادعم كل فكرة بمثال محدد.",
       "التماسك: فقرة واحدة لكل فكرة رئيسية تبدأ بجملة موضوع، مع روابط منطقية غير مبالغ فيها (Admittedly, However, For this reason).",
       "المفردات والقواعد: وظّف مفردات الموضوع بدقة (deterrent, rehabilitation, reoffend) ونوّع الجمل الشرطية والمركبة مع تقليل الأخطاء."] },
