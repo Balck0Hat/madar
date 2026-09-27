@@ -42,9 +42,9 @@ export default function GrammarMapScreen({ onBack, onLesson, onPractice, onJourn
   const onView = (v) => { if (v === "journey") onJourney(); else setView(v); };
 
   const shell = (children) => (
-    <div className="madar-in madar-tabpad madar-col" style={wide ? { maxWidth: "none" } : undefined}>
+    <div className="madar-in madar-tabpad madar-col" style={desktop ? { maxWidth: "none" } : undefined}>
       <TopBar title="خريطة القواعد" onBack={onBack} />
-      <div style={{ padding: `0 ${S.x4}px`, display: "grid", gap: S.x3 }}>{children}</div>
+      <div style={{ padding: `0 ${desktop ? S.x6 : S.x4}px`, display: "grid", gap: S.x2 }}>{children}</div>
     </div>
   );
   if (loading) return shell(<Skeleton lines={8} />);
@@ -55,9 +55,9 @@ export default function GrammarMapScreen({ onBack, onLesson, onPractice, onJourn
   const body = view === "list"
     ? <GrammarList branches={branches} dimmed={dimmed} selected={selected} onSelect={select} />
     : view === "world"
-      ? <SceneMap branches={branches} dimmed={dimmed} selected={selected} related={related} onSelect={select} total={data.total} compact={!desktop} onIsland={(id) => setIsland(branches.find((b) => b.id === id))} full={full} onFull={() => setFull((f) => !f)} height={full ? "100dvh" : wide ? 760 : desktop ? 600 : 460} />
+      ? <SceneMap branches={branches} dimmed={dimmed} selected={selected} related={related} onSelect={select} total={data.total} compact={!desktop} onIsland={(id) => setIsland(branches.find((b) => b.id === id))} full={full} onFull={() => setFull((f) => !f)} height={full ? "100dvh" : desktop ? "max(560px, calc(100dvh - 190px))" : 460} />
       : view === "map" && map
-        ? <MindMap data={map} dimmed={dimmed} selected={selected} onSelect={select} height={wide ? 720 : 560} />
+        ? <MindMap data={map} dimmed={dimmed} selected={selected} onSelect={select} height={desktop ? "max(520px, calc(100dvh - 190px))" : 560} />
         : <MobileMap branches={branches} dimmed={dimmed} selected={selected} onSelect={select} openBranch={openBranch} />;
   const islandSheet = island && !selected && <IslandSheet island={branches.find((b) => b.id === island.id) || island} dimmed={dimmed} selected={selected} onSelect={(id) => { select(id); }} onClose={() => setIsland(null)} />;
   if (full && view === "world") return (

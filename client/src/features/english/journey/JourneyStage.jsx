@@ -14,7 +14,7 @@ export default function JourneyStage({ stage, selected, onSelect, setRef }) {
   const current = stage.status === "current", completed = stage.status === "completed";
   const calm = current || completed ? 0 : Math.min(0.45, 0.12 + stage.distance * 0.08);
   const pos = (dy = 0) => ({ position: "absolute", left: `${x * 100}%`, top: `${(y + dy) * 100}%` });
-  const tag = spot ? { position: "absolute", left: `${(spot[0] / WORLD.w) * 100}%`, top: `${(spot[1] / WORLD.h) * 100}%` } : pos(0.05);
+  const tag = spot ? { position: "absolute", left: `${(spot[0] / WORLD.w) * 100}%`, top: `${(spot[1] / WORLD.h) * 100}%` } : pos(0.05); // مكان مفتوح بجانب المنصّة لا فوق الطريق
   const status = completed ? "مكتملة" : current ? "أنت هنا" : stage.status === "next" ? "التالية" : "مقفلة";
   return (
     <>
@@ -30,9 +30,9 @@ export default function JourneyStage({ stage, selected, onSelect, setRef }) {
       )}
       <button ref={setRef} type="button" onClick={() => onSelect(stage)} aria-label={`${n} · ${stage.en} · ${stage.title} · ${status}`} aria-pressed={selected}
         style={{ ...pos(), width: `${w * 100}%`, aspectRatio: "1.8 / 1", transform: "translate(-50%, -55%)", background: "transparent", border: 0, borderRadius: R.pill, cursor: "pointer", outlineOffset: S.xs }} />
-      <div aria-hidden="true" dir="ltr" style={{ ...tag, transform: "translate(-50%, 0)", pointerEvents: "none", textAlign: "center", lineHeight: 1.15, color: INK, padding: `${S.xs}px ${S.x3}px`, borderRadius: R.pill, background: `radial-gradient(ellipse at center, ${alpha(SHADE, 0.5)}, transparent 72%)`, textShadow: `0 1px 3px ${alpha(SHADE, 0.9)}, 0 0 10px ${alpha(SHADE, 0.6)}`, opacity: calm ? 1 - calm / 2 : 1 }}>
+      <div aria-hidden="true" dir="ltr" style={{ ...tag, transform: "translate(-50%, 0)", pointerEvents: "none", textAlign: "center", lineHeight: 1.15, color: INK, padding: `${S.sm}px ${S.x2}px`, borderRadius: R.lg, background: alpha(SHADE, current ? 0.78 : 0.62), border: `1px solid ${alpha(current || selected ? GLOW : INK, current || selected ? 0.9 : 0.25)}`, backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", boxShadow: `0 4px 12px ${alpha(SHADE, 0.35)}` }}>
         <div className="madar-num" style={{ fontSize: T.xs, fontWeight: 700, letterSpacing: 1, color: current || selected ? GLOW : INK }}>{String(n).padStart(2, "0")}</div>
-        <div style={{ fontSize: current ? T.md : T.sm, fontWeight: 700, whiteSpace: "nowrap" }}>{stage.en}</div>
+        <div style={{ fontSize: current ? T.md : T.sm, fontWeight: 700, whiteSpace: "nowrap", color: calm ? alpha(INK, 1 - calm / 2) : INK }}>{stage.en}</div>
       </div>
     </>
   );

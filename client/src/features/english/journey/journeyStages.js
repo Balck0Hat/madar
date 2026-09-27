@@ -7,12 +7,12 @@ const at = (x, y, w, extra = {}) => ({ x: x / WORLD.w, y: y / WORLD.h, w: w / WO
 // من الأسفل إلى القمة؛ الترتيب ثابت ويطابق ISLANDS في الخادم
 // base: موضع أعرض حلقة في قاعدة المعلم داخل صورته [x, y, عرضها] (مقاسة من الصور)، تُطابَق على المنصّة
 export const STAGE_ART = {
-  sentence: at(305, 1410, 325, { n: 1, asset: "/maps/journey/sentence.webp", base: [0.478, 0.759, 0.951] }),
-  time: at(650, 1095, 300, { n: 2, asset: "/maps/journey/time.webp", base: [0.508, 0.687, 0.853] }),
-  verb: at(318, 885, 290, { n: 3, asset: "/maps/journey/verb.webp", base: [0.495, 0.774, 0.932] }),
-  connect: at(680, 710, 240, { n: 4, asset: "/maps/journey/connect.webp", base: [0.509, 0.693, 0.976] }),
-  detail: at(393, 527, 245, { n: 5, asset: "/maps/journey/detail.webp", base: [0.484, 0.708, 0.943] }),
-  natural: at(550, 350, 240, { n: 6, asset: "/maps/journey/natural.webp", base: [0.488, 0.701, 0.974], label: [330, 385] }),
+  sentence: at(305, 1410, 325, { n: 1, asset: "/maps/journey/sentence.webp", base: [0.478, 0.759, 0.951], label: [305, 1500] }),
+  time: at(650, 1095, 300, { n: 2, asset: "/maps/journey/time.webp", base: [0.508, 0.687, 0.853], label: [650, 1180] }),
+  verb: at(318, 885, 290, { n: 3, asset: "/maps/journey/verb.webp", base: [0.495, 0.774, 0.932], label: [318, 972] }),
+  connect: at(680, 710, 240, { n: 4, asset: "/maps/journey/connect.webp", base: [0.509, 0.693, 0.976], label: [690, 792] }),
+  detail: at(393, 527, 245, { n: 5, asset: "/maps/journey/detail.webp", base: [0.484, 0.708, 0.943], label: [393, 606] }),
+  natural: at(550, 350, 240, { n: 6, asset: "/maps/journey/natural.webp", base: [0.488, 0.701, 0.974], label: [285, 330] }),
   mastery: at(690, 203, 200, { n: 7, asset: "/maps/journey/mastery.webp", base: [0.487, 0.674, 0.972], scale: 1.1, label: [470, 150] }),
 };
 

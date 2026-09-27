@@ -58,6 +58,10 @@ export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, path
 const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/quran\/(?:s|recite|listen)\//, /^\/books\/[^/]+\/\d/, /^\/english\/t\/[^/]+\/(?:m|l|w|boss)\//, /^\/english\/t\/general\/journey(?:\/[^/]+)?$/, /^\/english\/practice\//, /^\/tech\/t\//, /^\/tech\/c\/[^/]+\/interview$/, /^\/tech\/(?:tools|lab)$/, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
 export const isFocus = (pathname) => FOCUS.some((re) => re.test(pathname));
 
+// صفحات خرائط تأخذ عرض الشاشة كله على الحاسوب (مع بقاء القائمة الجانبية)
+const WIDE = [/^\/english\/t\/general(?:\/g\/[^/]+)?$/];
+export const isWide = (pathname) => WIDE.some((re) => re.test(pathname));
+
 // إشارات تصل مع رابط العودة من Google
 export const readFlags = () => {
   const p = new URLSearchParams(window.location.search);

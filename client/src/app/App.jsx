@@ -17,7 +17,7 @@ import { AdminScreen, StatsScreen, FriendsScreen, SearchScreen, LibraryScreen, E
 import { AuthRoute, PublicRoute, VerifyRoute, DomainRoute, UnitRoute, QuizRoute, FigureRoute, PublicFigureRoute, PoliticsRoute, CountryRoute, SuraRoute, ReciteRoute, ListenRoute, BookRoute, ChapterRoute } from "./RouteWrappers";
 import { FirstRunTour, shouldShowTour } from "../features/tour";
 import { useGame } from "./useGame";
-import { paths, NAV_PATHS, isFocus, readFlags, cleanUrl } from "./routes";
+import { paths, NAV_PATHS, isFocus, isWide, readFlags, cleanUrl } from "./routes";
 
 const Loading = () => <div style={{ minHeight: "60vh", display: "grid", placeItems: "center" }}><WheelLoader size={150} /></div>;
 
@@ -91,7 +91,7 @@ function Shell() {
       <div className="madar madar-app" dir="rtl" style={{ background: paper ? P.bg : C.bg, color: paper ? P.ink : C.text, fontFamily: FONT, transition: "background .4s" }}>
         <style>{CSS}</style>
         {!focus && profile && <SideNav path={pathname} onGo={nav} name={profile.name} />}
-        <main className={`madar-main${focus ? " is-focus" : ""}`}>
+        <main className={`madar-main${focus ? " is-focus" : ""}${isWide(pathname) ? " is-wide" : ""}`}>
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/" element={!ready ? <Loading /> : profile

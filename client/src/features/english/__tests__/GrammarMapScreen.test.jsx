@@ -41,7 +41,8 @@ describe("GrammarMapScreen", () => {
     render(<GrammarMapScreen onBack={() => {}} onLesson={() => {}} onPractice={() => {}} onJourney={() => {}} />);
     fireEvent.click(await screen.findByRole("button", { name: "قائمة" }));
     expect(screen.getByRole("region", { name: "الأفعال" })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "متوسط" }));
+    fireEvent.click(screen.getByRole("button", { name: /^تصفية/ }));
+    fireEvent.click(screen.getByRole("menuitemcheckbox", { name: "متوسط" }));
     expect(screen.getByRole("button", { name: /المضارع البسيط/ }).style.opacity).toBe("0.35");
     expect(screen.getByRole("button", { name: /المضارع التام/ }).style.opacity).toBe("1");
     fireEvent.change(screen.getByLabelText("ابحث في القواعد"), { target: { value: "التام" } });
@@ -57,7 +58,7 @@ describe("GrammarMapScreen", () => {
     expect(await screen.findByRole("application", { name: /عالم القواعد/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /جزيرة الأزمنة/ })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "انتقل إلى جزيرة" })).toBeInTheDocument(); // شريط القفز للجزر
-    fireEvent.click(screen.getByRole("button", { name: "ذهنية" }));
+    fireEvent.click(screen.getByRole("button", { name: "خريطة ذهنية" }));
     expect(await screen.findByRole("application", { name: /الخريطة الذهنية/ })).toBeInTheDocument();
     expect(screen.getByText("قواعد الإنجليزية")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "الأزمنة · 2 موضوعاً" })).toBeInTheDocument();

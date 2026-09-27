@@ -67,6 +67,8 @@ html { -webkit-text-size-adjust: 100%; }
   .madar-app{gap:0}
   .madar-main{max-width:${BP.appMax}px;padding-inline-start:232px;padding-bottom:0}
   .madar-main.is-focus{max-width:${BP.focusMax}px;padding-inline-start:0}
+  .madar-main.is-wide{max-width:none;box-sizing:border-box}
+  .madar-app:has(.madar-main.is-wide) .madar-side{inset-inline-start:0}
   .madar-tabpad{padding-bottom:${S.x6}px}
   /* قائمة بطاقات على عرض 888px تصير أشرطة رفيعة فارغة الوسط. عمود القراءة
      يبقى بعرض معقول، وهو ما يفصل تطبيقاً مصمَّماً عن تطبيق هاتف مكبَّر. */
