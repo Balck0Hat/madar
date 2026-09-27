@@ -23,8 +23,8 @@ export default function ContinueBar({ step, away, onContinue, onHome }) {
       <div role="region" aria-label="تابع رحلتك" className="madar-rise" style={{ pointerEvents: "auto", width: "100%", maxWidth: 460, display: "flex", alignItems: "center", gap: S.x2, background: C.surface, color: C.text, borderRadius: R.x3, padding: `${S.lg}px ${S.lg}px ${S.lg}px ${S.x3}px`, boxShadow: "var(--shadow-3)", border: `1px solid ${C.line}` }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ color: C.muted, fontSize: T.xs }}>تابع رحلتك</div>
-          <div style={{ fontWeight: 700, fontSize: T.md, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lesson ? step.node.title : `زعيم ${step.stage.title}`}</div>
-          <div style={{ color: C.muted, fontSize: T.xs }}>{step.stage.title}{lesson ? <> · الدرس <span className="madar-num">{num(step.position)}</span> من <span className="madar-num">{num(step.stage.nodes.length)}</span></> : " · امتحان المحطة"}</div>
+          <div style={{ fontWeight: 700, fontSize: T.md, direction: "ltr", textAlign: "end", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lesson ? (step.node.en || step.node.title) : `${step.stage.en} Boss`}</div>
+          <div style={{ color: C.muted, fontSize: T.xs, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lesson ? <>{step.node.title} · <span className="madar-num">{num(step.position)}/{num(step.stage.nodes.length)}</span></> : `${step.stage.title} · امتحان المحطة`}</div>
         </div>
         <button type="button" onClick={onContinue} style={{ minHeight: TAP, display: "inline-flex", alignItems: "center", gap: S.md, padding: `0 ${S.x3}px`, borderRadius: R.xl, border: 0, background: C.gold, color: C.bg, fontFamily: "inherit", fontWeight: 700, fontSize: T.md, cursor: "pointer", flexShrink: 0 }}>
           {lesson ? "تابع" : <><Crown size={16} aria-hidden="true" />ابدأ</>}{lesson && <ArrowLeft size={16} aria-hidden="true" />}

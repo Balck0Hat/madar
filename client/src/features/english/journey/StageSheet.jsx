@@ -27,8 +27,8 @@ export default function StageSheet({ stage, prev, desktop, onClose, onContinue, 
       <div style={{ display: "flex", alignItems: "flex-start", gap: S.lg }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ color: tone, fontSize: T.xs, fontWeight: 700 }}>المحطة <span className="madar-num">{num(stage.art.n)}</span> · {STATUS[stage.status]}</div>
-          <div style={{ fontWeight: 700, fontSize: T.x3, marginTop: S.xs }}>{stage.title}</div>
-          <div dir="ltr" style={{ color: C.muted, fontSize: T.sm, textAlign: "end" }}>{stage.en} · {stage.level}</div>
+          <div dir="ltr" style={{ fontWeight: 700, fontSize: T.x3, marginTop: S.xs, textAlign: "end" }}>{stage.en}</div>
+          <div style={{ color: C.muted, fontSize: T.sm }}>{stage.title} · <span dir="ltr">{stage.level}</span></div>
         </div>
         <button type="button" onClick={onClose} aria-label="إغلاق" style={{ width: TAP, height: TAP, borderRadius: R.pill, border: `1px solid ${C.line}`, background: "transparent", color: C.muted, display: "grid", placeItems: "center", cursor: "pointer" }}><X size={18} /></button>
       </div>
@@ -41,11 +41,11 @@ export default function StageSheet({ stage, prev, desktop, onClose, onContinue, 
         {stage.nodes.map((nd) => (
           <li key={nd.tag} style={{ display: "flex", alignItems: "center", gap: S.lg, fontSize: T.md, color: nd.status === "locked" ? C.muted : C.text }}>
             {nd.status === "mastered" ? <Check size={16} color={C.green} aria-label="متقن" /> : nd.status === "locked" ? <Lock size={14} color={C.muted} aria-label="مقفل" /> : <Circle size={14} color={tone} aria-label="متاح" />}
-            <span style={{ flex: 1 }}>{nd.title}</span>
+            <span style={{ flex: 1, minWidth: 0, display: "grid" }}>{nd.en && <span dir="ltr" style={{ fontWeight: 600, textAlign: "end" }}>{nd.en}</span>}<span style={{ color: C.muted, fontSize: T.sm }}>{nd.title}</span></span>
             {nd.pct !== null && <span className="madar-num" style={{ color: C.muted, fontSize: T.xs }}>{num(nd.pct)}٪</span>}
           </li>
         ))}
-        <li style={{ display: "flex", alignItems: "center", gap: S.lg, fontSize: T.md, color: stage.boss.status === "locked" ? C.muted : C.text }}><Crown size={16} color={stage.boss.status === "passed" ? C.gold : C.muted} aria-hidden="true" /><span style={{ flex: 1 }}>زعيم المحطة</span>{stage.boss.status === "passed" && <span style={{ color: C.green, fontSize: T.xs }}>مجتاز</span>}</li>
+        <li style={{ display: "flex", alignItems: "center", gap: S.lg, fontSize: T.md, color: stage.boss.status === "locked" ? C.muted : C.text }}><Crown size={16} color={stage.boss.status === "passed" ? C.gold : C.muted} aria-hidden="true" /><span style={{ flex: 1, display: "grid" }}><span dir="ltr" style={{ fontWeight: 600, textAlign: "end" }}>Stage Boss</span><span style={{ color: C.muted, fontSize: T.sm }}>زعيم المحطة</span></span>{stage.boss.status === "passed" && <span style={{ color: C.green, fontSize: T.xs }}>مجتاز</span>}</li>
       </ul>
       <div style={{ display: "grid", gap: S.lg }}>
         {stage.status === "current" && <Btn primary onClick={onContinue}><span style={{ display: "inline-flex", alignItems: "center", gap: S.md }}>تابع الرحلة<ArrowLeft size={16} aria-hidden="true" /></span></Btn>}

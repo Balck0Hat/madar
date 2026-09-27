@@ -9,7 +9,7 @@ const ids = Object.keys(STAGE_ART);
 const world = {
   islands: [
     isl("sentence", "ابنِ الجملة", "Build a Sentence", true, "passed", [node("be-have", "فعل الكينونة", "mastered", 90)], 1),
-    isl("time", "آلة الزمن", "Time Machine", true, "locked", [node("present", "المضارع", "mastered", 80), node("past", "الماضي", "available")], 1),
+    isl("time", "آلة الزمن", "Time Machine", true, "locked", [node("present", "المضارع", "mastered", 80), { ...node("past", "الماضي", "available"), en: "Past" }], 1),
     ...ids.slice(2).map((id, i) => isl(id, `محطة ${i + 3}`, `Stage ${i + 3}`, false, "locked", [node(`t${i}`, `درس ${i}`, "locked")])),
   ],
   total: 8, mastered: 2, bosses: 1, quest: "past", player: "present", friends: [],
@@ -46,6 +46,7 @@ describe("JourneyScreen", () => {
     await waitFor(() => expect(window.scrollTo).toHaveBeenCalled()); // تُفتح على المحطة الحالية
     const bar = screen.getByRole("region", { name: "تابع رحلتك" });
     expect(bar).toHaveTextContent("الماضي");
+    expect(bar).toHaveTextContent("Past");
     fireEvent.click(screen.getByRole("button", { name: /^تابع/ }));
     expect(onLesson).toHaveBeenCalledWith("past");
     fireEvent.click(screen.getByRole("button", { name: "4 · محطة 4 · مقفلة" }));

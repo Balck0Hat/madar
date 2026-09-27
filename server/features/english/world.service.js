@@ -3,7 +3,7 @@ import Placement from "./placement.model.js";
 import { PLACEMENT } from "../../shared/data/english/index.js";
 import { LESSONS, lessonByTag } from "../../shared/data/english/tracks/index.js";
 import { ISLANDS, BOSS_ITEMS, islandById } from "../../shared/data/english/tracks/world.js";
-import { TAGS } from "../../shared/data/english/tags.js";
+import { TAGS, TAG_EN } from "../../shared/data/english/tags.js";
 import { models } from "../../shared/utils/models.js";
 import { notFound, AppError } from "../../shared/utils/AppError.js";
 import { stripQuestion } from "./tracks.logic.js";
@@ -48,7 +48,7 @@ export async function getWorld(userId) {
   const lessons = new Map(LESSONS.map((l) => [l.tag, l]));
   for (const isl of world.islands) for (const n of isl.nodes) {
     const l = lessons.get(n.tag);
-    Object.assign(n, { title: TAGS[n.tag]?.label || n.tag, level: l?.level || null, minutes: l?.minutes || null, topics: (l?.explain || []).map((e) => e.h), tip: TAGS[n.tag]?.tip || "" });
+    Object.assign(n, { title: TAGS[n.tag]?.label || n.tag, en: TAG_EN[n.tag] || "", level: l?.level || null, minutes: l?.minutes || null, topics: (l?.explain || []).map((e) => e.h), tip: TAGS[n.tag]?.tip || "" });
   }
   return { ...world, quest: dailyQuest(world, weak), player: playerNode(world), friends: await friendPins(userId).catch(() => []), bossItems: BOSS_ITEMS };
 }

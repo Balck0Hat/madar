@@ -30,6 +30,16 @@ export const TAGS = {
   idiom: { label: "التعابير الاصطلاحية", tip: "التعابير الشائعة في المحادثة والامتحان (on the fence, hit the nail on the head) بمعناها الحرفي والمجازي." },
 };
 
+// الاسم الإنجليزي المعتمد لكل موضوع، يُعرض بجانب الترجمة العربية
+export const TAG_EN = {
+  "be-have": "Be & Have", pronouns: "Pronouns & Demonstratives", questions: "Questions & Negatives", articles: "Articles",
+  present: "Present Simple & Continuous", past: "Past Simple & Continuous", future: "Future Forms", perfect: "Perfect Tenses",
+  modals: "Modal Verbs", passive: "Passive Voice", "gerund-inf": "Gerunds & Infinitives", phrasal: "Phrasal Verbs",
+  linking: "Linking Words", relative: "Relative Clauses", conditionals: "Conditionals",
+  prepositions: "Prepositions", quantifiers: "Quantifiers", comparatives: "Comparatives & Superlatives",
+  "daily-vocab": "Everyday Vocabulary", reported: "Reported Speech", confusables: "Confusable Words", collocation: "Collocations", idiom: "Idioms",
+  "word-form": "Word Formation", inversion: "Inversion & Emphasis", "academic-vocab": "Academic Vocabulary",
+};
 export const TAG_IDS = Object.keys(TAGS);
 
 // أنواع أسئلة القراءة والاستماع، لتقرير النتيجة
