@@ -39,9 +39,9 @@ describe("JourneyScreen", () => {
   it("should show the seven stages, open a stage sheet, continue the current lesson, and explore a stage", async () => {
     const onLesson = vi.fn(), onStage = vi.fn();
     render(<JourneyScreen onBack={() => {}} onLesson={onLesson} onBoss={() => {}} onStage={onStage} onList={() => {}} />);
-    expect(await screen.findByRole("button", { name: "2 · آلة الزمن · أنت هنا" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "1 · ابنِ الجملة · مكتملة" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "3 · محطة 3 · التالية" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "2 · Time Machine · آلة الزمن · أنت هنا" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "1 · Build a Sentence · ابنِ الجملة · مكتملة" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "3 · Stage 3 · محطة 3 · التالية" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: /· مقفلة$/ })).toHaveLength(4);
     await waitFor(() => expect(window.scrollTo).toHaveBeenCalled()); // تُفتح على المحطة الحالية
     const bar = screen.getByRole("region", { name: "تابع رحلتك" });
@@ -49,7 +49,7 @@ describe("JourneyScreen", () => {
     expect(bar).toHaveTextContent("Past");
     fireEvent.click(screen.getByRole("button", { name: /^تابع/ }));
     expect(onLesson).toHaveBeenCalledWith("past");
-    fireEvent.click(screen.getByRole("button", { name: "4 · محطة 4 · مقفلة" }));
+    fireEvent.click(screen.getByRole("button", { name: "4 · Stage 4 · محطة 4 · مقفلة" }));
     const sheet = await screen.findByRole("dialog", { name: "محطة 4" });
     expect(sheet).toHaveTextContent("اجتز زعيم «محطة 3» لتُفتح هذه المحطة.");
     fireEvent.click(screen.getByRole("button", { name: "استكشف المحطة" }));

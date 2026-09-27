@@ -12,8 +12,8 @@ export const STAGE_ART = {
   verb: at(318, 885, 290, { n: 3, asset: "/maps/journey/verb.webp", base: [0.495, 0.774, 0.932] }),
   connect: at(680, 710, 240, { n: 4, asset: "/maps/journey/connect.webp", base: [0.509, 0.693, 0.976] }),
   detail: at(393, 527, 245, { n: 5, asset: "/maps/journey/detail.webp", base: [0.484, 0.708, 0.943] }),
-  natural: at(550, 350, 240, { n: 6, asset: "/maps/journey/natural.webp", base: [0.488, 0.701, 0.974], label: [300, 395] }),
-  mastery: at(690, 203, 200, { n: 7, asset: "/maps/journey/mastery.webp", base: [0.487, 0.674, 0.972], scale: 1.1, label: [330, 190] }),
+  natural: at(550, 350, 240, { n: 6, asset: "/maps/journey/natural.webp", base: [0.488, 0.701, 0.974], label: [330, 385] }),
+  mastery: at(690, 203, 200, { n: 7, asset: "/maps/journey/mastery.webp", base: [0.487, 0.674, 0.972], scale: 1.1, label: [470, 150] }),
 };
 
 // الطريق المرسوم في الصورة بين كل منصّة والتي تليها (بكسلات الصورة)، لإضاءة ما قطعه الطالب منه

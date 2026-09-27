@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { List } from "lucide-react";
-import { C, R, S, T, alpha } from "../../../shared/constants/theme";
+import { List, ArrowRight } from "lucide-react";
+import { C, R, S, T, TAP, alpha } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { useMedia } from "../../../shared/hooks/useMedia";
 import { useReducedMotion } from "../../../shared/hooks/useReducedMotion";
 import { useNum } from "../../../shared/context/PrefsContext";
-import { TopBar, Skeleton, ErrorState, Btn } from "../../../shared/components/ui";
+import { Skeleton, ErrorState } from "../../../shared/components/ui";
 import { getWorld } from "../services/english.service";
 import { ensureWorldStyles } from "../world/worldStyles";
 import { WORLD, buildJourney, nextStep } from "./journeyStages";
@@ -46,14 +46,21 @@ export default function JourneyScreen({ onBack, onLesson, onBoss, onStage, onLis
   const focusStage = useCallback((stage) => { refs.current[stage.id]?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" }); setSel(stage.id); }, [reduced]);
   const close = useCallback(() => setSel(null), []);
 
+  // رأس مضغوط جداً: رجوع، العنوان، شريط تقدّم رفيع ونسبته، وزر القائمة؛ العالم هو البطل
+  const iconBtn = { width: TAP, height: TAP, borderRadius: R.pill, border: `1px solid ${C.line}`, background: C.surface, color: C.text, display: "grid", placeItems: "center", cursor: "pointer", flexShrink: 0 };
   const shell = (children) => (
     <div className="madar-in madar-col" style={{ paddingBottom: S.x9 * 2 }}>
-      <TopBar title="رحلتك في القواعد" onBack={onBack} right={
-        <span style={{ display: "inline-flex", alignItems: "center", gap: S.lg }}>
-          {journey && <span className="madar-num" aria-label={`أتقنت ${journey.pct}٪`} style={{ fontWeight: 700, color: C.gold, fontSize: T.lg }}>{num(journey.pct)}٪</span>}
-          <Btn small full={false} paper onClick={onList}><span style={{ display: "inline-flex", alignItems: "center", gap: S.md }}><List size={14} aria-hidden="true" />قائمة</span></Btn>
-        </span>
-      } />
+      <header style={{ display: "flex", alignItems: "center", gap: S.lg, padding: `${S.lg}px ${S.x3}px` }}>
+        <button type="button" onClick={onBack} aria-label="رجوع" style={iconBtn}><ArrowRight size={18} /></button>
+        <div style={{ flex: 1, minWidth: 0, display: "grid", gap: S.xs }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: S.md }}>
+            <h1 style={{ margin: 0, fontSize: T.lg, fontWeight: 700 }}>رحلتك في القواعد</h1>
+            {journey && <span className="madar-num" style={{ color: C.gold, fontWeight: 700, fontSize: T.sm }}>{num(journey.pct)}٪</span>}
+          </div>
+          {journey && <div role="progressbar" aria-label="تقدّم الرحلة" aria-valuemin={0} aria-valuemax={100} aria-valuenow={journey.pct} style={{ height: S.sm, borderRadius: R.pill, background: C.line, overflow: "hidden" }}><div style={{ width: `${journey.pct}%`, height: "100%", background: C.gold, borderRadius: R.pill }} /></div>}
+        </div>
+        <button type="button" onClick={onList} aria-label="قائمة الدروس" style={iconBtn}><List size={18} /></button>
+      </header>
       {children}
     </div>
   );
