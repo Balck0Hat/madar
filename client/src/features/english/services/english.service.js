@@ -25,6 +25,12 @@ export const submitTaskWriting = (id, text) => post(`/english/tracks/writing/${i
 export const getWorld = () => get("/english/tracks/world");
 export const startBoss = (island) => post(`/english/tracks/world/${island}/boss/start`, {});
 
+// خريطة القواعد الذهنية
+export const getGrammarTree = () => get("/english/grammar");
+export const getGrammarTopic = (id) => get(`/english/grammar/${id}`).then((d) => d.topic);
+export const searchGrammar = (q) => get(`/english/grammar/search?q=${encodeURIComponent(q)}`).then((d) => d.hits);
+export const toggleGrammarMark = (id) => post(`/english/grammar/${id}/mark`, {});
+
 // لوحة المعايرة (مشرف)
 export const getCalibration = () => get("/english/admin/calibration");
 export const runCalibration = () => post("/english/admin/calibrate", {});

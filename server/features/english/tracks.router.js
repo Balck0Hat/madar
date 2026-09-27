@@ -6,6 +6,7 @@ import { asyncHandler } from "../../shared/middleware/asyncHandler.js";
 import * as tracks from "./tracks.service.js";
 import * as practice from "./practice.service.js";
 import * as world from "./world.service.js";
+import * as grammar from "./grammar.service.js";
 import { calibrate, summary } from "./placement.calibrate.js";
 import { PLACEMENT } from "../../shared/data/english/index.js";
 
@@ -32,6 +33,11 @@ router.get("/practice/:id", requireAuth, validate({ params: z.object({ id: oid }
 
 router.get("/tracks/world", requireAuth, asyncHandler(async (req, res) => ok(res, await world.getWorld(req.user.id))));
 router.post("/tracks/world/:island/boss/start", requireAuth, validate({ params: z.object({ island: slug }) }), asyncHandler(async (req, res) => ok(res, await world.startBoss(req.user.id, req.params.island), 201)));
+
+router.get("/grammar", requireAuth, asyncHandler(async (req, res) => ok(res, await grammar.tree(req.user.id))));
+router.get("/grammar/search", requireAuth, validate({ query: z.object({ q: z.string().trim().max(60) }) }), asyncHandler(async (req, res) => ok(res, { hits: grammar.search(req.query.q) })));
+router.get("/grammar/:id", requireAuth, validate({ params: z.object({ id: slug }) }), asyncHandler(async (req, res) => ok(res, { topic: await grammar.topic(req.user.id, req.params.id) })));
+router.post("/grammar/:id/mark", requireAuth, validate({ params: z.object({ id: slug }) }), asyncHandler(async (req, res) => ok(res, await grammar.toggleMark(req.user.id, req.params.id))));
 
 router.get("/tracks/writing/:id", requireAuth, validate({ params: z.object({ id: slug }) }), asyncHandler(async (req, res) => ok(res, { task: practice.getWritingTask(req.params.id), history: await practice.writingHistory(req.user.id, req.params.id) })));
 router.post("/tracks/writing/:id", requireAuth, validate(textSchema), asyncHandler(async (req, res) => ok(res, { attempt: await practice.submitWriting(req.user.id, req.params.id, req.body.text) }, 201)));

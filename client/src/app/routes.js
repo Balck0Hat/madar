@@ -19,6 +19,8 @@ export const paths = {
   module: (track, id) => `/english/t/${track}/m/${id}`,
   lesson: (tag) => `/english/t/general/l/${tag}`,
   generalList: "/english/t/general/list",
+  journey: "/english/t/general/journey",
+  grammarTopic: (id) => `/english/t/general/g/${id}`,
   boss: (island) => `/english/t/general/boss/${island}`,
   weak: (tag) => `/english/practice/${tag}`,
   writingTask: (track, id) => `/english/t/${track}/w/${id}`,
@@ -46,7 +48,7 @@ export const paths = {
 export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, paths.stats, paths.friends, paths.figures, "/english", "/english/t/general", "/english/t/ielts", "/english/t/toefl", "/books", "/quran", "/politics", "/politics/titles", "/politics/systems"];
 
 // شاشات تملأ العرض بلا شريط جانبي: القراءة والاختبار والصفحات العامة
-const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/quran\/(?:s|recite|listen)\//, /^\/books\/[^/]+\/\d/, /^\/english\/t\/[^/]+\/(?:m|l|w|boss)\//, /^\/english\/practice\//, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
+const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/quran\/(?:s|recite|listen)\//, /^\/books\/[^/]+\/\d/, /^\/english\/t\/[^/]+\/(?:m|l|w|boss)\//, /^\/english\/t\/general\/journey$/, /^\/english\/practice\//, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
 export const isFocus = (pathname) => FOCUS.some((re) => re.test(pathname));
 
 // إشارات تصل مع رابط العودة من Google

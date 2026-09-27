@@ -13,6 +13,9 @@ export const C = {
   red: "var(--red)",
 };
 
+// ألوان فروع خريطة القواعد: ثمانية درجات لتمييز الفروع، بنسختين للفاتح والداكن
+export const HUE = { violet: "var(--hue-violet)", blue: "var(--hue-blue)", teal: "var(--hue-teal)", lime: "var(--hue-lime)", pink: "var(--hue-pink)", orange: "var(--hue-orange)", yellow: "var(--hue-yellow)", slate: "var(--hue-slate)" };
+
 // لوحة الورق (شاشة الدرس) — تتبدل هي أيضاً مع السمة
 export const P = {
   bg: "var(--paper-bg)",

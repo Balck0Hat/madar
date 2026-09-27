@@ -6,6 +6,7 @@ export const CSS = `
   --bg:#0B1020; --surface:#141B33; --surface2:#1B2444; --line:#2C3760;
   --text:#F2EFE6; --muted:#8C93AD; --gold:#F2B544; --gold-soft:rgba(242,181,68,.16);
   --green:#3FB68B; --red:#F26B5B;
+  --hue-violet:#A78BFA; --hue-blue:#5EB4FF; --hue-teal:#3FC9B6; --hue-lime:#8BD450; --hue-pink:#F472B6; --hue-orange:#FB923C; --hue-yellow:#FACC15; --hue-slate:#9CA3AF;
   /* الورق يتبع السمة أيضاً. كان كريمياً في الوضعين، فالوضع الداكن كان يتوقف
      عند باب الدرس: من يقرأ ليلاً تنفتح في وجهه صفحة فاتحة بملء الشاشة —
      وهي الشاشة التي يقضي فيها معظم وقته. الحبر أبيض دافئ لا ناصع، والصفحة
@@ -27,6 +28,7 @@ export const CSS = `
   --bg:#F7F4EC; --surface:#FFFDF7; --surface2:#EFE9DC; --line:#D3C7AF;
   --text:#1B2033; --muted:#61667A; --gold:#8A610F; --gold-soft:rgba(138,97,15,.14);
   --green:#1A7352; --red:#B33D2B;
+  --hue-violet:#6D4FC2; --hue-blue:#1D6FC2; --hue-teal:#0F8A7A; --hue-lime:#4F8A1E; --hue-pink:#B4327A; --hue-orange:#C2591B; --hue-yellow:#9A7B08; --hue-slate:#5B6472;
   --paper-bg:#FFFDF7; --paper-ink:#1B2033; --paper-muted:#64697E; --paper-line:#DED4C0;
   --paper-panel:#1B2033; --paper-card:#F6F1E5; --paper-gold:#8A610F;
   --paper-shine:rgba(255,255,255,.9);

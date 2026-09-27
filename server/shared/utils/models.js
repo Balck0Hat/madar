@@ -25,5 +25,6 @@ export const models = {
   ItemStat: lazy("ItemStat"),
   Practice: lazy("Practice"),
   Friendship: lazy("Friendship"),
+  GrammarMark: lazy("GrammarMark"),
   Figure: lazy("Figure"),
 };
