@@ -23,11 +23,11 @@ export const https = {
   ],
   links: [["you", "lock"], ["lock", "site"]],
   steps: [
-    { caption: "المصافحة: متصفحك يقول «مرحباً، أريد اتصالاً آمناً» ويذكر ما يدعمه من تشفير.", hot: ["you"], packets: [{ from: "you", to: "site", label: "ClientHello" }] },
-    { caption: "الخادم يرد بشهادته: وثيقة موقّعة من جهة موثوقة تثبت أنه فعلاً example.com. المتصفح يتحقق منها.", hot: ["site"], packets: [{ from: "site", to: "you", label: "الشهادة", tone: "ok" }] },
+    { caption: "المصافحة: متصفحك يقول «مرحباً، أريد اتصالاً آمناً» ويذكر ما يدعمه من تشفير.", hot: ["you"], packets: [{ from: "you", to: "lock", label: "ClientHello" }, { from: "lock", to: "site" }] },
+    { caption: "الخادم يرد بشهادته: وثيقة موقّعة من جهة موثوقة تثبت أنه فعلاً example.com. المتصفح يتحقق منها.", hot: ["site"], packets: [{ from: "site", to: "lock", label: "الشهادة", tone: "ok" }, { from: "lock", to: "you", tone: "ok" }] },
     { caption: "الطرفان يتفقان على مفتاح سرّي مؤقت لهذه الجلسة وحدها. من هنا كل شيء مشفّر: حتى مزوّدك لا يرى إلا اسم الموقع.", hot: ["lock"], packets: [{ from: "you", to: "lock" }, { from: "site", to: "lock" }] },
-    { caption: "الطلب: GET /page … مع ترويسات (المتصفح، اللغة، الكوكيز) داخل القناة المشفّرة.", hot: ["you", "lock"], packets: [{ from: "you", to: "site", label: "GET /page" }] },
-    { caption: "الرد: رمز حالة (200 نجاح، 404 غير موجود، 500 خطأ) ثم محتوى الصفحة. الصفحة الواحدة قد تعني عشرات الطلبات: صور وخطوط وسكربتات.", hot: ["site", "you"], packets: [{ from: "site", to: "you", label: "200 OK", tone: "ok" }] },
+    { caption: "الطلب: GET /page … مع ترويسات (المتصفح، اللغة، الكوكيز) داخل القناة المشفّرة.", hot: ["you", "lock"], packets: [{ from: "you", to: "lock", label: "GET /page" }, { from: "lock", to: "site" }] },
+    { caption: "الرد: رمز حالة (200 نجاح، 404 غير موجود، 500 خطأ) ثم محتوى الصفحة. الصفحة الواحدة قد تعني عشرات الطلبات: صور وخطوط وسكربتات.", hot: ["site", "you"], packets: [{ from: "site", to: "lock", label: "200 OK", tone: "ok" }, { from: "lock", to: "you", tone: "ok" }] },
   ],
 };
 

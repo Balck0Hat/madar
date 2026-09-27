@@ -2,9 +2,9 @@
 export const vpn = {
   id: "vpn", title: "ماذا يغيّر الـVPN فعلاً", w: 100, h: 52,
   nodes: [
-    { id: "you", kind: "laptop", x: 10, y: 50, label: "جهازك" }, { id: "isp", kind: "isp", x: 34, y: 50, label: "مزوّدك / مقهى" }, { id: "vpn", kind: "vpn", x: 60, y: 50, label: "خادم VPN", sub: "دولة أخرى", big: true }, { id: "site", kind: "site", x: 88, y: 50, label: "الموقع" },
+    { id: "you", kind: "laptop", x: 10, y: 50, label: "جهازك" }, { id: "isp", kind: "isp", x: 34, y: 50, label: "مزوّدك / مقهى" }, { id: "vpn", kind: "vpn", x: 62, y: 20, label: "خادم VPN", sub: "دولة أخرى", big: true }, { id: "site", kind: "site", x: 88, y: 60, label: "الموقع" },
   ],
-  links: [["you", "isp"], ["isp", "vpn"], ["vpn", "site"]],
+  links: [["you", "isp"], ["isp", "site"], ["isp", "vpn"], ["vpn", "site"]],
   steps: [
     { caption: "بلا VPN: المزوّد (أو شبكة المقهى) يرى أي مواقع تزور، والموقع يرى عنوانك الحقيقي وبلدك.", hot: ["you", "isp", "site"], packets: [{ from: "you", to: "isp", label: "example.com" }, { from: "isp", to: "site" }] },
     { caption: "مع VPN: جهازك يفتح نفقاً مشفّراً إلى خادم الـVPN. المزوّد يرى أنك متصل بذلك الخادم فقط، ولا يرى ما بداخل النفق.", hot: ["you", "vpn"], packets: [{ from: "you", to: "isp", label: "مشفّر" }, { from: "isp", to: "vpn", label: "مشفّر" }] },

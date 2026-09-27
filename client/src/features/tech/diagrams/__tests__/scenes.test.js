@@ -12,13 +12,14 @@ describe("network diagram scenes", () => {
       for (const n of s.nodes) expect(KIND[n.kind], `${s.id}/${n.id} kind ${n.kind}`).toBeDefined();
       const ids = s.nodes.map((n) => n.id);
       expect(new Set(ids).size, s.id).toBe(ids.length);
-      for (const n of s.nodes) { expect(n.x, `${s.id}/${n.id}`).toBeGreaterThanOrEqual(0); expect(n.x).toBeLessThanOrEqual(100); expect(n.y).toBeGreaterThanOrEqual(0); expect(n.y).toBeLessThanOrEqual(100); }
+      for (const n of s.nodes) { expect(n.x, `${s.id}/${n.id}`).toBeGreaterThanOrEqual(8); expect(n.x, `${s.id}/${n.id}`).toBeLessThanOrEqual(92); expect(n.y).toBeGreaterThanOrEqual(0); expect(n.y).toBeLessThanOrEqual(100); }
       for (const [a, b] of s.links) { expect(ids, `${s.id} link ${a}-${b}`).toContain(a); expect(ids).toContain(b); }
       expect(s.steps.length, s.id).toBeGreaterThanOrEqual(3);
       for (const st of s.steps) {
         expect(st.caption.length, s.id).toBeGreaterThan(20);
         for (const h of st.hot || []) expect(ids, `${s.id} hot ${h}`).toContain(h);
         for (const p of st.packets || []) { expect(ids, `${s.id} packet ${p.from}`).toContain(p.from); expect(ids).toContain(p.to); expect(p.from).not.toBe(p.to); }
+        for (const p of st.packets || []) expect(s.links.some(([x, y]) => (x === p.from && y === p.to) || (x === p.to && y === p.from)), `${s.id} packet ${p.from}->${p.to} travels without a line`).toBe(true);
       }
     }
   });

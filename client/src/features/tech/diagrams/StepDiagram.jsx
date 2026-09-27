@@ -27,9 +27,10 @@ export default function StepDiagram({ scene, hue = C.gold }) {
     const t = setTimeout(() => setI((k) => (k + 1 < scene.steps.length ? k + 1 : (setPlaying(false), k))), SPEED);
     return () => clearTimeout(t);
   }, [playing, i, scene.steps.length]);
-  const hot = new Set(step.hot || []);
+  // كل جهاز تخرج منه رزمة أو تصل إليه يُضاء تلقائياً، فلا تتحرك رزمة من جهاز باهت
+  const hot = new Set([...(step.hot || []), ...(step.packets || []).flatMap((p) => [p.from, p.to])]);
   const linkHot = (a, b) => (step.packets || []).some((p) => (p.from === a && p.to === b) || (p.from === b && p.to === a));
-  const controls = [["السابق", SkipBack, () => setI((k) => Math.max(0, k - 1)), i === 0], [playing ? "إيقاف" : "تشغيل", playing ? Pause : Play, () => setPlaying((p) => !p), false], ["التالي", SkipForward, () => setI((k) => Math.min(scene.steps.length - 1, k + 1)), i === scene.steps.length - 1], ["من البداية", RotateCcw, () => { setI(0); setPlaying(false); }, false]];
+  const controls = [["السابق", SkipBack, () => setI((k) => Math.max(0, k - 1)), i === 0], [playing ? "إيقاف" : "تشغيل", playing ? Pause : Play, () => { if (!playing && i === scene.steps.length - 1) setI(0); setPlaying(!playing); }, false], ["التالي", SkipForward, () => setI((k) => Math.min(scene.steps.length - 1, k + 1)), i === scene.steps.length - 1], ["من البداية", RotateCcw, () => { setI(0); setPlaying(false); }, false]];
 
   return (
     <figure style={{ margin: 0, display: "grid", gap: S.lg }}>

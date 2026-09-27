@@ -54,4 +54,13 @@ describe("step diagram", () => {
     fireEvent.click(screen.getByRole("button", { name: "من البداية" }));
     expect(screen.getByText(/الخطوة 1 من 5/)).toBeInTheDocument();
   });
+
+  it("should restart from the first step when play is pressed on the last one", () => {
+    render(<StepDiagram scene={sceneOf("dns")} />);
+    for (let i = 0; i < 4; i++) fireEvent.click(screen.getByRole("button", { name: "التالي" }));
+    expect(screen.getByText(/الخطوة 5 من 5/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "تشغيل" }));
+    expect(screen.getByText(/الخطوة 1 من 5/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "إيقاف" })).toBeInTheDocument();
+  });
 });

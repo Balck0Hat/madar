@@ -1,11 +1,11 @@
 // مشاهد «كيف يعمل الإنترنت» والشبكة المنزلية: العقد بنسب مئوية على لوحة 100×100، والخطوات تضيء عقداً وتحرّك رزماً.
 const home = [
-  { id: "phone", kind: "phone", x: 12, y: 30, label: "هاتفك", sub: "192.168.1.12" },
-  { id: "laptop", kind: "laptop", x: 12, y: 70, label: "حاسوبك", sub: "192.168.1.15" },
-  { id: "router", kind: "router", x: 36, y: 50, label: "الراوتر", sub: "192.168.1.1", big: true },
-  { id: "modem", kind: "modem", x: 56, y: 50, label: "المودم" },
-  { id: "isp", kind: "isp", x: 76, y: 50, label: "المزوّد", sub: "203.0.113.9" },
-  { id: "cloud", kind: "cloud", x: 92, y: 50, label: "الإنترنت", big: true },
+  { id: "phone", kind: "phone", x: 14, y: 22, label: "هاتفك", sub: "192.168.1.12" },
+  { id: "laptop", kind: "laptop", x: 14, y: 74, label: "حاسوبك", sub: "192.168.1.15" },
+  { id: "router", kind: "router", x: 36, y: 46, label: "الراوتر", sub: "192.168.1.1", big: true },
+  { id: "modem", kind: "modem", x: 55, y: 74, label: "المودم" },
+  { id: "isp", kind: "isp", x: 70, y: 28, label: "المزوّد", sub: "203.0.113.9" },
+  { id: "cloud", kind: "cloud", x: 87, y: 66, label: "الإنترنت", big: true },
 ];
 const homeLinks = [["phone", "router"], ["laptop", "router"], ["router", "modem"], ["modem", "isp"], ["isp", "cloud"]];
 
@@ -34,8 +34,8 @@ export const ipAddresses = {
 export const ispBackbone = {
   id: "isp-and-backbone", title: "من بيتك إلى قارة أخرى", w: 100, h: 52,
   nodes: [
-    { id: "you", kind: "laptop", x: 8, y: 50, label: "أنت" }, { id: "isp", kind: "isp", x: 26, y: 50, label: "مزوّدك" }, { id: "ix", kind: "cloud", x: 44, y: 30, label: "نقطة تبادل", sub: "IXP" },
-    { id: "sea", kind: "sea", x: 62, y: 50, label: "كابل بحري", big: true }, { id: "isp2", kind: "isp", x: 80, y: 50, label: "مزوّد بعيد" }, { id: "site", kind: "server", x: 94, y: 50, label: "الموقع" },
+    { id: "you", kind: "laptop", x: 9, y: 50, label: "أنت" }, { id: "isp", kind: "isp", x: 25, y: 64, label: "مزوّدك" }, { id: "ix", kind: "cloud", x: 41, y: 26, label: "نقطة تبادل", sub: "IXP" },
+    { id: "sea", kind: "sea", x: 57, y: 60, label: "كابل بحري", big: true }, { id: "isp2", kind: "isp", x: 74, y: 30, label: "مزوّد بعيد" }, { id: "site", kind: "server", x: 90, y: 60, label: "الموقع" },
   ],
   links: [["you", "isp"], ["isp", "ix"], ["ix", "sea"], ["isp", "sea"], ["sea", "isp2"], ["isp2", "site"]],
   steps: [

@@ -52,7 +52,7 @@ export const recommend = {
     { id: "you", kind: "user", x: 12, y: 30, label: "أنت", sub: "شاهدت أ، ب" }, { id: "sim", kind: "users", x: 12, y: 76, label: "أشباهك", sub: "شاهدوا أ، ب، ج" }, { id: "eng", kind: "brain", x: 50, y: 50, label: "محرك التوصية", big: true },
     { id: "c", kind: "image", x: 88, y: 30, label: "الفيديو ج", sub: "مرشّح" }, { id: "d", kind: "image", x: 88, y: 76, label: "الفيديو د" },
   ],
-  links: [["you", "eng"], ["sim", "eng"], ["eng", "c"], ["eng", "d"]],
+  links: [["you", "eng"], ["sim", "eng"], ["eng", "c"], ["eng", "d"], ["c", "you"]],
   steps: [
     { caption: "كل مشاهدة، إعجاب، توقّف، أو تخطٍّ يُسجَّل. أنت صف من الأرقام: ماذا فعلت مع كل عنصر.", hot: ["you", "eng"], packets: [{ from: "you", to: "eng", label: "أ ✓ ب ✓" }] },
     { caption: "المحرك يجد أشخاصاً سلوكهم يشبه سلوكك: شاهدوا أ وب مثلك… وشاهدوا ج أيضاً.", hot: ["sim", "eng"], packets: [{ from: "sim", to: "eng", label: "أ ب ج" }] },
