@@ -33,10 +33,10 @@ export default function TopicPanel({ topicId, hue, desktop, onClose, onOpen, onL
 
   const body = loading ? <Skeleton lines={8} /> : error ? <ErrorState message={error.message} onRetry={reload} /> : (
     <>
-      <div style={{ color: C.muted, fontSize: T.xs }}>{t.path ? `${t.path.branch.title} › ${t.path.group.title}` : ""}</div>
+      <div dir="ltr" style={{ color: C.muted, fontSize: T.xs, textAlign: "end", paddingRight: TAP + S.lg }}>{t.path ? `${t.path.branch.en || t.path.branch.title} › ${t.path.group.en || t.path.group.title}` : ""}</div>
       <div style={{ display: "flex", alignItems: "flex-start", gap: S.lg }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h2 style={{ margin: 0, fontSize: T.x3, fontWeight: 700 }}>{t.title} <span dir="ltr" style={{ color: C.muted, fontSize: T.sm, fontFamily: SERIF }}>{t.en}</span></h2>
+          <h2 style={{ margin: 0, fontSize: T.x3, fontWeight: 700 }}><span dir="ltr" style={{ display: "block", textAlign: "end" }}>{t.en}</span><span style={{ display: "block", color: C.muted, fontSize: T.sm, fontWeight: 400 }}>{t.title}</span></h2>
           <div style={{ color: C.muted, fontSize: T.sm, marginTop: S.xs, lineHeight: 1.7 }}>{t.summary} <span className="madar-num" style={{ background: alpha(hue, 0.15), borderRadius: R.pill, padding: `0 ${S.md}px` }}>{t.level}</span></div>
         </div>
         <button type="button" onClick={mark} aria-pressed={marked} aria-label={marked ? "أزل من المفضلة" : "أضف إلى المفضلة"} style={{ width: TAP, height: TAP, borderRadius: R.pill, border: `1px solid ${C.line}`, background: "transparent", color: marked ? C.red : C.muted, display: "grid", placeItems: "center", cursor: "pointer" }}><Heart size={18} fill={marked ? C.red : "none"} /></button>
@@ -48,7 +48,7 @@ export default function TopicPanel({ topicId, hue, desktop, onClose, onOpen, onL
       {show("usage") && <Section icon={Lightbulb} title="الاستعمال" hue={hue}><ul style={{ margin: 0, paddingInlineStart: S.x5, lineHeight: 1.9, fontSize: T.base }}>{t.usage.map((u, i) => <li key={i}>{u}</li>)}</ul></Section>}
       {show("examples") && <Section icon={MessageSquareQuote} title="أمثلة" hue={hue}>{t.examples.map((e, i) => <div key={i} style={{ display: "grid", gap: S.xs }}><div dir="ltr" style={{ textAlign: "left", fontFamily: SERIF, fontSize: T.lg }}>{e.en}</div><div style={{ color: C.muted, fontSize: T.sm }}>{e.ar}</div></div>)}</Section>}
       {show("mistakes") && <Section icon={AlertTriangle} title="أخطاء شائعة" hue={C.red}>{t.mistakes.map((m, i) => <div key={i} style={{ display: "grid", gap: S.xs, borderInlineStart: `3px solid ${alpha(C.red, 0.5)}`, paddingInlineStart: S.x2 }}><div dir="ltr" style={{ textAlign: "left", fontFamily: SERIF }}><s style={{ color: C.red }}>{m.wrong}</s> <ArrowRight size={12} aria-hidden="true" /> <b style={{ color: C.green }}>{m.right}</b></div><div style={{ color: C.muted, fontSize: T.sm }}>{m.note}</div></div>)}</Section>}
-      {t.related.length > 0 && <div style={{ display: "flex", gap: S.sm, flexWrap: "wrap" }}>{t.related.map((r) => <button key={r.id} type="button" onClick={() => onOpen(r.id)} style={{ minHeight: TAP, padding: `0 ${S.x2}px`, borderRadius: R.pill, border: `1px solid ${C.line}`, background: C.surface, color: C.text, fontFamily: "inherit", fontSize: T.sm, cursor: "pointer" }}>{r.title}</button>)}</div>}
+      {t.related.length > 0 && <div style={{ display: "flex", gap: S.sm, flexWrap: "wrap" }}>{t.related.map((r) => <button key={r.id} type="button" onClick={() => onOpen(r.id)} style={{ minHeight: TAP, padding: `0 ${S.x2}px`, borderRadius: R.pill, border: `1px solid ${C.line}`, background: C.surface, color: C.text, fontFamily: "inherit", fontSize: T.sm, cursor: "pointer" }} aria-label={r.title}><span dir="ltr">{r.en || r.title}</span></button>)}</div>}
       <div style={{ display: "grid", gap: S.lg }}>
         <Btn primary onClick={() => onPractice(t.tag)}>تدرّب على هذا الموضوع</Btn>
         <Btn paper onClick={() => onLesson(t.tag)}>الدرس المفصّل</Btn>

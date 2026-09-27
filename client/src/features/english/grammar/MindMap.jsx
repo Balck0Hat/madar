@@ -58,13 +58,13 @@ function Node({ n, num, dim, selected, onPick }) {
   const base = { position: "absolute", left: n.x, top: n.y, transform: "translate(-50%, -50%)", opacity: dim ? 0.25 : 1, transition: "opacity .2s, transform .2s", whiteSpace: "nowrap", cursor: "pointer", fontFamily: "inherit", direction: "rtl" };
   if (n.kind === "center") return (
     <div style={{ ...base, cursor: "default", width: 150, height: 150, borderRadius: R.pill, border: `4px solid ${C.gold}`, background: C.surface, display: "grid", placeItems: "center", textAlign: "center", boxShadow: `0 0 0 10px ${alpha(C.gold, 0.15)}, 0 12px 30px ${alpha("#000", 0.35)}` }}>
-      <div><div style={{ fontWeight: 700, fontSize: T.lg, lineHeight: 1.3 }}>{n.title}</div><div dir="ltr" style={{ color: C.muted, fontSize: T.xs, fontFamily: "Georgia, serif" }}>{n.en}</div></div>
+      <div><div dir="ltr" style={{ fontWeight: 700, fontSize: T.lg, lineHeight: 1.3 }}>{n.en}</div><div style={{ color: C.muted, fontSize: T.xs }}>{n.title}</div></div>
     </div>
   );
   if (n.kind === "branch" || n.kind === "group") return (
     <button type="button" onClick={() => onPick(n.id)} aria-label={`${n.title} · ${num(n.count)} موضوعاً`}
       style={{ ...base, minHeight: TAP, padding: big ? `${S.lg}px ${S.x4}px` : `${S.sm}px ${S.x2}px`, borderRadius: R.pill, border: `2px solid ${n.hue}`, background: big ? n.hue : alpha(n.hue, 0.18), color: big ? C.bg : C.text, fontWeight: 700, fontSize: big ? T.lg : T.sm, boxShadow: big ? `0 0 22px ${alpha(n.hue, 0.5)}` : undefined }}>
-      {n.title}{big && <span dir="ltr" style={{ display: "block", fontWeight: 400, fontSize: T.xs, opacity: 0.85, fontFamily: "Georgia, serif" }}>{n.en}</span>}
+      <span dir="ltr">{n.en || n.title}</span>{big && <span style={{ display: "block", fontWeight: 400, fontSize: T.xs, opacity: 0.85 }}>{n.title}</span>}
     </button>
   );
   const mastered = n.mastery !== null && n.mastery >= 75;
@@ -73,7 +73,7 @@ function Node({ n, num, dim, selected, onPick }) {
       style={{ ...base, display: "inline-flex", alignItems: "center", gap: S.md, minHeight: TAP, padding: `${S.xs}px ${S.x2}px`, borderRadius: R.pill, border: `1.5px solid ${selected ? C.gold : alpha(n.hue, 0.7)}`, background: selected ? alpha(C.gold, 0.2) : C.surface, color: C.text, fontSize: T.sm, boxShadow: selected ? `0 0 0 4px ${alpha(C.gold, 0.25)}` : `0 2px 6px ${alpha("#000", 0.2)}`, transform: `translate(-50%, -50%)${selected ? " scale(1.08)" : ""}` }}>
       {mastered && <Check size={12} color={C.green} strokeWidth={3} aria-hidden="true" />}
       {n.marked && <Heart size={12} color={C.red} fill={C.red} aria-hidden="true" />}
-      <span>{n.title}</span>
+      <span dir="ltr">{n.en || n.title}</span>
       {n.level && <span className="madar-num" style={{ fontSize: 10, color: C.muted }}>{n.level}</span>}
     </button>
   );

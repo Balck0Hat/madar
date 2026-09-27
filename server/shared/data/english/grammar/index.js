@@ -23,5 +23,5 @@ export const TREE = BRANCHES.map((b) => ({
 
 export const bandOf = (level) => Object.keys(LEVEL_BANDS).find((k) => LEVEL_BANDS[k].includes(level)) || null;
 export const topicById = (id) => TOPICS.get(id) || null;
-export const pathOf = (id) => { for (const b of BRANCHES) for (const g of b.groups) if (g.topics.includes(id)) return { branch: { id: b.id, title: b.title, hue: b.hue }, group: { id: g.id, title: g.title } }; return null; };
+export const pathOf = (id) => { for (const b of BRANCHES) for (const g of b.groups) if (g.topics.includes(id)) return { branch: { id: b.id, title: b.title, en: b.en, hue: b.hue }, group: { id: g.id, title: g.title, en: g.en } }; return null; };
 export { BRANCHES, TOPIC_IDS, LEVEL_BANDS };

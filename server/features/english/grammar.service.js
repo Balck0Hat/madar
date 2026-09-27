@@ -27,7 +27,7 @@ export async function topic(userId, id) {
   const t = topicById(id);
   if (!t) throw notFound("الموضوع غير موجود", "TOPIC_NOT_FOUND");
   const marked = Boolean(await GrammarMark.exists({ user: userId, topicId: id }));
-  const related = (t.related || []).map((r) => topicById(r)).filter(Boolean).map((r) => ({ id: r.id, title: r.title, level: r.level }));
+  const related = (t.related || []).map((r) => topicById(r)).filter(Boolean).map((r) => ({ id: r.id, title: r.title, en: r.en, level: r.level }));
   return { ...t, band: bandOf(t.level), path: pathOf(id), related, marked };
 }
 

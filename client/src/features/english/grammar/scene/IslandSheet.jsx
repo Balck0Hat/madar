@@ -23,21 +23,21 @@ export default function IslandSheet({ island, dimmed, selected, onSelect, onClos
         <div style={{ display: "flex", alignItems: "center", gap: S.x2 }}>
           <img src={`/maps/grammar/${island.id}.png`} alt="" width={64} height={64} style={{ width: 64, height: 64, objectFit: "contain", flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontWeight: 700, fontSize: T.x2 }}>{island.title}</div>
-            <div style={{ color: C.muted, fontSize: T.sm }}><span dir="ltr" style={{ fontFamily: "Georgia, serif" }}>{island.en}</span> · {num(count)} قاعدة</div>
+            <div dir="ltr" style={{ fontWeight: 700, fontSize: T.x2, textAlign: "end" }}>{island.en}</div><div style={{ color: C.muted, fontSize: T.sm }}>{island.title}</div>
+            <div style={{ color: C.muted, fontSize: T.sm }}>{num(count)} قاعدة</div>
           </div>
           <button type="button" onClick={onClose} aria-label="إغلاق" style={{ width: TAP, height: TAP, borderRadius: R.pill, border: `1px solid ${C.line}`, background: "transparent", color: C.muted, display: "grid", placeItems: "center", cursor: "pointer" }}><X size={18} /></button>
         </div>
         {island.groups.map((g) => (
           <div key={g.id} style={{ display: "grid", gap: S.md }}>
-            <div style={{ fontWeight: 700, fontSize: T.sm, color: hue }}>{g.title}</div>
+            <div style={{ fontWeight: 700, fontSize: T.sm, color: hue }}><span dir="ltr">{g.en}</span> <span style={{ fontWeight: 400, color: C.muted }}>· {g.title}</span></div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: S.sm }}>
               {g.topics.map((t) => (
                 <button key={t.id} type="button" onClick={() => onSelect(t.id)} aria-pressed={selected === t.id} aria-label={`${t.title}${t.level ? ` · ${t.level}` : ""}`}
                   style={{ display: "flex", alignItems: "center", gap: S.sm, minHeight: TAP, padding: `${S.sm}px ${S.x2}px`, borderRadius: R.lg, border: `1.5px solid ${selected === t.id ? C.gold : alpha(hue, 0.6)}`, background: selected === t.id ? alpha(C.gold, 0.2) : C.surface2, color: C.text, fontFamily: "inherit", fontSize: T.sm, fontWeight: 600, textAlign: "start", cursor: "pointer", opacity: dimmed(t) ? 0.35 : 1 }}>
                   {t.mastery !== null && t.mastery >= 75 && <Check size={12} color={C.green} strokeWidth={3} aria-hidden="true" />}
                   {t.marked && <Heart size={12} color={C.red} fill={C.red} aria-hidden="true" />}
-                  <span style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.title}</span>
+                  <span style={{ flex: 1, minWidth: 0, display: "grid" }}><span dir="ltr" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textAlign: "end" }}>{t.en || t.title}</span>{t.en && <span style={{ color: C.muted, fontSize: T.xs, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.title}</span>}</span>
                   {t.level && <span className="madar-num" style={{ fontSize: 10, color: C.muted, flexShrink: 0 }}>{t.level}</span>}
                 </button>
               ))}

@@ -32,7 +32,7 @@ export const CHIP = { h: 30, gap: 6, w: 178, col: 186 };
 // مواضع رقاقات جزيرة: أعمدة إلى جانبها المحدد، كل مجموعة تحت عنوانها الصغير
 export function chipPositions(island, groups) {
   const a = ISLANDS[island];
-  const rows = groups.flatMap((g) => [{ kind: "group", id: g.id, title: g.title }, ...g.topics.map((t) => ({ kind: "topic", ...t }))]);
+  const rows = groups.flatMap((g) => [{ kind: "group", id: g.id, title: g.title, en: g.en }, ...g.topics.map((t) => ({ kind: "topic", ...t }))]);
   const perCol = a.side === "bottom" ? Math.ceil(rows.length / 3) : Math.ceil(rows.length / 2);
   const cols = Math.ceil(rows.length / perCol);
   return rows.map((row, i) => {
