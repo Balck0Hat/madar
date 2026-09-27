@@ -2,7 +2,7 @@ import { alpha } from "../../../../shared/constants/theme";
 import { SCENE, ISLANDS } from "./sceneLayout";
 import { hueOf } from "../mapLayout";
 
-const W = 180, H = Math.round((W * SCENE.h) / SCENE.w);
+const W = 140, H = Math.round((W * SCENE.h) / SCENE.w);
 
 // خريطة مصغّرة: الجزر نقاطاً بألوانها، ومستطيل ما يظهر الآن؛ الضغط ينقل العرض إلى ذلك الموضع
 export default function MiniMap({ branches, view, box, onJump }) {
