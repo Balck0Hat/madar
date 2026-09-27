@@ -4,6 +4,10 @@ import { useNum } from "../../../shared/context/PrefsContext";
 import NodeTower from "./NodeTower";
 import { islandHeight, nodePos, bossPos, toneColor, curve, islandBody } from "./worldLayout";
 
+// الخلفية صورة ثابتة الألوان في الوضعين، فألوان الجزيرة فوقها ثابتة كذلك: زجاج داكن وخطوط فاتحة
+const GLASS = "#0b1030";
+const INK = "#ffffff";
+
 // جزيرة: جسم SVG بسُمك (عمق)، مسارات منحنية بين العقد تُرسم كأن قلماً يخطها، العقد كأزرار
 // فوق الرسم، زعيم الجزيرة في أسفلها، ضباب على المقفلة، وجسر إلى التالية حين يُجتاز الزعيم.
 export default function Island({ island, index, focusedTag, quest, player, friendsByTag, onOpenNode, onOpenBoss, focused, dim, depth = 0 }) {
@@ -23,13 +27,13 @@ export default function Island({ island, index, focusedTag, quest, player, frien
       </div>
       <div style={{ position: "relative", aspectRatio: `100 / ${h}` }}>
         <svg viewBox={`0 0 100 ${h}`} width="100%" height="100%" aria-hidden="true" style={{ position: "absolute", inset: 0, overflow: "visible" }}>
-          <path d={islandBody(h)} style={{ fill: alpha(tone, 0.5) }} transform="translate(0 6)" />
-          <path d={islandBody(h)} style={{ fill: alpha(tone, island.open ? 0.2 : 0.1), stroke: alpha(tone, 0.55) }} strokeWidth={0.6} />
+          <path d={islandBody(h)} style={{ fill: alpha(GLASS, 0.35) }} transform="translate(0 6)" />
+          <path d={islandBody(h)} style={{ fill: alpha(GLASS, island.open ? 0.3 : 0.22), stroke: alpha(tone, 0.85) }} strokeWidth={0.6} />
           {island.edges.map(([a, b]) => {
             const done = island.nodes.find((x) => x.tag === a)?.status === "mastered";
-            return <path key={`${a}-${b}`} d={curve(pos[a], pos[b])} fill="none" style={{ stroke: done ? C.gold : alpha(C.text, 0.3) }} strokeWidth={done ? 1.4 : 1} strokeDasharray={done ? undefined : "2 2"} pathLength={1} className={done ? "world-draw" : undefined} strokeLinecap="round" />;
+            return <path key={`${a}-${b}`} d={curve(pos[a], pos[b])} fill="none" style={{ stroke: done ? C.gold : alpha(INK, 0.6) }} strokeWidth={done ? 1.4 : 1} strokeDasharray={done ? undefined : "2 2"} pathLength={1} className={done ? "world-draw" : undefined} strokeLinecap="round" />;
           })}
-          <path d={curve(pos[island.nodes[n - 1].tag], boss)} fill="none" style={{ stroke: bossOpen ? C.gold : alpha(C.text, 0.25) }} strokeWidth={1} strokeDasharray={bossOpen ? undefined : "2 2"} strokeLinecap="round" />
+          <path d={curve(pos[island.nodes[n - 1].tag], boss)} fill="none" style={{ stroke: bossOpen ? C.gold : alpha(INK, 0.5) }} strokeWidth={1} strokeDasharray={bossOpen ? undefined : "2 2"} strokeLinecap="round" />
         </svg>
         {island.nodes.map((node, i) => (
           <NodeTower key={node.tag} index={i} node={node} pos={pos[node.tag]} tone={tone} quest={quest === node.tag} player={player === node.tag} friends={friendsByTag[node.tag] || []} focused={focusedTag === node.tag} onOpen={onOpenNode} />
@@ -39,7 +43,7 @@ export default function Island({ island, index, focusedTag, quest, player, frien
           {bossOpen ? <Crown size={18} aria-hidden="true" /> : <Lock size={16} aria-hidden="true" />}الزعيم{island.boss.pct !== null ? <span className="madar-num"> {num(island.boss.pct)}٪</span> : null}
         </button>
         {!island.open && (
-          <div aria-hidden="true" className="world-fog" style={{ position: "absolute", inset: -8, borderRadius: R.x4, background: `radial-gradient(ellipse at center, ${alpha(C.bg, 0.55)}, ${alpha(C.bg, 0.85)})`, backdropFilter: "blur(2px)", display: "grid", placeItems: "center", color: C.muted, fontWeight: 700, fontSize: T.sm }}>
+          <div aria-hidden="true" className="world-fog" style={{ position: "absolute", inset: -8, borderRadius: R.x4, background: `radial-gradient(ellipse at center, ${alpha(GLASS, 0.3)}, ${alpha(GLASS, 0.6)})`, backdropFilter: "blur(1.5px)", display: "grid", placeItems: "center", color: C.muted, fontWeight: 700, fontSize: T.sm }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: S.md, background: alpha(C.surface, 0.9), borderRadius: R.pill, padding: `${S.md}px ${S.x3}px` }}><Lock size={14} aria-hidden="true" />اجتز زعيم الجزيرة السابقة</span>
           </div>
         )}
