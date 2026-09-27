@@ -11,6 +11,7 @@ import MobileMap from "./MobileMap";
 import GrammarList from "./GrammarList";
 import MapToolbar from "./MapToolbar";
 import SceneMap from "./scene/SceneMap";
+import IslandSheet from "./scene/IslandSheet";
 import TopicPanel from "./TopicPanel";
 
 // خريطة القواعد الذهنية: كل القواعد في شجرة واحدة (مركز، ثمانية فروع، مجموعات، موضوعات).
@@ -23,10 +24,12 @@ export default function GrammarMapScreen({ onBack, onLesson, onPractice, onJourn
   const [selected, setSelected] = useState(initialTopic);
   const [band, setBand] = useState("all");
   const [onlyMarked, setOnlyMarked] = useState(false);
-  const [view, setView] = useState(() => (typeof window !== "undefined" && window.matchMedia?.("(min-width: 768px)")?.matches ? "world" : "branches")); // الحاسوب يبدأ بالعالم، والهاتف بالفروع
+  const [view, setView] = useState("world"); // العالم أولاً على كل الشاشات؛ الهاتف بنمط مضغوط
   const [marks, setMarks] = useState(null);
   const [openBranch, setOpenBranch] = useState(null);
   const [related, setRelated] = useState([]); // القواعد المرتبطة بالمختارة، لخطوط العلاقة في العالم
+  const [island, setIsland] = useState(null); // جزيرة مفتوحة في ورقة (الهاتف)
+  const [full, setFull] = useState(false); // العالم بملء الشاشة
   useEffect(() => { if (data) setMarks(new Set(data.marked)); }, [data]);
   useEffect(() => { setSelected(initialTopic); }, [initialTopic]);
 
@@ -52,10 +55,18 @@ export default function GrammarMapScreen({ onBack, onLesson, onPractice, onJourn
   const body = view === "list"
     ? <GrammarList branches={branches} dimmed={dimmed} selected={selected} onSelect={select} />
     : view === "world"
-      ? <SceneMap branches={branches} dimmed={dimmed} selected={selected} related={related} onSelect={select} total={data.total} height={wide ? 760 : desktop ? 600 : 520} />
+      ? <SceneMap branches={branches} dimmed={dimmed} selected={selected} related={related} onSelect={select} total={data.total} compact={!desktop} onIsland={(id) => setIsland(branches.find((b) => b.id === id))} full={full} onFull={() => setFull((f) => !f)} height={full ? "100dvh" : wide ? 760 : desktop ? 600 : 460} />
       : view === "map" && map
         ? <MindMap data={map} dimmed={dimmed} selected={selected} onSelect={select} height={wide ? 720 : 560} />
         : <MobileMap branches={branches} dimmed={dimmed} selected={selected} onSelect={select} openBranch={openBranch} />;
+  const islandSheet = island && !selected && <IslandSheet island={branches.find((b) => b.id === island.id) || island} dimmed={dimmed} selected={selected} onSelect={(id) => { select(id); }} onClose={() => setIsland(null)} />;
+  if (full && view === "world") return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 35, background: C.bg }}>
+      {body}
+      {islandSheet}
+      {panel}
+    </div>
+  );
   return shell(
     <>
       <MapToolbar band={band} onBand={setBand} onlyMarked={onlyMarked} onOnlyMarked={setOnlyMarked} view={view} onView={onView} onPick={select} count={data.total} />
@@ -64,6 +75,7 @@ export default function GrammarMapScreen({ onBack, onLesson, onPractice, onJourn
         {wide && panel}
       </div>
       {!wide && panel}
+      {islandSheet}
       <div style={{ color: C.muted, fontSize: T.xs, lineHeight: 1.7, background: alpha(C.gold, 0.06), borderRadius: R.lg, padding: S.x2 }}>
         {num(data.total)} قاعدة في ثمانية فروع{ready < data.total ? ` (${num(ready)} جاهزة الآن)` : ""}. اضغط أي قاعدة لترى صيغتها واستعمالها وأمثلتها وأخطاءها الشائعة، والقلب يحفظها في مفضلتك. {view === "world" ? "اسحب العالم وقرّبه بالعجلة أو بإصبعين، والقلعة في المركز." : desktop ? "اسحب الخريطة وقرّبها بالعجلة." : "افتح الفرع لترى قواعده."}
       </div>

@@ -22,7 +22,8 @@ describe("GrammarMapScreen", () => {
   it("should open a branch on the phone, open a topic sheet with its sections, and toggle the bookmark", async () => {
     const onPractice = vi.fn();
     render(<GrammarMapScreen onBack={() => {}} onLesson={() => {}} onPractice={onPractice} onJourney={() => {}} />);
-    fireEvent.click(await screen.findByRole("button", { name: /^الأزمنة/ }));
+    fireEvent.click(await screen.findByRole("button", { name: /جزيرة الأزمنة/ })); // على الهاتف: ورقة الجزيرة أولاً
+    expect(await screen.findByRole("dialog", { name: "جزيرة الأزمنة" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /المضارع التام · B1/ }));
     expect(await screen.findByRole("dialog", { name: "المضارع التام" })).toBeInTheDocument();
     expect(screen.getByText("Subject + have/has + past participle")).toBeInTheDocument();

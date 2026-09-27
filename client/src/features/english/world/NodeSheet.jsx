@@ -12,7 +12,7 @@ export default function NodeSheet({ node, boss, tone, desktop, onClose, onLesson
   useEffect(() => {
     const before = document.activeElement;
     box.current?.focus();
-    const onKey = (e) => { if (e.key === "Escape") { e.preventDefault(); onClose(); } };
+    const onKey = (e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); onClose(); } };
     document.addEventListener("keydown", onKey, true);
     return () => { document.removeEventListener("keydown", onKey, true); before?.focus?.(); };
   }, [onClose, node?.tag, boss?.id]);

@@ -9,7 +9,7 @@ export default function ConfirmSheet({ title, text, confirmLabel = "تأكيد",
   useEffect(() => {
     const before = document.activeElement;
     box.current?.focus();
-    const onKey = (e) => { if (e.key === "Escape") { e.preventDefault(); onCancel(); } };
+    const onKey = (e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); onCancel(); } };
     document.addEventListener("keydown", onKey, true);
     return () => { document.removeEventListener("keydown", onKey, true); before?.focus?.(); };
   }, [onCancel]);

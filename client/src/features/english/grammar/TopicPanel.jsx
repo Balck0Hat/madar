@@ -24,7 +24,7 @@ export default function TopicPanel({ topicId, hue, desktop, onClose, onOpen, onL
   useEffect(() => { if (t) { setMarked(t.marked); onLoaded?.(t); } setTab("overview"); }, [t]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     box.current?.focus();
-    const onKey = (e) => { if (e.key === "Escape") { e.preventDefault(); onClose(); } };
+    const onKey = (e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); onClose(); } };
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
   }, [onClose, topicId]);
