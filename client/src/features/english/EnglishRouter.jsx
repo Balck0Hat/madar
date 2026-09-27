@@ -10,14 +10,16 @@ import CalibrationScreen from "./components/CalibrationScreen";
 import WorldScreen from "./world/WorldScreen";
 import BossScreen from "./world/BossScreen";
 import GrammarMapScreen from "./grammar/GrammarMapScreen";
+import JourneyScreen from "./journey/JourneyScreen";
 
 // كل صفحات الإنجليزية تحت /english/*؛ paths و nav تأتيان من قشرة التطبيق
 const Track = ({ nav, paths }) => { const { track } = useParams(); return <TrackScreen track={track} onBack={() => nav(paths.english)} onModule={(id) => nav(paths.module(track, id))} onWriting={(id) => nav(paths.writingTask(track, id))} onLesson={(tag) => nav(paths.lesson(tag))} />; };
 const Module = ({ nav, paths }) => { const { track, moduleId } = useParams(); return <ModuleScreen moduleId={moduleId} onBack={() => nav(paths.track(track))} />; };
 const Lesson = ({ nav, paths }) => { const { tag } = useParams(); return <LessonScreen tag={tag} onBack={() => nav(paths.track("general"))} />; };
-const World = ({ nav, paths }) => <WorldScreen onBack={() => nav(paths.track("general"))} onLesson={(tag) => nav(paths.lesson(tag))} onPractice={(tag) => nav(paths.weak(tag))} onBoss={(island) => nav(paths.boss(island))} onList={() => nav(paths.generalList)} />;
+const Journey = ({ nav, paths }) => <JourneyScreen onBack={() => nav(paths.track("general"))} onLesson={(tag) => nav(paths.lesson(tag))} onBoss={(id) => nav(paths.boss(id))} onStage={(id) => nav(paths.journeyStage(id))} onList={() => nav(paths.generalList)} />;
+const Stage = ({ nav, paths }) => { const { stage } = useParams(); return <WorldScreen stageId={stage} onBack={() => nav(paths.journey)} onLesson={(tag) => nav(paths.lesson(tag))} onPractice={(tag) => nav(paths.weak(tag))} onBoss={(island) => nav(paths.boss(island))} onList={() => nav(paths.generalList)} />; };
 const Grammar = ({ nav, paths }) => { const { id } = useParams(); return <GrammarMapScreen initialTopic={id || null} onBack={() => nav(paths.english)} onLesson={(tag) => nav(paths.lesson(tag))} onPractice={(tag) => nav(paths.weak(tag))} onJourney={() => nav(paths.journey)} onTopicChange={(t) => window.history.replaceState(null, "", t ? paths.grammarTopic(t) : paths.track("general"))} />; };
-const Boss = ({ nav, paths }) => { const { island } = useParams(); return <BossScreen island={island} onBack={() => nav(paths.track("general"))} />; };
+const Boss = ({ nav, paths }) => { const { island } = useParams(); return <BossScreen island={island} onBack={() => nav(paths.journey)} />; };
 const Weak = ({ nav, paths }) => { const { tag } = useParams(); return <WeakPracticeScreen tag={tag} onBack={() => nav(paths.english)} onLesson={(t) => nav(paths.lesson(t))} />; };
 const Writing = ({ nav, paths }) => { const { track, taskId } = useParams(); return <WritingTaskScreen taskId={taskId} onBack={() => nav(paths.track(track))} />; };
 
@@ -29,7 +31,8 @@ export default function EnglishRouter({ nav, paths, isAdmin }) {
       <Route path="placement" element={<PlacementScreen onBack={() => nav(paths.english)} onGo={(track) => nav(paths.track((track || "general").replace("-plus", "")))} />} />
       <Route path="t/general" element={<Grammar {...p} />} />
       <Route path="t/general/g/:id" element={<Grammar {...p} />} />
-      <Route path="t/general/journey" element={<World {...p} />} />
+      <Route path="t/general/journey" element={<Journey {...p} />} />
+      <Route path="t/general/journey/:stage" element={<Stage {...p} />} />
       <Route path="t/general/list" element={<TrackScreen track="general" onBack={() => nav(paths.track("general"))} onLesson={(tag) => nav(paths.lesson(tag))} />} />
       <Route path="t/general/boss/:island" element={<Boss {...p} />} />
       <Route path="t/:track" element={<Track {...p} />} />

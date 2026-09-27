@@ -18,7 +18,7 @@ export function computeWorld(mastery = {}, boss = {}) {
     const passed = bossPct !== null && bossPct >= BOSS_PASS;
     const bossStatus = passed ? "passed" : open && allMastered ? "available" : "locked";
     if (!isl.side) previousPassed = passed;
-    return { id: isl.id, title: isl.title, level: isl.level, tone: isl.tone, side: Boolean(isl.side), open, nodes, edges: isl.edges, boss: { status: bossStatus, pct: bossPct }, mastered: nodes.filter((n) => n.status === "mastered").length };
+    return { id: isl.id, title: isl.title, en: isl.en || "", level: isl.level, tone: isl.tone, side: Boolean(isl.side), open, nodes, edges: isl.edges, boss: { status: bossStatus, pct: bossPct }, mastered: nodes.filter((n) => n.status === "mastered").length };
   });
   const all = islands.flatMap((i) => i.nodes);
   return { islands, total: all.length, mastered: all.filter((n) => n.status === "mastered").length, bosses: islands.filter((i) => i.boss.status === "passed").length };

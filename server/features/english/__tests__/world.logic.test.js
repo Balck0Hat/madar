@@ -5,12 +5,13 @@ import { ISLANDS } from "../../../shared/data/english/tracks/world.js";
 const node = (w, tag) => w.islands.flatMap((i) => i.nodes).find((n) => n.tag === tag);
 
 describe("world logic", () => {
-  it("should open the first island and the side island, lock the rest, and gate nodes by their prerequisites", () => {
+  it("should open only the first of the seven stages, lock the rest, and gate nodes by their prerequisites", () => {
     const w = computeWorld({}, {});
-    expect(w.islands.map((i) => [i.id, i.open])).toEqual([["base", true], ["time", false], ["verb", false], ["link", false], ["words", true]]);
+    expect(w.islands.map((i) => [i.id, i.open])).toEqual([["sentence", true], ["time", false], ["verb", false], ["connect", false], ["detail", false], ["natural", false], ["mastery", false]]);
+    expect(w.islands.map((i) => i.en)).toEqual(["Build a Sentence", "Time Machine", "Verb Lab", "Connect Ideas", "Meaning & Detail", "Natural English", "Mastery"]);
     expect(node(w, "be-have").status).toBe("available"); // بلا متطلب
     expect(node(w, "pronouns").status).toBe("locked"); // يحتاج be-have
-    expect(node(w, "daily-vocab").status).toBe("available");
+    expect(node(w, "daily-vocab").status).toBe("locked"); // محطة لاحقة
     expect(node(w, "present").status).toBe("locked"); // جزيرة مقفلة
     expect(w.total).toBe(26);
     expect(w.mastered).toBe(0);
@@ -29,9 +30,9 @@ describe("world logic", () => {
     let w = computeWorld(all, {});
     expect(w.islands[0].boss.status).toBe("available");
     expect(w.islands[1].open).toBe(false);
-    w = computeWorld(all, { base: 60 });
+    w = computeWorld(all, { sentence: 60 });
     expect(w.islands[0].boss.status).toBe("available"); // 60 دون النجاح
-    w = computeWorld(all, { base: 80 });
+    w = computeWorld(all, { sentence: 80 });
     expect(w.islands[0].boss.status).toBe("passed");
     expect(w.islands[1].open).toBe(true);
     expect(node(w, "present").status).toBe("available");

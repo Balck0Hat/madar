@@ -1,4 +1,4 @@
-import { C } from "../../../shared/constants/theme";
+import { C, HUE } from "../../../shared/constants/theme";
 
 // هندسة الجزيرة: العقد على مسار متعرّج من الأعلى إلى الأسفل، نسبةً إلى عرض الجزيرة وارتفاعها.
 export const ROW = 15; // ارتفاع صفّ العقدة (٪ من viewBox 100)
@@ -8,7 +8,7 @@ export const nodePos = (i, n) => ({ x: n === 1 ? 50 : i % 2 ? 66 : 34, y: TOP + 
 export const bossPos = (n) => ({ x: 50, y: TOP + n * ROW + 10 });
 
 // لون الجزيرة من نغمتها (رموز السمة فقط)
-export const toneColor = (tone) => ({ green: C.green, gold: C.gold, red: C.red, ink: C.text, muted: C.muted }[tone] || C.gold);
+export const toneColor = (tone) => ({ green: C.green, gold: C.gold, red: C.red, ink: C.text, muted: C.muted, orange: HUE.orange, blue: HUE.blue, violet: HUE.violet, teal: HUE.teal }[tone] || C.gold);
 
 // مسار منحنٍ بين عقدتين (لرسم الخط كأن قلماً يخطه)
 export const curve = (a, b) => { const my = (a.y + b.y) / 2; return `M ${a.x} ${a.y} C ${a.x} ${my}, ${b.x} ${my}, ${b.x} ${b.y}`; };

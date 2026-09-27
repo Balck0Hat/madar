@@ -20,6 +20,7 @@ export const paths = {
   lesson: (tag) => `/english/t/general/l/${tag}`,
   generalList: "/english/t/general/list",
   journey: "/english/t/general/journey",
+  journeyStage: (id) => `/english/t/general/journey/${id}`,
   grammarTopic: (id) => `/english/t/general/g/${id}`,
   boss: (island) => `/english/t/general/boss/${island}`,
   weak: (tag) => `/english/practice/${tag}`,
@@ -54,7 +55,7 @@ export const paths = {
 export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, paths.stats, paths.friends, paths.figures, "/english", "/english/t/general", "/english/t/ielts", "/english/t/toefl", "/tech", "/books", "/quran", "/politics", "/politics/titles", "/politics/systems"];
 
 // شاشات تملأ العرض بلا شريط جانبي: القراءة والاختبار والصفحات العامة
-const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/quran\/(?:s|recite|listen)\//, /^\/books\/[^/]+\/\d/, /^\/english\/t\/[^/]+\/(?:m|l|w|boss)\//, /^\/english\/t\/general\/journey$/, /^\/english\/practice\//, /^\/tech\/t\//, /^\/tech\/c\/[^/]+\/interview$/, /^\/tech\/(?:tools|lab)$/, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
+const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/quran\/(?:s|recite|listen)\//, /^\/books\/[^/]+\/\d/, /^\/english\/t\/[^/]+\/(?:m|l|w|boss)\//, /^\/english\/t\/general\/journey(?:\/[^/]+)?$/, /^\/english\/practice\//, /^\/tech\/t\//, /^\/tech\/c\/[^/]+\/interview$/, /^\/tech\/(?:tools|lab)$/, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
 export const isFocus = (pathname) => FOCUS.some((re) => re.test(pathname));
 
 // إشارات تصل مع رابط العودة من Google

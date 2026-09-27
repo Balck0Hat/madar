@@ -15,7 +15,7 @@ import NodeSheet from "./NodeSheet";
 
 // عالم القواعد: خمس جزر على مشهد مائل. الهاتف: عمودياً ولوح من الأسفل. الحاسوب: شبكة ولوح جانبي.
 // الضغط على عقدة «ينزل» الكاميرا عليها ثم يفتح بطاقتها.
-export default function WorldScreen({ onBack, onLesson, onPractice, onBoss, onList }) {
+export default function WorldScreen({ stageId = null, onBack, onLesson, onPractice, onBoss, onList }) {
   const num = useNum();
   const desktop = useDesktop();
   const wide = useMedia("(min-width: 1100px)"); // لوح جانبي ثابت حين تتسع الشاشة له بجانب العمود
@@ -35,7 +35,7 @@ export default function WorldScreen({ onBack, onLesson, onPractice, onBoss, onLi
 
   const shell = (children) => (
     <div className="madar-in madar-tabpad madar-col">
-      <TopBar title="خريطة القواعد" onBack={onBack} right={<Btn small full={false} paper onClick={onList}><span style={{ display: "inline-flex", alignItems: "center", gap: S.md }}><List size={14} aria-hidden="true" />قائمة</span></Btn>} />
+      <TopBar title={(stageId && world?.islands.find((i) => i.id === stageId)?.title) || "خريطة القواعد"} onBack={onBack} right={<Btn small full={false} paper onClick={onList}><span style={{ display: "inline-flex", alignItems: "center", gap: S.md }}><List size={14} aria-hidden="true" />قائمة</span></Btn>} />
       <div style={{ padding: `0 ${S.x4}px`, display: "grid", gap: S.x3 }}>{children}</div>
     </div>
   );
@@ -52,7 +52,8 @@ export default function WorldScreen({ onBack, onLesson, onPractice, onBoss, onLi
       <Btn primary full={false} small onClick={resume}><span style={{ display: "inline-flex", alignItems: "center", gap: S.md }}><Navigation size={14} aria-hidden="true" />ابدأ من حيث توقفت</span></Btn>
     </div>
   );
-  const islands = world.islands.map((isl, i) => (
+  const shown = stageId ? world.islands.filter((i) => i.id === stageId) : world.islands;
+  const islands = shown.map((isl, i) => (
     <div key={isl.id} ref={(el) => { refs.current[isl.id] = el; }} style={{ gridColumn: desktop && isl.side ? "1 / -1" : undefined }}>
       <Island island={isl} index={i} depth={0} focused={focusIsland === isl.id} dim={Boolean(focusIsland) && focusIsland !== isl.id}
         focusedTag={open?.node?.tag} quest={world.quest} player={world.player} friendsByTag={friendsByTag} onOpenNode={openNode} onOpenBoss={openBoss} />

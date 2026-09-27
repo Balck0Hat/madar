@@ -1,17 +1,17 @@
-// عالم القواعد: خمس جزر، كل جزيرة مجموعة دروس (وسوم) مرتّبة، والأسهم داخلها «متطلبات»:
-// العقدة تُفتح حين تُتقن العقد التي تسبقها. جزيرة الكلمات جانبية مفتوحة دائماً. الجزر
-// الأخرى تُفتح بالترتيب باجتياز «زعيم» الجزيرة السابقة (امتحان من كل مواضيعها).
+// رحلة القواعد: سبع محطات بترتيب ثابت من الأسفل إلى القمة. كل محطة مجموعة دروس (وسوم) مرتّبة،
+// والأسهم داخلها «متطلبات»: العقدة تُفتح حين تُتقن العقدة التي تسبقها. المحطة التالية تُفتح
+// باجتياز «زعيم» المحطة السابقة (امتحان من كل مواضيعها). الاسم ISLANDS باقٍ لأن الخدمة والاختبارات تعتمده.
+const chain = (tags) => tags.slice(1).map((t, i) => [tags[i], t]);
+const stage = (id, title, en, level, tone, nodes, edges = chain(nodes)) => ({ id, title, en, level, tone, nodes, edges });
+
 export const ISLANDS = [
-  { id: "base", title: "أساس الجملة", level: "A1", tone: "green", nodes: ["be-have", "pronouns", "questions", "articles", "quantifiers"],
-    edges: [["be-have", "pronouns"], ["be-have", "questions"], ["pronouns", "articles"], ["questions", "quantifiers"]] },
-  { id: "time", title: "الزمن", level: "A1–B1", tone: "gold", nodes: ["present", "past", "future", "perfect"],
-    edges: [["present", "past"], ["past", "future"], ["future", "perfect"]] },
-  { id: "verb", title: "حول الفعل", level: "A2–B2", tone: "red", nodes: ["modals", "passive", "gerund-inf", "conditionals", "reported"],
-    edges: [["modals", "passive"], ["passive", "gerund-inf"], ["gerund-inf", "conditionals"], ["conditionals", "reported"]] },
-  { id: "link", title: "ربط الجمل", level: "B1–C1", tone: "ink", nodes: ["prepositions", "comparatives", "relative", "linking", "inversion"],
-    edges: [["prepositions", "comparatives"], ["comparatives", "relative"], ["relative", "linking"], ["linking", "inversion"]] },
-  { id: "words", title: "الكلمات", level: "A1–C1", tone: "muted", side: true, nodes: ["daily-vocab", "word-form", "collocation", "phrasal", "confusables", "idiom", "academic-vocab"],
-    edges: [["daily-vocab", "word-form"], ["word-form", "collocation"], ["collocation", "phrasal"], ["phrasal", "confusables"], ["confusables", "idiom"], ["idiom", "academic-vocab"]] },
+  stage("sentence", "ابنِ الجملة", "Build a Sentence", "A1–A2", "green", ["be-have", "pronouns", "questions", "articles"], [["be-have", "pronouns"], ["be-have", "questions"], ["pronouns", "articles"]]),
+  stage("time", "آلة الزمن", "Time Machine", "A1–B1", "orange", ["present", "past", "future", "perfect"]),
+  stage("verb", "مختبر الأفعال", "Verb Lab", "B1", "red", ["modals", "passive", "gerund-inf", "phrasal"]),
+  stage("connect", "اربط الأفكار", "Connect Ideas", "B1", "blue", ["linking", "relative", "conditionals"]),
+  stage("detail", "المعنى والتفاصيل", "Meaning & Detail", "A2", "violet", ["prepositions", "quantifiers", "comparatives"]),
+  stage("natural", "الإنجليزية الطبيعية", "Natural English", "A1–B2", "teal", ["daily-vocab", "reported", "confusables", "collocation", "idiom"]),
+  stage("mastery", "الإتقان", "Mastery", "B1–C1", "gold", ["word-form", "inversion", "academic-vocab"]),
 ];
 
 export const MASTERY = 75; // نسبة إتقان العقدة (أفضل تمرين)

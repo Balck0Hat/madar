@@ -9,6 +9,8 @@ const CSS = `
 @keyframes worldRise{from{opacity:0;transform:translateY(18px) scale(.9)}to{opacity:1;transform:none}}
 @keyframes worldCloud{from{transform:translateX(-8%)}to{transform:translateX(8%)}}
 @keyframes worldFog{0%,100%{opacity:.75}50%{opacity:.6}}
+@keyframes journeyRing{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.95}50%{transform:translate(-50%,-50%) scale(1.06);opacity:.6}}
+@keyframes journeyBob{0%,100%{translate:0 0}50%{translate:0 -3px}}
 @keyframes worldWalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .world-float{animation:worldFloat 6s ease-in-out infinite}
 .world-float-slow{animation:worldFloatSlow 9s ease-in-out infinite}
@@ -19,11 +21,13 @@ const CSS = `
 .world-cloud{animation:worldCloud 40s ease-in-out infinite alternate}
 .world-fog{animation:worldFog 5s ease-in-out infinite}
 .world-walk{animation:worldWalk 1.2s ease-in-out infinite}
+.journey-ring{animation:journeyRing 2.6s ease-in-out infinite}
+.journey-bob{animation:journeyBob 5s ease-in-out infinite}
 .world-scene{transition:transform .45s cubic-bezier(.2,.7,.3,1)}
 .world-node{transition:transform .25s ease,filter .25s ease}
 .world-node:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
 @media (prefers-reduced-motion:reduce){
-  .world-float,.world-float-slow,.world-draw,.world-quest,.world-unlock,.world-rise,.world-cloud,.world-fog,.world-walk{animation:none!important;stroke-dashoffset:0!important;opacity:1!important}
+  .world-float,.world-float-slow,.world-draw,.world-quest,.world-unlock,.world-rise,.world-cloud,.world-fog,.world-walk,.journey-ring,.journey-bob{animation:none!important;stroke-dashoffset:0!important;opacity:1!important}
   .world-scene,.world-node{transition:none!important}
 }`;
 

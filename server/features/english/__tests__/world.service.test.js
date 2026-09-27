@@ -17,7 +17,7 @@ beforeEach(async () => { await Practice.deleteMany({}); await Placement.deleteMa
 describe("world service", () => {
   it("should describe the world for a new user with titles, topics, a quest and a player position", async () => {
     const w = await world.getWorld(new mongoose.Types.ObjectId());
-    expect(w.islands.length).toBe(5);
+    expect(w.islands.length).toBe(7);
     expect(w.islands[0].nodes[0]).toMatchObject({ tag: "be-have", title: "فعل الكينونة والملكية", status: "available" });
     expect(w.islands[0].nodes[0].topics.length).toBeGreaterThan(2);
     expect(w.quest).toBe("be-have");
@@ -41,10 +41,10 @@ describe("world service", () => {
 
   it("should refuse the boss until the island is mastered, then run it and unlock the next island on a pass", async () => {
     const user = new mongoose.Types.ObjectId();
-    await expect(world.startBoss(user, "base")).rejects.toMatchObject({ code: "BOSS_LOCKED" });
+    await expect(world.startBoss(user, "sentence")).rejects.toMatchObject({ code: "BOSS_LOCKED" });
     for (const t of ISLANDS[0].nodes) await master(user, t);
-    const { attempt, items, label } = await world.startBoss(user, "base");
-    expect(label).toBe("زعيم أساس الجملة");
+    const { attempt, items, label } = await world.startBoss(user, "sentence");
+    expect(label).toBe("زعيم ابنِ الجملة");
     expect(items.length).toBe(BOSS_ITEMS);
     expect(new Set(items.map((i) => G.get(i.id)?.tag || i.id.slice(7).split("#")[0])).size).toBe(ISLANDS[0].nodes.length); // كل مواضيع الجزيرة
     expect(items.every((i) => i.a === undefined)).toBe(true);
