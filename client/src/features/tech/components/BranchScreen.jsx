@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Heart, ChevronLeft, MessagesSquare } from "lucide-react";
+import { Heart, ChevronLeft, MessagesSquare, PlayCircle } from "lucide-react";
 import { C, R, S, T, TAP, alpha } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
 import { getTechTree } from "../services/tech.service";
 import { metaOf, LEVELS, levelTone, LEVEL_LABEL } from "./tech.meta";
+import { hasScene } from "../diagrams";
 
 // قسم واحد: تبويبات المستوى (الكل، أساسي، متوسط، متقدم)، ثم مجموعاته وموضوعاته صفوفاً بملخص قصير
 export default function BranchScreen({ branchId, onBack, onTopic, onInterview }) {
@@ -49,8 +50,8 @@ export default function BranchScreen({ branchId, onBack, onTopic, onInterview })
               <button key={t.id} type="button" onClick={() => onTopic(t.id)} aria-label={`${t.title} · ${LEVEL_LABEL[t.level] || ""}`}
                 style={{ display: "flex", alignItems: "center", gap: S.lg, width: "100%", textAlign: "start", minHeight: TAP, padding: `${S.lg}px ${S.x3}px`, borderRadius: R.x2, border: `1px solid ${C.line}`, background: C.surface, color: C.text, fontFamily: "inherit", cursor: "pointer", boxShadow: "var(--shadow-1)" }}>
                 <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ display: "flex", alignItems: "center", gap: S.md, fontWeight: 700 }}>{t.marked && <Heart size={12} color={C.red} fill={C.red} aria-hidden="true" />}{t.title} <span dir="ltr" style={{ color: C.muted, fontSize: T.xs, fontWeight: 400 }}>{t.en}</span></span>
-                  {t.summary && <span style={{ display: "block", color: C.muted, fontSize: T.sm, lineHeight: 1.6, marginTop: S.xs, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{t.summary}</span>}
+                  <span style={{ display: "flex", alignItems: "center", gap: S.md, fontWeight: 700 }}>{t.marked && <Heart size={12} color={C.red} fill={C.red} aria-hidden="true" />}{t.title} <span dir="ltr" style={{ color: C.muted, fontSize: T.xs, fontWeight: 400 }}>{t.en}</span>{hasScene(t.id) && <PlayCircle size={14} color={hue} aria-label="فيه رسم متحرك" />}</span>
+                  {t.summary && <span style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.6, marginTop: S.xs, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{t.summary}</span>}
                 </span>
                 <span style={{ fontSize: T.xs, fontWeight: 700, color: levelTone(t.level), background: alpha(levelTone(t.level), 0.12), borderRadius: R.pill, padding: `${S.xs}px ${S.lg}px`, flexShrink: 0 }}>{LEVEL_LABEL[t.level]}</span>
                 <ChevronLeft size={16} color={C.muted} aria-hidden="true" />

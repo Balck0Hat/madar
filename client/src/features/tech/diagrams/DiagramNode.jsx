@@ -1,10 +1,5 @@
-import { Smartphone, Laptop, Router, Radio, Building2, Cloud, Server, Database, Lock, Globe, Monitor, Shield, MapPin, Waves, Cable } from "lucide-react";
 import { C, R, S, T, alpha } from "../../../shared/constants/theme";
-
-const KIND = {
-  phone: [Smartphone, "هاتف"], laptop: [Laptop, "حاسوب"], pc: [Monitor, "جهاز"], router: [Router, "راوتر"], modem: [Radio, "مودم"], isp: [Building2, "مزوّد الإنترنت"],
-  cloud: [Cloud, "الإنترنت"], server: [Server, "خادم"], dns: [Database, "خادم DNS"], lock: [Lock, "TLS"], site: [Globe, "الموقع"], vpn: [Shield, "خادم VPN"], cdn: [MapPin, "نسخة قريبة"], sea: [Waves, "كابل بحري"], cable: [Cable, "كابل"],
-};
+import { KIND } from "./nodeKinds";
 
 // عقدة في رسم شبكي: أيقونة داخل دائرة، تُضاء حين تكون في الخطوة الحالية، واسم تحتها. HTML فوق SVG لتبقى حادّة.
 export default function DiagramNode({ node, hot, hue = C.gold, compact = false }) {
@@ -16,7 +11,7 @@ export default function DiagramNode({ node, hot, hue = C.gold, compact = false }
         <Icon size={compact ? (node.big ? 22 : 18) : node.big ? 30 : 24} color={hot ? C.bg : C.text} aria-hidden="true" />
       </div>
       <div style={{ fontSize: T.xs, fontWeight: 700, color: C.text, background: alpha(C.surface, 0.9), borderRadius: R.pill, padding: `0 ${S.md}px`, whiteSpace: "nowrap" }}>{node.label || fallback}</div>
-      {node.sub && <div className="madar-num" style={{ fontSize: T.xs, color: C.muted, whiteSpace: "nowrap", direction: "ltr" }}>{node.sub}</div>}
+      {node.sub && (!compact || node.sub.length <= 14) && <div className="madar-num" style={{ fontSize: T.xs, color: C.muted, whiteSpace: "nowrap", direction: "ltr" }}>{node.sub}</div>}
     </div>
   );
 }
