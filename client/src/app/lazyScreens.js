@@ -14,6 +14,7 @@ export const ReviewScreen = lazy(() => import("../features/review").then((m) => 
 export const SectorCelebration = lazy(() => import("../features/celebrate").then((m) => ({ default: m.SectorCelebration })));
 export const FiguresScreen = lazy(() => import("../features/figures").then((m) => ({ default: m.FiguresScreen })));
 export const EnglishRouter = lazy(() => import("../features/english").then((m) => ({ default: m.EnglishRouter })));
+export const TechRouter = lazy(() => import("../features/tech").then((m) => ({ default: m.TechRouter })));
 export const BooksScreen = lazy(() => import("../features/books").then((m) => ({ default: m.BooksScreen })));
 export const BookScreen = lazy(() => import("../features/books").then((m) => ({ default: m.BookScreen })));
 export const ChapterScreen = lazy(() => import("../features/books").then((m) => ({ default: m.ChapterScreen })));

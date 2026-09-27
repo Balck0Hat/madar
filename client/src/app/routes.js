@@ -25,6 +25,10 @@ export const paths = {
   weak: (tag) => `/english/practice/${tag}`,
   writingTask: (track, id) => `/english/t/${track}/w/${id}`,
   englishAdmin: "/english/admin",
+  tech: "/tech",
+  techBranch: (id) => `/tech/c/${id}`,
+  techTopic: (id) => `/tech/t/${id}`,
+  techInterview: (id) => `/tech/c/${id}/interview`,
   books: "/books",
   book: (id) => `/books/${encodeURIComponent(id)}`,
   chapter: (id, n) => `/books/${encodeURIComponent(id)}/${n}`,
@@ -45,10 +49,10 @@ export const paths = {
 };
 
 // أقسام التنقّل الرئيسية (شريط سفلي/جانبي)
-export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, paths.stats, paths.friends, paths.figures, "/english", "/english/t/general", "/english/t/ielts", "/english/t/toefl", "/books", "/quran", "/politics", "/politics/titles", "/politics/systems"];
+export const NAV_PATHS = [paths.home, paths.league, paths.me, paths.search, paths.stats, paths.friends, paths.figures, "/english", "/english/t/general", "/english/t/ielts", "/english/t/toefl", "/tech", "/books", "/quran", "/politics", "/politics/titles", "/politics/systems"];
 
 // شاشات تملأ العرض بلا شريط جانبي: القراءة والاختبار والصفحات العامة
-const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/quran\/(?:s|recite|listen)\//, /^\/books\/[^/]+\/\d/, /^\/english\/t\/[^/]+\/(?:m|l|w|boss)\//, /^\/english\/t\/general\/journey$/, /^\/english\/practice\//, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
+const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^\/politics\/c\//, /^\/quran\/(?:s|recite|listen)\//, /^\/books\/[^/]+\/\d/, /^\/english\/t\/[^/]+\/(?:m|l|w|boss)\//, /^\/english\/t\/general\/journey$/, /^\/english\/practice\//, /^\/tech\/t\//, /^\/tech\/c\/[^/]+\/interview$/, /^\/result$/, /^\/review$/, /^\/exam$/, /^\/p\//, /^\/verify\//];
 export const isFocus = (pathname) => FOCUS.some((re) => re.test(pathname));
 
 // إشارات تصل مع رابط العودة من Google

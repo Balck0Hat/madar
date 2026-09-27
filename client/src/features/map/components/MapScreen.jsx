@@ -16,12 +16,13 @@ import PoliticsEntry from "./PoliticsEntry";
 import QuranEntry from "./QuranEntry";
 import BooksEntry from "./BooksEntry";
 import EnglishEntry from "./EnglishEntry";
+import TechEntry from "./TechEntry";
 
 // الشاشة الأولى تحمل فعلاً واحداً: العجلة (خريطة المعرفة) ثم بطاقة واحدة تقول
 // «تابع القراءة» أو «ابدأ الوحدة». كل ما عداها مطويّ في شريط «اليوم».
 export default function MapScreen({
   profile, progress, xp, streak, freezes = 0, weeklyXp, reviewDue = 0, resume = {},
-  calm: calmProp, onOpenDomain, onOpenUnit, onProfile, onReview, onToast, onFigures, onPolitics, onQuran, onBooks, onEnglish, threadsNew,
+  calm: calmProp, onOpenDomain, onOpenUnit, onProfile, onReview, onToast, onFigures, onPolitics, onQuran, onBooks, onEnglish, onTech, threadsNew,
 }) {
   const level = levelFromXp(xp);
   const next = nextUnit(progress, profile.fav);
@@ -72,6 +73,7 @@ export default function MapScreen({
           {onQuran && <QuranEntry onOpen={onQuran} />}
           {onBooks && <BooksEntry onOpen={onBooks} />}
           {onEnglish && <EnglishEntry onOpen={onEnglish} />}
+          {onTech && <TechEntry onOpen={onTech} />}
           {onFigures && <FiguresEntry onOpen={onFigures} />}
           {onPolitics && <PoliticsEntry onOpen={onPolitics} />}
         </div>
