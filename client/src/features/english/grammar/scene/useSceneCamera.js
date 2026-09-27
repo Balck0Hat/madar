@@ -2,24 +2,34 @@ import { useEffect, useRef, useState } from "react";
 import { SCENE } from "./sceneLayout";
 
 const ZOOM = { min: 0.3, max: 2.4 };
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
 
-// كاميرا المشهد: سحب بمستمعات على النافذة (لا التقاط مؤشر، فلا يُحوَّل النقر عن الأزرار)،
-// تقريب بالعجلة وبإصبعين وبالأزرار، ملاءمة، قفز، وطيران ناعم إلى نقطة. تتابع حجم الحاوية الحي.
+// كاميرا المشهد على نظام إيماءات واحد بمؤشرات (Pointer Events): إصبع أو ماوس = سحب،
+// إصبعان = تقريب حول منتصفهما مع تثبيت النقطة التي تحتهما، والانتقال بين الحالتين
+// يعيد ضبط المرجع فلا يقفز العرض. بلا التقاط مؤشر (كي لا يُحوَّل النقر عن الأزرار).
+// كذلك: عجلة، نقر مزدوج، لوحة مفاتيح، ملاءمة، قفز، طيران ناعم، وحدود تمنع ضياع العالم.
 export function useSceneCamera(box) {
   const [view, setView] = useState({ x: 0, y: 0, z: 0.6 });
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [flying, setFlying] = useState(false);
-  const drag = useRef(null);
-  const pinch = useRef(null);
+  const viewRef = useRef(view); viewRef.current = view;
+  const pointers = useRef(new Map());
+  const gesture = useRef(null);
   const dims = () => { const el = box.current; return { w: el?.clientWidth || size.w, h: el?.clientHeight || size.h }; };
-  // حدود السحب: يبقى ثلث العالم على الأقل داخل الإطار فلا يضيع
+  const local = (p) => { const r = box.current?.getBoundingClientRect() || { left: 0, top: 0 }; return { x: p.x - r.left, y: p.y - r.top }; };
+  const clampZ = (z) => Math.min(ZOOM.max, Math.max(ZOOM.min, z));
+  // حدود السحب: يبقى ثلث العالم على الأقل داخل الإطار
   const clamp = (v) => { const { w, h } = dims(); if (!w) return v; const sw = SCENE.w * v.z, sh = SCENE.h * v.z; const minX = Math.min(w * 0.35 - sw, w - sw), maxX = Math.max(w * 0.65, 0); const minY = Math.min(h * 0.35 - sh, h - sh), maxY = Math.max(h * 0.65, 0); return { ...v, x: Math.min(maxX, Math.max(minX, v.x)), y: Math.min(maxY, Math.max(minY, v.y)) }; };
+  const commit = (v) => { const c = clamp(v); viewRef.current = c; setView(c); };
 
-  const fit = () => { const { w, h } = dims(); if (!w) return; const z = Math.max(ZOOM.min, Math.min(ZOOM.max, Math.min(w / SCENE.w, h / SCENE.h))); setSize({ w, h }); setView({ z, x: (w - SCENE.w * z) / 2, y: (h - SCENE.h * z) / 2 }); };
-  const zoomBy = (f, cx, cy, smooth = false) => { if (smooth) { setFlying(true); setTimeout(() => setFlying(false), 400); } setView((v) => { const { w, h } = dims(); const z = Math.min(ZOOM.max, Math.max(ZOOM.min, v.z * f)); const k = z / v.z; const px = cx ?? w / 2, py = cy ?? h / 2; return clamp({ z, x: px - (px - v.x) * k, y: py - (py - v.y) * k }); }); };
-  const panBy = (dx, dy) => setView((v) => clamp({ ...v, x: v.x + dx, y: v.y + dy }));
-  const jump = (sx, sy) => setView((v) => { const { w, h } = dims(); return clamp({ ...v, x: w / 2 - sx * v.z, y: h / 2 - sy * v.z }); });
-  const flyTo = (sx, sy, z) => { const { w, h } = dims(); setFlying(true); setView(clamp({ z, x: w / 2 - sx * z, y: h / 2 - sy * z })); setTimeout(() => setFlying(false), 650); };
+  const fit = () => { const { w, h } = dims(); if (!w) return; const z = clampZ(Math.min(w / SCENE.w, h / SCENE.h)); setSize({ w, h }); commit({ z, x: (w - SCENE.w * z) / 2, y: (h - SCENE.h * z) / 2 }); };
+  // تقريب حول نقطة (px,py) بإحداثيات الإطار: النقطة تبقى تحت المؤشر
+  const zoomAt = (v, z, px, py) => { const k = z / v.z; return { z, x: px - (px - v.x) * k, y: py - (py - v.y) * k }; };
+  const zoomBy = (f, cx, cy, smooth = false) => { if (smooth) { setFlying(true); setTimeout(() => setFlying(false), 400); } const { w, h } = dims(); const v = viewRef.current; commit(zoomAt(v, clampZ(v.z * f), cx ?? w / 2, cy ?? h / 2)); };
+  const panBy = (dx, dy) => { const v = viewRef.current; commit({ ...v, x: v.x + dx, y: v.y + dy }); };
+  const jump = (sx, sy) => { const { w, h } = dims(); const v = viewRef.current; commit({ ...v, x: w / 2 - sx * v.z, y: h / 2 - sy * v.z }); };
+  const flyTo = (sx, sy, z) => { const { w, h } = dims(); setFlying(true); commit({ z, x: w / 2 - sx * z, y: h / 2 - sy * z }); setTimeout(() => setFlying(false), 650); };
 
   useEffect(() => { fit(); const on = () => fit(); window.addEventListener("resize", on); return () => window.removeEventListener("resize", on); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -27,8 +37,41 @@ export function useSceneCamera(box) {
     const ro = new ResizeObserver(() => setSize({ w: el.clientWidth, h: el.clientHeight })); ro.observe(el); return () => ro.disconnect();
   }, [box]);
 
-  const onWheel = (e) => { e.preventDefault(); const r = box.current.getBoundingClientRect(); zoomBy(e.deltaY < 0 ? 1.08 : 0.93, e.clientX - r.left, e.clientY - r.top); };
-  const onDoubleClick = (e) => { const r = box.current.getBoundingClientRect(); zoomBy(e.shiftKey ? 0.6 : 1.6, e.clientX - r.left, e.clientY - r.top, true); };
+  // بداية إيماءة (أو إعادة ضبطها حين يتغير عدد الأصابع): تلتقط الحالة الحالية مرجعاً
+  const begin = () => {
+    const pts = [...pointers.current.values()].map(local);
+    const moved = gesture.current?.moved || false;
+    if (pts.length === 1) gesture.current = { mode: "pan", p0: pts[0], v0: viewRef.current, moved };
+    else if (pts.length >= 2) { const m = mid(pts[0], pts[1]); const v = viewRef.current; gesture.current = { mode: "pinch", d0: Math.max(1, dist(pts[0], pts[1])), s0: { x: (m.x - v.x) / v.z, y: (m.y - v.y) / v.z }, v0: v, moved: true }; }
+    else gesture.current = null;
+  };
+  const onMove = (ev) => {
+    if (!pointers.current.has(ev.pointerId)) return;
+    pointers.current.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+    const g = gesture.current; if (!g) return;
+    const pts = [...pointers.current.values()].map(local);
+    if (g.mode === "pan" && pts.length === 1) {
+      const dx = pts[0].x - g.p0.x, dy = pts[0].y - g.p0.y;
+      if (Math.abs(dx) + Math.abs(dy) > 4) g.moved = true;
+      commit({ ...g.v0, x: g.v0.x + dx, y: g.v0.y + dy });
+    } else if (g.mode === "pinch" && pts.length >= 2) {
+      const m = mid(pts[0], pts[1]); const z = clampZ(g.v0.z * (dist(pts[0], pts[1]) / g.d0));
+      commit({ z, x: m.x - g.s0.x * z, y: m.y - g.s0.y * z }); // النقطة التي بدأت تحت الأصابع تبقى تحتها
+    }
+  };
+  const onUp = (ev) => {
+    pointers.current.delete(ev.pointerId);
+    if (pointers.current.size === 0) { window.removeEventListener("pointermove", onMove); window.removeEventListener("pointerup", onUp); window.removeEventListener("pointercancel", onUp); setTimeout(() => { gesture.current = null; }, 0); }
+    else begin();
+  };
+  const onPointerDown = (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (pointers.current.size === 0) { window.addEventListener("pointermove", onMove); window.addEventListener("pointerup", onUp); window.addEventListener("pointercancel", onUp); }
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    begin();
+  };
+  const onWheel = (e) => { e.preventDefault(); const p = local({ x: e.clientX, y: e.clientY }); zoomBy(e.deltaY < 0 ? 1.08 : 0.93, p.x, p.y); };
+  const onDoubleClick = (e) => { const p = local({ x: e.clientX, y: e.clientY }); zoomBy(e.shiftKey ? 0.6 : 1.6, p.x, p.y, true); };
   const onKeyDown = (e) => {
     const step = 80; const map = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
     if (map[e.key]) { e.preventDefault(); panBy(...map[e.key]); }
@@ -36,23 +79,7 @@ export function useSceneCamera(box) {
     else if (e.key === "-") { e.preventDefault(); zoomBy(0.8, undefined, undefined, true); }
     else if (e.key === "0") { e.preventDefault(); fit(); }
   };
-  const onPointerDown = (e) => {
-    if (e.button && e.button !== 0) return;
-    const d = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false }; drag.current = d;
-    const move = (ev) => { const dx = ev.clientX - d.x, dy = ev.clientY - d.y; if (Math.abs(dx) + Math.abs(dy) > 4) d.moved = true; setView((v) => clamp({ ...v, x: d.vx + dx, y: d.vy + dy })); };
-    const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); setTimeout(() => { drag.current = null; }, 0); };
-    window.addEventListener("pointermove", move); window.addEventListener("pointerup", up);
-  };
-  const onTouchMove = (e) => {
-    if (e.touches.length !== 2) { pinch.current = null; return; }
-    e.preventDefault();
-    const [a, b] = e.touches; const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
-    const r = box.current.getBoundingClientRect(); const cx = (a.clientX + b.clientX) / 2 - r.left, cy = (a.clientY + b.clientY) / 2 - r.top;
-    if (pinch.current) zoomBy(dist / pinch.current, cx, cy);
-    pinch.current = dist;
-  };
-  const onTouchEnd = () => { pinch.current = null; };
-  const pick = (fn) => { if (!drag.current?.moved) fn(); };
+  const pick = (fn) => { if (!gesture.current?.moved) fn(); };
 
-  return { view, size, flying, fit, zoomBy, panBy, jump, flyTo, pick, dims, onWheel, onDoubleClick, onKeyDown, onPointerDown, onTouchMove, onTouchEnd };
+  return { view, size, flying, fit, zoomBy, panBy, jump, flyTo, pick, dims, onWheel, onDoubleClick, onKeyDown, onPointerDown };
 }

@@ -33,7 +33,7 @@ export default function SceneMap({ branches, dimmed, selected, related = [], onS
   const bridgeTo = (a) => { const dx = a.x - SCENE.cx, dy = a.y - SCENE.cy; const d = Math.hypot(dx, dy); const t0 = (CENTER_R * 0.62) / d, t1 = 1 - (a.r * 0.62) / d; const mx = SCENE.cx + dx * ((t0 + t1) / 2), my = SCENE.cy + 30 + dy * ((t0 + t1) / 2); const w = Math.max(200, d * (t1 - t0) * 1.15); return { x: mx, y: my, w, h: w * 0.49, ang: (Math.atan2(dy, dx) * 180) / Math.PI }; };
 
   return (
-    <div ref={box} tabIndex={0} onWheel={cam.onWheel} onDoubleClick={cam.onDoubleClick} onKeyDown={cam.onKeyDown} onPointerDown={cam.onPointerDown} onTouchMove={cam.onTouchMove} onTouchEnd={cam.onTouchEnd} role="application" aria-label="عالم القواعد: اسحب للتحريك، قرّب بالعجلة أو بالنقر المزدوج، والأسهم للتنقل"
+    <div ref={box} tabIndex={0} onWheel={cam.onWheel} onDoubleClick={cam.onDoubleClick} onKeyDown={cam.onKeyDown} onPointerDown={cam.onPointerDown} role="application" aria-label="عالم القواعد: اسحب للتحريك، قرّب بالعجلة أو بالنقر المزدوج، والأسهم للتنقل"
       style={{ position: "relative", height, overflow: "hidden", borderRadius: R.x3, border: `1px solid ${C.line}`, background: "linear-gradient(180deg, #0d1a3a 0%, #1d3a7a 55%, #0f4c8a 100%)", cursor: "grab", touchAction: "none", userSelect: "none", color: INK }}>
       <div style={{ position: "absolute", left: 0, top: 0, width: SCENE.w, height: SCENE.h, transform: `translate(${view.x}px, ${view.y}px) scale(${view.z})`, transformOrigin: "0 0", willChange: "transform", transition: cam.flying ? "transform .6s cubic-bezier(.2,.7,.3,1)" : "none" }}>
         <svg width={SCENE.w} height={SCENE.h} viewBox={`0 0 ${SCENE.w} ${SCENE.h}`} aria-hidden="true" style={{ position: "absolute", inset: 0, overflow: "visible" }}>
