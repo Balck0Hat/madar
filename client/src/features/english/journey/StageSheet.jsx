@@ -23,7 +23,7 @@ export default function StageSheet({ stage, prev, desktop, onClose, onContinue, 
   const { done, total } = stage.progress;
   const panel = (
     <div ref={box} tabIndex={-1} role="dialog" aria-modal={!desktop} aria-label={stage.title} className="madar-rise"
-      style={{ background: C.surface, color: C.text, borderRadius: desktop ? R.x3 : `${R.x3}px ${R.x3}px 0 0`, padding: S.x4, display: "grid", gap: S.x3, boxShadow: "var(--shadow-3)", outline: "none", borderTop: `4px solid ${tone}`, width: "100%", maxWidth: desktop ? 360 : 520, maxHeight: "75vh", overflowY: "auto" }}>
+      style={{ background: C.surface, color: C.text, borderRadius: desktop ? R.x3 : `${R.x3}px ${R.x3}px 0 0`, padding: S.x4, display: "grid", gridAutoRows: "max-content", gap: S.x3, boxShadow: "var(--shadow-3)", outline: "none", borderTop: `4px solid ${tone}`, width: "100%", maxWidth: desktop ? 360 : 520, maxHeight: "75vh", overflowY: "auto" }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: S.lg }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ color: tone, fontSize: T.xs, fontWeight: 700 }}>المحطة <span className="madar-num">{num(stage.art.n)}</span> · {STATUS[stage.status]}</div>

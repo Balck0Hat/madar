@@ -19,7 +19,7 @@ export default function IslandSheet({ island, dimmed, selected, onSelect, onClos
   return (
     <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 40, background: alpha("#000", 0.5), display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
       <div ref={box} tabIndex={-1} role="dialog" aria-modal="true" aria-label={`جزيرة ${island.title}`} className="madar-rise" onClick={(e) => e.stopPropagation()}
-        style={{ width: "100%", maxWidth: 560, maxHeight: "82vh", overflowY: "auto", background: C.surface, color: C.text, borderRadius: `${R.x3}px ${R.x3}px 0 0`, padding: S.x4, display: "grid", gap: S.x3, boxShadow: "var(--shadow-3)", outline: "none", borderTop: `4px solid ${hue}` }}>
+        style={{ width: "100%", maxWidth: 560, maxHeight: "82vh", overflowY: "auto", background: C.surface, color: C.text, borderRadius: `${R.x3}px ${R.x3}px 0 0`, padding: S.x4, display: "grid", gridAutoRows: "max-content", gap: S.x3, boxShadow: "var(--shadow-3)", outline: "none", borderTop: `4px solid ${hue}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: S.x2 }}>
           <img src={`/maps/grammar/${island.id}.png`} alt="" width={64} height={64} style={{ width: 64, height: 64, objectFit: "contain", flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>

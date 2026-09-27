@@ -41,7 +41,7 @@ export default function TopicPanel({ topicId, hue, desktop, onClose, onOpen, onL
         </div>
         <button type="button" onClick={mark} aria-pressed={marked} aria-label={marked ? "أزل من المفضلة" : "أضف إلى المفضلة"} style={{ width: TAP, height: TAP, borderRadius: R.pill, border: `1px solid ${C.line}`, background: "transparent", color: marked ? C.red : C.muted, display: "grid", placeItems: "center", cursor: "pointer" }}><Heart size={18} fill={marked ? C.red : "none"} /></button>
       </div>
-      <div role="tablist" style={{ display: "flex", gap: S.sm, overflowX: "auto", paddingBottom: S.xs }}>
+      <div role="tablist" style={{ display: "flex", gap: S.sm, overflowX: "auto", paddingBottom: S.xs, flexShrink: 0, minHeight: TAP + S.xs, scrollbarWidth: "none" }}>
         {TABS.map(([k, l]) => <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} style={{ flexShrink: 0, minHeight: TAP, padding: `0 ${S.x2}px`, borderRadius: R.pill, border: `1px solid ${tab === k ? hue : C.line}`, background: tab === k ? alpha(hue, 0.15) : "transparent", color: C.text, fontFamily: "inherit", fontSize: T.sm, fontWeight: 600, cursor: "pointer" }}>{l}</button>)}
       </div>
       {show("form") && <Section icon={Settings} title="الصيغة" hue={hue}>{t.form.map((f, i) => <div key={i} dir="ltr" style={{ textAlign: "left", fontFamily: SERIF, fontSize: T.base, lineHeight: 1.7, background: C.surface, borderRadius: R.lg, padding: `${S.md}px ${S.x2}px` }}>{f}</div>)}</Section>}
@@ -57,7 +57,7 @@ export default function TopicPanel({ topicId, hue, desktop, onClose, onOpen, onL
   );
   const panel = (
     <div ref={box} tabIndex={-1} role="dialog" aria-modal={!desktop} aria-label={t?.title || "موضوع"} className="madar-rise"
-      style={{ background: C.surface, color: C.text, borderRadius: desktop ? R.x3 : `${R.x3}px ${R.x3}px 0 0`, padding: S.x4, display: "grid", gap: S.x3, boxShadow: "var(--shadow-3)", outline: "none", borderTop: `4px solid ${hue}`, width: "100%", maxWidth: desktop ? 420 : 560, maxHeight: desktop ? "calc(100vh - 120px)" : "86vh", overflowY: "auto" }}>
+      style={{ background: C.surface, color: C.text, borderRadius: desktop ? R.x3 : `${R.x3}px ${R.x3}px 0 0`, padding: S.x4, display: "grid", gridAutoRows: "max-content", gap: S.x3, boxShadow: "var(--shadow-3)", outline: "none", borderTop: `4px solid ${hue}`, width: "100%", maxWidth: desktop ? 420 : 560, maxHeight: desktop ? "calc(100vh - 120px)" : "86vh", overflowY: "auto" }}>
       <button type="button" onClick={onClose} aria-label="إغلاق" style={{ position: "absolute", top: S.x2, insetInlineStart: S.x2, width: TAP, height: TAP, borderRadius: R.pill, border: `1px solid ${C.line}`, background: C.surface, color: C.muted, display: "grid", placeItems: "center", cursor: "pointer" }}><X size={16} /></button>
       {body}
     </div>
