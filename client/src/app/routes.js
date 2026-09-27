@@ -59,7 +59,7 @@ const FOCUS = [/^\/auth/, /^\/welcome$/, /^\/u\//, /^\/figures\/./, /^\/f\//, /^
 export const isFocus = (pathname) => FOCUS.some((re) => re.test(pathname));
 
 // صفحات خرائط تأخذ عرض الشاشة كله على الحاسوب (مع بقاء القائمة الجانبية)
-const WIDE = [/^\/english\/t\/general(?:\/g\/[^/]+)?$/];
+const WIDE = [/^\/english\/t\/general(?:\/g\/[^/]+)?$/, /^\/english\/t\/general\/journey$/];
 export const isWide = (pathname) => WIDE.some((re) => re.test(pathname));
 
 // إشارات تصل مع رابط العودة من Google

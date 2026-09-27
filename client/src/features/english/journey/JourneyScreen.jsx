@@ -18,6 +18,7 @@ import ContinueBar from "./ContinueBar";
 export default function JourneyScreen({ onBack, onLesson, onBoss, onStage, onList }) {
   const num = useNum();
   const wide = useMedia("(min-width: 1100px)");
+  const desktop = useMedia("(min-width: 900px)");
   const reduced = useReducedMotion();
   const { data: world, loading, error, reload } = useAsync(() => getWorld(), []);
   const journey = useMemo(() => (world ? buildJourney(world) : null), [world]);
@@ -49,7 +50,7 @@ export default function JourneyScreen({ onBack, onLesson, onBoss, onStage, onLis
   // رأس مضغوط جداً: رجوع، العنوان، شريط تقدّم رفيع ونسبته، وزر القائمة؛ العالم هو البطل
   const iconBtn = { width: TAP, height: TAP, borderRadius: R.pill, border: `1px solid ${C.line}`, background: C.surface, color: C.text, display: "grid", placeItems: "center", cursor: "pointer", flexShrink: 0 };
   const shell = (children) => (
-    <div className="madar-in madar-col" style={{ paddingBottom: S.x9 * 2 }}>
+    <div className="madar-in madar-col" style={{ paddingBottom: S.x9 * 2, ...(desktop ? { maxWidth: "none" } : null) }}>
       <header style={{ display: "flex", alignItems: "center", gap: S.lg, padding: `${S.lg}px ${S.x3}px` }}>
         <button type="button" onClick={onBack} aria-label="رجوع" style={iconBtn}><ArrowRight size={18} /></button>
         <div style={{ flex: 1, minWidth: 0, display: "grid", gap: S.xs }}>
@@ -74,7 +75,7 @@ export default function JourneyScreen({ onBack, onLesson, onBoss, onStage, onLis
     <>
       <div style={{ position: "relative", overflow: "hidden", background: `url(${WORLD.src}) center / cover`, borderRadius: R.x3 }}>
         <div aria-hidden="true" style={{ position: "absolute", inset: 0, backdropFilter: "blur(22px) brightness(.7)", background: alpha(C.bg, 0.25) }} />
-        <div style={{ position: "relative", maxWidth: 640, margin: "0 auto" }}>
+        <div style={{ position: "relative", maxWidth: desktop ? 1100 : 640, margin: "0 auto" }}>
           <JourneyWorld journey={journey} selected={sel} onSelect={focusStage} refs={refs} />
         </div>
       </div>
