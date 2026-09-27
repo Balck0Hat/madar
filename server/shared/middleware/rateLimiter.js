@@ -20,3 +20,13 @@ export const authLimiter = rateLimit({
   skipSuccessfulRequests: true,
   skip: () => env.isTest || !env.rateLimit.authEnabled,
 });
+
+// أدوات الشبكة الحيّة (DNS، تتبّع المسار): تشغّل عمليات على الخادم، فحدّها 30 طلباً كل 15 دقيقة لكل عنوان
+export const toolsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 30,
+  skip: () => env.isTest || !env.rateLimit.enabled,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: { message: "كثرت الطلبات على الأدوات الحيّة؛ انتظر قليلاً", code: "RATE_LIMITED" } },
+});

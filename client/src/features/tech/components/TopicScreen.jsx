@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Heart, Cog, Lightbulb, BookA, AlertTriangle, ArrowRight, ChevronLeft, ChevronRight, MessagesSquare } from "lucide-react";
+import { Heart, Cog, Lightbulb, BookA, AlertTriangle, ArrowRight, ChevronLeft, ChevronRight, MessagesSquare, PlayCircle, Wrench, FlaskConical } from "lucide-react";
 import { C, R, S, T, TAP, alpha } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { TopBar, Skeleton, ErrorState, Btn } from "../../../shared/components/ui";
 import { getTechTopic, toggleTechMark } from "../services/tech.service";
 import { metaOf, levelTone, LEVEL_LABEL } from "./tech.meta";
 import QuestionCard from "./QuestionCard";
+import { sceneOf, toolOf, StepDiagram } from "../diagrams";
+import NetTools, { TOOLS } from "../tools/NetTools";
 
 const Section = ({ icon: Icon, title, hue, children }) => (
   <section style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: S.x3, display: "grid", gap: S.lg }}>
@@ -15,7 +17,8 @@ const Section = ({ icon: Icon, title, hue, children }) => (
 );
 
 // صفحة موضوع تقني: التعريف، كيف يعمل، في حياتك، المصطلحات، مفاهيم خاطئة، موضوعات مرتبطة، والسابق/التالي في المجموعة
-export default function TopicScreen({ topicId, onBack, onOpen, onBranch }) {
+export default function TopicScreen({ topicId, onBack, onOpen, onBranch, onLab }) {
+  const scene = sceneOf(topicId), tool = toolOf(topicId);
   const { data: t, loading, error, reload } = useAsync(() => getTechTopic(topicId), [topicId]);
   const [marked, setMarked] = useState(false);
   useEffect(() => { if (t) setMarked(t.marked); window.scrollTo({ top: 0 }); }, [t]);
@@ -37,7 +40,10 @@ export default function TopicScreen({ topicId, onBack, onOpen, onBranch }) {
         <span style={{ fontSize: T.xs, fontWeight: 700, color: levelTone(t.level), background: alpha(levelTone(t.level), 0.12), borderRadius: R.pill, padding: `${S.xs}px ${S.lg}px` }}>{LEVEL_LABEL[t.level]}</span>
       </div>
       <p style={{ margin: 0, fontSize: T.lg, lineHeight: 1.9, background: alpha(hue, 0.08), borderInlineStart: `4px solid ${hue}`, borderRadius: R.lg, padding: S.x3 }}>{t.summary}</p>
+      {scene && <Section icon={PlayCircle} title="شاهد كيف يحدث" hue={hue}><StepDiagram scene={scene} hue={hue} /></Section>}
       <Section icon={Cog} title="كيف يعمل" hue={hue}><ol style={{ margin: 0, paddingInlineStart: S.x5, lineHeight: 1.9, display: "grid", gap: S.sm }}>{t.how.map((h, i) => <li key={i}>{h}</li>)}</ol></Section>
+      {tool && <Section icon={Wrench} title={`جرّب بنفسك: ${TOOLS.find((x) => x.id === tool).title}`} hue={hue}><NetTools only={tool} hue={hue} /></Section>}
+      {t.path.branch.id === "networks" && onLab && <Btn onClick={onLab}><span style={{ display: "inline-flex", alignItems: "center", gap: S.md }}><FlaskConical size={16} aria-hidden="true" />ابنِ شبكتك في المختبر</span></Btn>}
       <Section icon={Lightbulb} title="في حياتك" hue={hue}><ul style={{ margin: 0, paddingInlineStart: S.x5, lineHeight: 1.9, display: "grid", gap: S.sm }}>{t.uses.map((u, i) => <li key={i}>{u}</li>)}</ul></Section>
       <Section icon={BookA} title="مصطلحات تسمعها" hue={hue}>
         {t.terms.map((x, i) => <div key={i} style={{ display: "grid", gap: S.xs, borderInlineStart: `3px solid ${alpha(hue, 0.5)}`, paddingInlineStart: S.x2 }}><div><b dir="ltr" style={{ fontFamily: "Georgia, serif" }}>{x.en}</b> <span style={{ color: C.muted }}>· {x.ar}</span></div><div style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.7 }}>{x.note}</div></div>)}

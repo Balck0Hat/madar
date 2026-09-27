@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { ChevronLeft, Heart } from "lucide-react";
-import { C, R, S, T, alpha } from "../../../shared/constants/theme";
+import { ChevronLeft, Heart, Wrench, FlaskConical } from "lucide-react";
+import { C, R, S, T, TAP, alpha } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { TopBar, Skeleton, ErrorState } from "../../../shared/components/ui";
@@ -10,7 +10,7 @@ import { metaOf, LEVELS, levelTone, LEVEL_LABEL } from "./tech.meta";
 
 // بوابة التقنية: بحث وتصفية، ثم ثمانية أقسام كبطاقات تعرض مجموعاتها وتوزيع مستوياتها؛
 // مع تصفية بالمستوى أو المفضلة تظهر الموضوعات المطابقة مباشرة تحت كل قسم.
-export default function TechHubScreen({ onBack, onBranch, onTopic }) {
+export default function TechHubScreen({ onBack, onBranch, onTopic, onTools, onLab }) {
   const num = useNum();
   const { data, loading, error, reload } = useAsync(() => getTechTree(), []);
   const [level, setLevel] = useState("all");
@@ -35,6 +35,13 @@ export default function TechHubScreen({ onBack, onBranch, onTopic }) {
     <>
       <p style={{ margin: 0, color: C.muted, lineHeight: 1.8 }}>{num(data.total)} موضوعاً في ثمانية أقسام، كل موضوع بمستواه: أساسي لمن يستعمل، متوسط لمن يريد أن يفهم كيف يعمل، متقدم للمهتم. اختر قسماً أو ابحث مباشرة.</p>
       <TechSearch level={level} onLevel={setLevel} onlyMarked={onlyMarked} onOnlyMarked={setOnlyMarked} onPick={onTopic} count={data.total} />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: S.x2 }}>
+        {[["أدوات الشبكة الحيّة", "حلّ DNS، عنوانك، الكمون، تتبّع المسار", Wrench, onTools], ["ابنِ شبكتك", "مختبر: أجهزة وروابط ورزم تتحرك", FlaskConical, onLab]].map(([title, sub, Icon, fn]) => (
+          <button key={title} type="button" onClick={fn} style={{ display: "flex", alignItems: "center", gap: S.x2, minHeight: TAP, padding: `${S.x2}px ${S.x3}px`, borderRadius: R.x2, border: `1px solid ${C.line}`, background: alpha(metaOf("networks").hue, 0.08), color: C.text, fontFamily: "inherit", textAlign: "start", cursor: "pointer" }}>
+            <Icon size={22} color={metaOf("networks").hue} aria-hidden="true" /><span style={{ display: "grid", gap: S.xs }}><b>{title}</b><span style={{ color: C.muted, fontSize: T.xs }}>{sub}</span></span>
+          </button>
+        ))}
+      </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: S.x3 }}>
         {branches.map((b) => { const { Icon, hue } = metaOf(b.id); return (
           <section key={b.id} aria-label={b.title} style={{ background: C.surface, border: `1px solid ${C.line}`, borderInlineStart: `4px solid ${hue}`, borderRadius: R.x3, padding: S.x4, display: "grid", gap: S.lg, boxShadow: "var(--shadow-1)" }}>
