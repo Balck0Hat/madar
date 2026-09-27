@@ -22,6 +22,7 @@ const CSS = `
 .world-fog{animation:worldFog 5s ease-in-out infinite}
 .world-walk{animation:worldWalk 1.2s ease-in-out infinite}
 .journey-ring{animation:journeyRing 2.6s ease-in-out infinite}
+.journey-pan::-webkit-scrollbar{display:none}
 .journey-beacon{animation:journeyBeacon 1.8s ease-in-out infinite}
 .world-scene{transition:transform .45s cubic-bezier(.2,.7,.3,1)}
 .world-node{transition:transform .25s ease,filter .25s ease}

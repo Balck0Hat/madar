@@ -13,6 +13,8 @@ import JourneyWorld from "./JourneyWorld";
 import StageSheet from "./StageSheet";
 import ContinueBar from "./ContinueBar";
 
+const PHONE_ZOOM = 1.6; // تكبير العالم على الهاتف: المعالم أوضح، والسحب الأفقي يكشف الأطراف
+
 // رحلة القواعد: عالم واحد من الأسفل إلى القمة بسبع محطات. تُفتح الصفحة على المحطة الحالية،
 // والنقر على محطة يركّز عليها ثم يفتح ورقتها؛ «استكشف المحطة» يدخل خريطتها التفصيلية بالدروس.
 export default function JourneyScreen({ onBack, onLesson, onBoss, onStage, onList }) {
@@ -25,6 +27,7 @@ export default function JourneyScreen({ onBack, onLesson, onBoss, onStage, onLis
   const [sel, setSel] = useState(null);
   const [away, setAway] = useState(false);
   const refs = useRef({});
+  const pan = useRef(null); // على الهاتف العالم أعرض من الشاشة ويُسحب أفقياً
   useEffect(() => { ensureWorldStyles(); }, []);
   const currentId = journey?.stages[journey.current]?.id;
 
@@ -34,6 +37,8 @@ export default function JourneyScreen({ onBack, onLesson, onBoss, onStage, onLis
     if (!el) return;
     const r = el.getBoundingClientRect();
     window.scrollTo({ top: Math.max(0, window.scrollY + r.top + r.height / 2 - window.innerHeight * 0.58), behavior: "auto" });
+    const pr = pan.current?.getBoundingClientRect();
+    if (pr && pan.current.scrollBy) pan.current.scrollBy({ left: r.left + r.width / 2 - (pr.left + pr.width / 2), behavior: "auto" });
   }, [currentId]);
   // حين تغيب المحطة الحالية عن الشاشة يتقلّص «تابع» إلى «عُد إلى موقعي»
   useEffect(() => {
@@ -44,7 +49,7 @@ export default function JourneyScreen({ onBack, onLesson, onBoss, onStage, onLis
     return () => io.disconnect();
   }, [currentId]);
 
-  const focusStage = useCallback((stage) => { refs.current[stage.id]?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" }); setSel(stage.id); }, [reduced]);
+  const focusStage = useCallback((stage) => { refs.current[stage.id]?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center", inline: "center" }); setSel(stage.id); }, [reduced]);
   const close = useCallback(() => setSel(null), []);
 
   // رأس مضغوط جداً: رجوع، العنوان، شريط تقدّم رفيع ونسبته، وزر القائمة؛ العالم هو البطل
@@ -75,8 +80,10 @@ export default function JourneyScreen({ onBack, onLesson, onBoss, onStage, onLis
     <>
       <div style={{ position: "relative", overflow: "hidden", background: `url(${WORLD.src}) center / cover`, borderRadius: R.x3 }}>
         <div aria-hidden="true" style={{ position: "absolute", inset: 0, backdropFilter: "blur(22px) brightness(.7)", background: alpha(C.bg, 0.25) }} />
-        <div style={{ position: "relative", maxWidth: desktop ? 1100 : 640, margin: "0 auto" }}>
-          <JourneyWorld journey={journey} selected={sel} onSelect={focusStage} refs={refs} />
+        <div ref={pan} className="journey-pan" style={{ position: "relative", overflowX: desktop ? "visible" : "auto", overflowY: "hidden", scrollbarWidth: "none", overscrollBehaviorX: "contain" }}>
+          <div style={{ position: "relative", width: desktop ? "100%" : `${PHONE_ZOOM * 100}%`, maxWidth: desktop ? 1100 : "none", margin: desktop ? "0 auto" : 0 }}>
+            <JourneyWorld journey={journey} selected={sel} onSelect={focusStage} refs={refs} />
+          </div>
         </div>
       </div>
       {selected && <StageSheet stage={selected} prev={journey.stages[selected.index - 1]} desktop={wide} onClose={close} onContinue={() => go(step)} onExplore={onStage} />}
