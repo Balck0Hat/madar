@@ -10,6 +10,7 @@ import MindMap from "./MindMap";
 import MobileMap from "./MobileMap";
 import GrammarList from "./GrammarList";
 import MapToolbar from "./MapToolbar";
+import SceneMap from "./scene/SceneMap";
 import TopicPanel from "./TopicPanel";
 
 // خريطة القواعد الذهنية: كل القواعد في شجرة واحدة (مركز، ثمانية فروع، مجموعات، موضوعات).
@@ -22,8 +23,10 @@ export default function GrammarMapScreen({ onBack, onLesson, onPractice, onJourn
   const [selected, setSelected] = useState(initialTopic);
   const [band, setBand] = useState("all");
   const [onlyMarked, setOnlyMarked] = useState(false);
-  const [view, setView] = useState("map");
+  const [view, setView] = useState(() => (typeof window !== "undefined" && window.matchMedia?.("(min-width: 768px)")?.matches ? "world" : "branches")); // الحاسوب يبدأ بالعالم، والهاتف بالفروع
   const [marks, setMarks] = useState(null);
+  const [openBranch, setOpenBranch] = useState(null);
+  const [related, setRelated] = useState([]); // القواعد المرتبطة بالمختارة، لخطوط العلاقة في العالم
   useEffect(() => { if (data) setMarks(new Set(data.marked)); }, [data]);
   useEffect(() => { setSelected(initialTopic); }, [initialTopic]);
 
@@ -45,12 +48,14 @@ export default function GrammarMapScreen({ onBack, onLesson, onPractice, onJourn
   if (error) return shell(<ErrorState message={error.message} onRetry={reload} onBack={onBack} />);
 
   const ready = branches.flatMap((b) => b.groups.flatMap((g) => g.topics)).filter((t) => t.ready).length;
-  const panel = selected && <TopicPanel topicId={selected} hue={hueOfTopic(selected)} desktop={wide} onClose={close} onOpen={select} onLesson={onLesson} onPractice={onPractice} onMarked={(id, m) => setMarks((s) => { const n = new Set(s || []); if (m) n.add(id); else n.delete(id); return n; })} />;
+  const panel = selected && <TopicPanel topicId={selected} hue={hueOfTopic(selected)} desktop={wide} onClose={close} onOpen={select} onLesson={onLesson} onPractice={onPractice} onLoaded={(t) => setRelated(t.related.map((r) => r.id))} onMarked={(id, m) => setMarks((s) => { const n = new Set(s || []); if (m) n.add(id); else n.delete(id); return n; })} />;
   const body = view === "list"
     ? <GrammarList branches={branches} dimmed={dimmed} selected={selected} onSelect={select} />
-    : desktop && map
-      ? <MindMap data={map} dimmed={dimmed} selected={selected} onSelect={select} height={wide ? 720 : 560} />
-      : <MobileMap branches={branches} dimmed={dimmed} selected={selected} onSelect={select} />;
+    : view === "world"
+      ? <SceneMap branches={branches} dimmed={dimmed} selected={selected} related={related} onSelect={select} total={data.total} height={wide ? 760 : desktop ? 600 : 520} />
+      : view === "map" && map
+        ? <MindMap data={map} dimmed={dimmed} selected={selected} onSelect={select} height={wide ? 720 : 560} />
+        : <MobileMap branches={branches} dimmed={dimmed} selected={selected} onSelect={select} openBranch={openBranch} />;
   return shell(
     <>
       <MapToolbar band={band} onBand={setBand} onlyMarked={onlyMarked} onOnlyMarked={setOnlyMarked} view={view} onView={onView} onPick={select} count={data.total} />
@@ -60,7 +65,7 @@ export default function GrammarMapScreen({ onBack, onLesson, onPractice, onJourn
       </div>
       {!wide && panel}
       <div style={{ color: C.muted, fontSize: T.xs, lineHeight: 1.7, background: alpha(C.gold, 0.06), borderRadius: R.lg, padding: S.x2 }}>
-        {num(data.total)} قاعدة في ثمانية فروع{ready < data.total ? ` (${num(ready)} جاهزة الآن)` : ""}. اضغط أي قاعدة لترى صيغتها واستعمالها وأمثلتها وأخطاءها الشائعة، والقلب يحفظها في مفضلتك. {desktop ? "اسحب الخريطة وقرّبها بالعجلة." : "افتح الفرع لترى قواعده."}
+        {num(data.total)} قاعدة في ثمانية فروع{ready < data.total ? ` (${num(ready)} جاهزة الآن)` : ""}. اضغط أي قاعدة لترى صيغتها واستعمالها وأمثلتها وأخطاءها الشائعة، والقلب يحفظها في مفضلتك. {view === "world" ? "اسحب العالم وقرّبه بالعجلة أو بإصبعين، والقلعة في المركز." : desktop ? "اسحب الخريطة وقرّبها بالعجلة." : "افتح الفرع لترى قواعده."}
       </div>
     </>,
   );

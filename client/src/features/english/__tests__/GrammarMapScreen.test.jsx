@@ -50,9 +50,13 @@ describe("GrammarMapScreen", () => {
     vi.useRealTimers();
   });
 
-  it("should render the draggable mind map with a centre node on desktop", async () => {
+  it("should render the illustrated world by default on desktop, then the draggable mind map", async () => {
     desktop = true;
     render(<GrammarMapScreen onBack={() => {}} onLesson={() => {}} onPractice={() => {}} onJourney={() => {}} />);
+    expect(await screen.findByRole("application", { name: /عالم القواعد/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /جزيرة الأزمنة/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "خريطة مصغّرة" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "ذهنية" }));
     expect(await screen.findByRole("application", { name: /الخريطة الذهنية/ })).toBeInTheDocument();
     expect(screen.getByText("قواعد الإنجليزية")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "الأزمنة · 2 موضوعاً" })).toBeInTheDocument();

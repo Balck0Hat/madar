@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Search, Heart, Map, List, Mountain } from "lucide-react";
+import { Search, Heart, Map, List, Mountain, Globe } from "lucide-react";
 import { C, R, S, T, TAP, alpha, inputStyle } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { searchGrammar } from "../services/english.service";
 
 const BANDS = [["all", "الكل"], ["basics", "أساسي"], ["intermediate", "متوسط"], ["advanced", "متقدم"]];
-const VIEWS = [["map", "خريطة", Map], ["list", "قائمة", List], ["journey", "رحلة", Mountain]];
+const VIEWS = [["world", "عالم", Globe], ["branches", "فروع", Map], ["map", "ذهنية", Map], ["list", "قائمة", List], ["journey", "رحلة", Mountain]];
 
 // شريط الخريطة: بحث مع نتائج (بعد 300 ملّي ثانية)، تصفية بالمستوى، مفضلة، وطريقة العرض
 export default function MapToolbar({ band, onBand, onlyMarked, onOnlyMarked, view, onView, onPick, count }) {

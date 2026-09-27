@@ -16,12 +16,12 @@ const Section = ({ icon: Icon, title, hue, children }) => (
 );
 
 // لوح الموضوع: مسار التصفح، العنوان، تبويبات (نظرة عامة، الصيغة، الاستعمال، الأمثلة، الأخطاء)، مفضلة، وتدريب
-export default function TopicPanel({ topicId, hue, desktop, onClose, onOpen, onLesson, onPractice, onMarked }) {
+export default function TopicPanel({ topicId, hue, desktop, onClose, onOpen, onLesson, onPractice, onMarked, onLoaded }) {
   const box = useRef(null);
   const [tab, setTab] = useState("overview");
   const { data: t, loading, error, reload } = useAsync(() => getGrammarTopic(topicId), [topicId]);
   const [marked, setMarked] = useState(false);
-  useEffect(() => { if (t) setMarked(t.marked); setTab("overview"); }, [t]);
+  useEffect(() => { if (t) { setMarked(t.marked); onLoaded?.(t); } setTab("overview"); }, [t]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     box.current?.focus();
     const onKey = (e) => { if (e.key === "Escape") { e.preventDefault(); onClose(); } };
