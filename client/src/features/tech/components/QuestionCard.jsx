@@ -19,7 +19,7 @@ export default function QuestionCard({ item, index, open: forced, onToggle }) {
       </button>
       {open && (
         <div className="madar-rise" style={{ padding: `0 ${S.x3}px ${S.x3}px`, display: "grid", gap: S.md }}>
-          {item.hint && <div style={{ display: "flex", gap: S.md, alignItems: "flex-start", color: C.muted, fontSize: T.sm, lineHeight: 1.7 }}><Lightbulb size={14} aria-hidden="true" style={{ marginTop: 3, flexShrink: 0 }} />{item.hint}</div>}
+          {item.hint && <div style={{ display: "flex", gap: S.md, alignItems: "flex-start", color: C.muted, fontSize: T.sm, lineHeight: 1.7 }}><Lightbulb size={14} aria-hidden="true" style={{ marginTop: S.xs, flexShrink: 0 }} />{item.hint}</div>}
           <div style={{ lineHeight: 1.9, background: alpha(C.green, 0.08), borderInlineStart: `3px solid ${C.green}`, borderRadius: R.lg, padding: `${S.lg}px ${S.x2}px` }}>{item.a}</div>
         </div>
       )}

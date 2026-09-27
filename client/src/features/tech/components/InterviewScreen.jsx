@@ -68,7 +68,7 @@ export default function InterviewScreen({ branchId, onBack, onTopic }) {
             <h2 style={{ margin: 0, fontSize: T.lg, fontWeight: 700, color: hue }}>{g.title}</h2>
             {topics.map((t) => (
               <div key={t.id} style={{ display: "grid", gap: S.md }}>
-                <button type="button" onClick={() => onTopic(t.id)} style={{ background: "transparent", border: 0, padding: 0, color: C.text, fontFamily: "inherit", fontWeight: 700, fontSize: T.base, textAlign: "start", cursor: "pointer", minHeight: TAP - 12 }}>{t.title} <span className="madar-num" style={{ color: C.muted, fontWeight: 400, fontSize: T.xs }}>{num(t.questions.length)}</span></button>
+                <button type="button" onClick={() => onTopic(t.id)} style={{ background: "transparent", border: 0, padding: 0, color: C.text, fontFamily: "inherit", fontWeight: 700, fontSize: T.base, textAlign: "start", cursor: "pointer", minHeight: TAP }}>{t.title} <span className="madar-num" style={{ color: C.muted, fontWeight: 400, fontSize: T.xs }}>{num(t.questions.length)}</span></button>
                 {t.questions.map((q, i) => <QuestionCard key={i} item={q} index={i + 1} />)}
               </div>
             ))}
