@@ -31,7 +31,7 @@ beforeEach(() => { state = { session: null, history: [] }; vi.clearAllMocks(); }
 describe("PlacementScreen", () => {
   it("should walk from the intro through grammar, a reading passage with a gap question, and writing to the report", async () => {
     render(<PlacementScreen onBack={() => {}} onGo={() => {}} />);
-    fireEvent.click(await screen.findByRole("button", { name: "ابدأ" }));
+    fireEvent.click(await screen.findByRole("button", { name: "ابدأ الاختبار" }));
     expect(await screen.findByText("She ___ to school.")).toBeInTheDocument();
     expect(screen.getByRole("timer")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /goes/ }));
@@ -39,7 +39,7 @@ describe("PlacementScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "التالي" }));
     expect(await screen.findByText("A notice")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /nine/ }));
-    expect(await screen.findByText("في النصّ: at nine.")).toBeInTheDocument();
+    expect(await screen.findByText((_, el) => el?.getAttribute("role") === "status" && el.textContent === "في النصّ: at nine.")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "السؤال التالي" }));
     expect(await screen.findByText("The pool opens at ___.")).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("إجابة الفراغ"), { target: { value: "Nine" } });

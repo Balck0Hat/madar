@@ -8,6 +8,7 @@ import { useDebounced } from "../hooks/useDebounced";
 import { readRecent, pushRecent, clearRecent } from "../utils/recent";
 import SearchInput from "./SearchInput";
 import RecentSearches from "./RecentSearches";
+import SearchSuggestions from "./SearchSuggestions";
 import ResultCard from "./ResultCard";
 
 const MIN = 2; // حرفان على الأقل: أقل من ذلك يعيد كل شيء تقريباً
@@ -45,8 +46,9 @@ export default function SearchScreen({ onBack, onOpenUnit }) {
         />
 
         {showRecent && <RecentSearches items={recent} onPick={pick} onClear={() => setRecent(clearRecent())} />}
+        {!text.trim() && !recent.length && <SearchSuggestions onPick={pick} />}
 
-        {!enabled && !showRecent && (
+        {!enabled && !showRecent && recent.length > 0 && (
           <div style={{ color: C.muted, fontSize: T.base, textAlign: "center", padding: `${S.x6}px ${S.lg}px`, lineHeight: 1.8 }}>
             اكتب حرفين على الأقل للبحث في عناوين الوحدات وخلاصاتها.
           </div>

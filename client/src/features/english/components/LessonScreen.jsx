@@ -3,7 +3,7 @@ import { BookOpen } from "lucide-react";
 import { C, R, S, T, alpha } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { useNum } from "../../../shared/context/PrefsContext";
-import { TopBar, Skeleton, ErrorState, Btn } from "../../../shared/components/ui";
+import { TopBar, Skeleton, ErrorState, Btn, Bidi } from "../../../shared/components/ui";
 import { getLesson, startLesson, answerPractice } from "../services/english.service";
 import PracticeRunner from "./PracticeRunner";
 
@@ -43,13 +43,13 @@ export default function LessonScreen({ tag, onBack }) {
       <div style={{ display: "flex", alignItems: "center", gap: S.md, color: C.muted, fontSize: T.xs }}><BookOpen size={14} aria-hidden="true" />المستوى {lesson.level} · نحو {num(lesson.minutes)} دقيقة</div>
       {lesson.explain.map((sec, i) => (
         <section key={i} style={{ background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: S.x3, display: "grid", gap: S.lg }}>
-          <h2 style={{ margin: 0, fontSize: T.x2, fontWeight: 700 }}>{sec.h}</h2>
-          <p style={{ margin: 0, lineHeight: 1.9 }}>{sec.p}</p>
+          <h2 style={{ margin: 0, fontSize: T.x2, fontWeight: 700 }}><Bidi>{sec.h}</Bidi></h2>
+          <p style={{ margin: 0, lineHeight: 1.9 }}><Bidi>{sec.p}</Bidi></p>
           <div style={{ display: "grid", gap: S.md }}>
             {sec.ex.map((e, j) => (
               <div key={j} style={{ borderInlineStart: `3px solid ${alpha(C.gold, 0.6)}`, paddingInlineStart: S.x2 }}>
                 <div dir="ltr" style={{ textAlign: "left", fontFamily: "Georgia, serif", fontSize: T.lg }}>{e.en}</div>
-                <div style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.7 }}>{e.ar}</div>
+                <div style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.7 }}><Bidi>{e.ar}</Bidi></div>
               </div>
             ))}
           </div>

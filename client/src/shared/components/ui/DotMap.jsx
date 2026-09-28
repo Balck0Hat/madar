@@ -1,4 +1,5 @@
-import { C, P, R, S, alpha } from "../../constants/theme";
+import { useEffect, useRef, useState } from "react";
+import { C, P, R, S, T, TAP, alpha } from "../../constants/theme";
 
 // خريطة نقاط على صورة ثابتة بإسقاط مستطيل بسيط: الموضع يُحسب خطياً من خط
 // الطول والعرض. ثلاث خرائط مقصوصة من الأصل نفسه، وتُختار أضيق واحدة تتسع
@@ -24,16 +25,32 @@ export default function DotMap({ points = [], onOpen, label = "خريطة", tint
   const map = pickMap(valid);
   const pos = (p) => ({ left: `${((p.lon - map.lonMin) / (map.lonMax - map.lonMin)) * 100}%`, top: `${((map.latMax - p.lat) / (map.latMax - map.latMin)) * 100}%` });
   const ordered = [...valid].sort((a, b) => Number(Boolean(a.active)) - Number(Boolean(b.active))); // النشطة فوق
+  const box = useRef(null);
+  const [pick, setPick] = useState(null); // { x, y, items } حين تقع اللمسة على عدة نقاط متقاربة
+  useEffect(() => {
+    if (!pick) return undefined;
+    const off = (e) => { if (!box.current?.contains(e.target)) setPick(null); };
+    const key = (e) => { if (e.key === "Escape") { e.stopPropagation(); setPick(null); } };
+    document.addEventListener("pointerdown", off); document.addEventListener("keydown", key, true);
+    return () => { document.removeEventListener("pointerdown", off); document.removeEventListener("keydown", key, true); };
+  }, [pick]);
+  // النقطة في بكسلات الإطار، لمعرفة النقاط القريبة من اللمسة
+  const px = (p) => { const r = box.current.getBoundingClientRect(); return { x: ((p.lon - map.lonMin) / (map.lonMax - map.lonMin)) * r.width, y: ((map.latMax - p.lat) / (map.latMax - map.latMin)) * r.height }; };
+  const tap = (p) => {
+    if (p.active || !onOpen) return;
+    const a = px(p); const near = valid.filter((q) => !q.active && Math.hypot(px(q).x - a.x, px(q).y - a.y) < TAP * 0.6);
+    if (near.length > 1) setPick({ ...a, items: near }); else onOpen(p.id);
+  };
 
   return (
-    <div role="group" aria-label={label}
+    <div ref={box} role="group" aria-label={label}
       style={{ position: "relative", background: alpha(tint, 0.06), border: `1px solid ${K.line}`, borderRadius: R.x2, overflow: "hidden", aspectRatio: `${map.w} / ${map.h}` }}>
       <img src={map.src} alt="" width={map.w} height={map.h} loading="lazy" decoding="async" style={{ display: "block", width: "100%", height: "100%", opacity: 0.8 }} />
       {ordered.map((p) => {
         const size = p.active ? 12 : 9;
         return (
-          <button key={p.id} type="button" title={p.label} aria-label={p.active ? p.label : `افتح ${p.label}`} onClick={() => !p.active && onOpen?.(p.id)}
-            style={{ position: "absolute", ...pos(p), width: 24, height: 24, marginLeft: -12, marginTop: -12, padding: 0, border: 0, background: "transparent", display: "grid", placeItems: "center", cursor: onOpen && !p.active ? "pointer" : "default" }}>
+          <button key={p.id} type="button" title={p.label} aria-label={p.active ? p.label : `افتح ${p.label}`} onClick={() => tap(p)}
+            style={{ position: "absolute", ...pos(p), width: TAP, height: TAP, marginLeft: -TAP / 2, marginTop: -TAP / 2, padding: 0, border: 0, background: "transparent", display: "grid", placeItems: "center", cursor: onOpen && !p.active ? "pointer" : "default" }}>
             <span aria-hidden="true" style={{ display: "block", width: size, height: size, borderRadius: R.pill, background: p.color || K.muted, opacity: p.active ? 1 : 0.85, boxShadow: p.active ? `0 0 0 4px ${alpha(p.color || tint, 0.3)}` : `0 0 0 2px ${alpha(K.bg, 0.85)}` }} />
           </button>
         );
@@ -41,6 +58,15 @@ export default function DotMap({ points = [], onOpen, label = "خريطة", tint
       {ordered.filter((p) => p.active && p.label).map((p) => (
         <span key={`l-${p.id}`} style={{ position: "absolute", ...pos(p), transform: "translate(-50%, 10px)", fontSize: ".72em", fontWeight: 700, color: K.ink, background: alpha(K.bg, 0.88), borderRadius: R.sm, padding: `${S.xs}px ${S.md}px`, whiteSpace: "nowrap", pointerEvents: "none" }}>{p.label}</span>
       ))}
+      {pick && (
+        <div role="menu" aria-label="اختر" style={{ position: "absolute", left: Math.min(Math.max(pick.x, 90), (box.current?.clientWidth || 200) - 90), top: pick.y, transform: "translate(-50%, 12px)", zIndex: 5, background: K.bg, border: `1px solid ${K.line}`, borderRadius: R.lg, boxShadow: "var(--shadow-3)", padding: S.xs, display: "grid", minWidth: 160 }}>
+          {pick.items.map((q) => (
+            <button key={q.id} type="button" role="menuitem" onClick={() => { setPick(null); onOpen(q.id); }} style={{ minHeight: TAP, display: "flex", alignItems: "center", gap: S.lg, padding: `0 ${S.x2}px`, border: 0, borderRadius: R.md, background: "transparent", color: K.ink, fontFamily: "inherit", fontSize: T.base, textAlign: "start", cursor: "pointer" }}>
+              <span aria-hidden="true" style={{ width: S.lg, height: S.lg, borderRadius: R.pill, background: q.color || K.muted, flexShrink: 0 }} />{q.label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import OrbitMark from "./OrbitMark";
 // والإحصاءات تُفتح من صفحة «أنا» على الهاتف كي لا يزدحم الشريط.
 export const NAV = [
   { k: paths.home, label: "الخريطة", Icon: MapIcon, mobile: true },
+  { k: "/english", label: "الإنجليزية", Icon: Languages, mobile: true },
   { k: paths.search, label: "بحث", Icon: Search, mobile: true },
   { k: paths.league, label: "الترتيب", Icon: Trophy, mobile: true },
   { k: paths.friends, label: "الأصدقاء", Icon: Users, mobile: true },
@@ -15,12 +16,12 @@ export const NAV = [
   { k: "/politics", label: "السياسة", Icon: Scale },
   { k: "/quran", label: "حفظ القرآن", Icon: BookOpenText },
   { k: "/books", label: "الكتب", Icon: BookMarked },
-  { k: "/english", label: "الإنجليزية", Icon: Languages },
   { k: "/tech", label: "التقنية", Icon: Cpu },
   { k: paths.stats, label: "إحصاءاتي", Icon: BarChart3 },
 ];
 
 const MOBILE = NAV.filter((n) => n.mobile);
+const isOn = (path, k) => path === k || (k !== "/" && path.startsWith(`${k}/`)); // القسم نشط في صفحاته الفرعية أيضاً
 
 // شريط سفلي للهاتف
 export function TabBar({ path, onGo }) {
@@ -29,8 +30,8 @@ export function TabBar({ path, onGo }) {
       // الشريط مثبَّت في القاع وviewport-fit=cover يمدّ الصفحة تحت خطّ الإيماءة
       paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
       {MOBILE.map(({ k, label, Icon }) => (
-        <button key={k} type="button" onClick={() => onGo(k)} aria-current={path === k ? "page" : undefined} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", padding: `${S.lg}px ${S.xs}px ${S.x2}px`, color: path === k ? C.gold : C.muted, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: S.xs, minHeight: TAP, fontFamily: FONT, fontSize: T.xs, fontWeight: path === k ? 700 : 500 }}>
-          <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 44, height: 26, borderRadius: R.pill, background: path === k ? C.goldSoft : "transparent", transition: "background .15s" }}><Icon size={20} /></span>
+        <button key={k} type="button" onClick={() => onGo(k)} aria-current={isOn(path, k) ? "page" : undefined} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", padding: `${S.lg}px ${S.xs}px ${S.x2}px`, color: isOn(path, k) ? C.gold : C.muted, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: S.xs, minHeight: TAP, fontFamily: FONT, fontSize: T.xs, fontWeight: isOn(path, k) ? 700 : 500 }}>
+          <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 44, height: 26, borderRadius: R.pill, background: isOn(path, k) ? C.goldSoft : "transparent", transition: "background .15s" }}><Icon size={20} /></span>
           <span style={{ whiteSpace: "nowrap" }}>{label}</span>
         </button>
       ))}
@@ -40,7 +41,7 @@ export function TabBar({ path, onGo }) {
 
 // شريط جانبي للشاشات الكبيرة
 export function SideNav({ path, onGo, name }) {
-  const on = (k) => path === k || (k !== "/" && path.startsWith(`${k}/`)); // القسم نشط في صفحاته الفرعية أيضاً
+  const on = (k) => isOn(path, k);
   return (
     <nav aria-label="التنقل الرئيسي" className="madar-side">
       <div style={{ display: "flex", alignItems: "center", gap: S.xl, padding: `0 ${S.lg}px ${S.x3}px` }}>

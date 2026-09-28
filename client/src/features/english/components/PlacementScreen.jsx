@@ -8,6 +8,7 @@ import Choice from "./Choice";
 import PartRunner from "./PartRunner";
 import WritingPart from "./WritingPart";
 import ResultView from "./ResultView";
+import PlacementIntro from "./PlacementIntro";
 import StageTimer from "./StageTimer";
 
 const STAGES = ["grammar", "reading", "listening", "writing", "done"];
@@ -61,14 +62,7 @@ export default function PlacementScreen({ onBack, onGo }) {
   if (loading) return shell(<Skeleton lines={6} />);
   if (error) return shell(<ErrorState message={error.message} onRetry={reload} onBack={onBack} />);
 
-  if (!session) return shell(
-    <div style={{ display: "grid", gap: S.x3 }}>
-      <h1 style={{ fontSize: T.x4, fontWeight: 700, margin: 0 }}>اختبار تحديد المستوى</h1>
-      <p style={{ color: C.muted, lineHeight: 1.8, margin: 0 }}>نحو 30 دقيقة، أربعة أجزاء بمؤقّت: 12 إلى 24 سؤال قواعد ومفردات تتكيّف مع إجاباتك وتتوقف حين يستقر مستواك، ثم مقطعا قراءة بأسئلة الآيلتس، ثم مقطعا استماع بأصوات بريطانية وأمريكية، ثم كتابة قصيرة اختيارية يصحّحها نموذج لغوي على الخادم. النتيجة: مستواك ومدى الثقة فيه، ما يقابله في الآيلتس والتوفل، نقاط ضعفك بالموضوع، وخطة أسبوعين.</p>
-      <Btn primary onClick={start} disabled={busy}>ابدأ</Btn>
-      {data?.history?.length > 0 && <div style={{ color: C.muted, fontSize: T.sm }}>آخر نتيجة: {data.history[0].result?.level || "—"} في {num(new Date(data.history[0].finishedAt).toLocaleDateString("ar"))}</div>}
-    </div>,
-  );
+  if (!session) return shell(<PlacementIntro onStart={start} busy={busy} last={data?.history?.[0]} />);
 
   if (session.stage === "grammar" && session.item) return shell(
     <div style={{ display: "grid", gap: S.x3 }}>

@@ -74,7 +74,7 @@ function Node({ n, num, dim, selected, onPick }) {
       {mastered && <Check size={12} color={C.green} strokeWidth={3} aria-hidden="true" />}
       {n.marked && <Heart size={12} color={C.red} fill={C.red} aria-hidden="true" />}
       <span dir="ltr">{n.en || n.title}</span>
-      {n.level && <span className="madar-num" style={{ fontSize: 10, color: C.muted }}>{n.level}</span>}
+      {n.level && <span className="madar-num" style={{ fontSize: T.xs, color: C.muted }}>{n.level}</span>}
     </button>
   );
 }

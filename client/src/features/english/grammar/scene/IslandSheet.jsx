@@ -38,7 +38,7 @@ export default function IslandSheet({ island, dimmed, selected, onSelect, onClos
                   {t.mastery !== null && t.mastery >= 75 && <Check size={12} color={C.green} strokeWidth={3} aria-hidden="true" />}
                   {t.marked && <Heart size={12} color={C.red} fill={C.red} aria-hidden="true" />}
                   <span style={{ flex: 1, minWidth: 0, display: "grid" }}><span dir="ltr" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textAlign: "end" }}>{t.en || t.title}</span>{t.en && <span style={{ color: C.muted, fontSize: T.xs, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.title}</span>}</span>
-                  {t.level && <span className="madar-num" style={{ fontSize: 10, color: C.muted, flexShrink: 0 }}>{t.level}</span>}
+                  {t.level && <span className="madar-num" style={{ fontSize: T.xs, color: C.muted, flexShrink: 0 }}>{t.level}</span>}
                 </button>
               ))}
             </div>

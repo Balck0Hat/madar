@@ -10,7 +10,7 @@ export default function Sector({ d, di, r, progress, locked, recommended, highli
   const isHi = highlight && highlight.di === di && highlight.r === r;
   const ghost = !locked && frac === 0;
   const path = sectorPath(di, r);
-  const base = locked ? 0.07 : 0.12 + 0.78 * frac;
+  const base = locked ? 0.14 : 0.24 + 0.7 * frac; // أوضح في الوضع الفاتح: كانت العجلة شبه بيضاء
   return (
     <g>
       {/* التحويم/التركيز يرفع العتامة قليلاً فقط: إشارة كافية بلا تغيير هوية اللون */}

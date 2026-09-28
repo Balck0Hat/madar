@@ -86,12 +86,12 @@ export default function WheelBody({ progress, level, recommended, onSelect, onSe
         <circle cx="180" cy="180" r="40" fill={p.surface} stroke={p.gold} strokeOpacity="0.5" strokeWidth="1" />
         <circle cx="180" cy="180" r="40" fill="none" stroke={p.gold} strokeWidth="3" strokeDasharray={`${2 * Math.PI * 40 * centerFrac} ${2 * Math.PI * 40}`} transform="rotate(-90 180 180)" strokeLinecap="round" />
         <text x="180" y="176" textAnchor="middle" fill={p.gold} fontFamily={MONO} fontSize="26" fontWeight="700">{num(level)}</text>
-        <text x="180" y="194" textAnchor="middle" fill={p.muted} fontFamily={FONT} fontSize="10">المستوى</text>
+        <text x="180" y="194" textAnchor="middle" fill={p.muted} fontFamily={FONT} fontSize="12">المستوى</text>
       </g>
       {!compact && DOMAINS.map((d, di) => {
         const [x, y] = polar(180, di * 36 + 18);
         const active = recommended && recommended.startsWith(d.id + "-");
-        return <text key={d.id} x={x} y={y + 4} textAnchor="middle" fill={active ? p.gold : p.muted} fontFamily={FONT} fontSize="11.5" fontWeight={active ? 700 : 400}>{d.name}</text>;
+        return <text key={d.id} x={x} y={y + 4} textAnchor="middle" fill={active ? p.gold : p.muted} fontFamily={FONT} fontSize="13" fontWeight={active ? 700 : 400}>{d.name}</text>;
       })}
       {nav.props ? <g {...nav.props}>{hits}</g> : hits}
       <FocusRing cue={nav.cue} units={units} p={p} />

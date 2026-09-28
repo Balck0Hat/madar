@@ -60,7 +60,7 @@ export const TAP = 44;
 
 // نقاط الانكسار مسمّاة بدورها في التخطيط لا بأرقامها
 // colMax: عرض عمود القائمة على سطح المكتب — بدونه يتمدّد الصفّ إلى 888px
-export const BP = { phone: 430, desk: 900, narrowDesk: 1180, focusMax: 820, appMax: 1120, colMax: 680 };
+export const BP = { phone: 430, desk: 900, narrowDesk: 1340, focusMax: 820, appMax: 1280, colMax: 840 };
 
 // خط الواجهة، وخط قراءة للدرس، وخط أرقام
 export const FONT = '"Readex Pro","Noto Sans Arabic","SF Arabic","Segoe UI",Tahoma,sans-serif';

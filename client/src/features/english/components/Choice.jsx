@@ -1,4 +1,5 @@
 import { Check, X } from "lucide-react";
+import { Bidi } from "../../../shared/components/ui";
 import { C, R, S, T, TAP, alpha } from "../../../shared/constants/theme";
 import { vibrate } from "../../../shared/utils/text";
 
@@ -21,7 +22,7 @@ export default function Choice({ q, opts, picked, answer, onPick, why, compact =
           );
         })}
       </div>
-      {done && why && <div role="status" style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.8, borderInlineStart: `3px solid ${alpha(C.gold, 0.6)}`, paddingInlineStart: S.x2 }}>{why}</div>}
+      {done && why && <div role="status" style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.8, borderInlineStart: `3px solid ${alpha(C.gold, 0.6)}`, paddingInlineStart: S.x2 }}><Bidi>{why}</Bidi></div>}
     </div>
   );
 }

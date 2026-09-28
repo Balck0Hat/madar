@@ -1,5 +1,5 @@
 import { Sun, Moon, Monitor, Type, Waves } from "lucide-react";
-import { C, MONO, alpha, T, R, S } from "../../../shared/constants/theme";
+import { C, MONO, alpha, T, R, S, TAP } from "../../../shared/constants/theme";
 import { useNum } from "../../../shared/context/NumContext";
 import { Card } from "../../../shared/components/ui";
 
@@ -10,7 +10,8 @@ const seg = (active) => ({
   background: active ? C.gold : "transparent",
   color: active ? "var(--bg)" : C.muted,
   border: "none", borderRadius: R.pill, padding: `${S.md}px ${S.x2}px`, cursor: "pointer",
-  fontWeight: 700, fontSize: T.base, display: "flex", alignItems: "center", gap: S.md,
+  fontWeight: 700, fontSize: T.base, display: "flex", alignItems: "center", justifyContent: "center", gap: S.md,
+  minHeight: TAP, minWidth: TAP,
 });
 const group = { display: "flex", background: C.surface2, borderRadius: R.pill, padding: S.xs, border: `1px solid ${C.line}`, gap: S.xs };
 

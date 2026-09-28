@@ -28,7 +28,7 @@ export default function TitlesTab({ families = [] }) {
         <input aria-label="ابحث عن لقب" value={q} onChange={(e) => setQ(e.target.value)} placeholder="لقب، أو كلمته الأصلية، أو من حمله"
           style={{ ...inputStyle, background: "transparent", border: 0, padding: 0, height: "100%" }} />
       </div>
-      <div style={{ display: "flex", gap: S.md, overflowX: "auto", paddingBottom: S.xs }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: S.md }}>
         <Chip on={!family} onClick={() => setFamily("")}>كل العائلات</Chip>
         {families.map((f) => <Chip key={f.familyId} on={family === f.familyId} count={f.titles.length} onClick={() => setFamily(family === f.familyId ? "" : f.familyId)}>{f.family}</Chip>)}
       </div>

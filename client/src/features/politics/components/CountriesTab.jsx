@@ -36,7 +36,7 @@ export default function CountriesTab({ countries, systems, colors, system, onSys
         <input aria-label="ابحث عن دولة" value={q} onChange={(e) => setQ(e.target.value)} placeholder="دولة، أو عاصمة، أو اسم حاكم"
           style={{ ...inputStyle, background: "transparent", border: 0, padding: 0, height: "100%" }} />
       </div>
-      <div style={{ display: "flex", gap: S.md, overflowX: "auto", paddingBottom: S.xs }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: S.md }}>
         <Chip on={!system} onClick={() => onSystem("")}>كل الأنواع</Chip>
         {systems.filter((s) => s.ours > 0).map((s) => <Chip key={s.name} on={system === s.name} color={s.color} count={s.ours} onClick={() => onSystem(system === s.name ? "" : s.name)}>{s.name}</Chip>)}
       </div>

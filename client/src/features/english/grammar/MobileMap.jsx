@@ -36,7 +36,7 @@ export default function MobileMap({ branches, dimmed, selected, onSelect, openBr
                           style={{ display: "inline-flex", alignItems: "center", gap: S.sm, minHeight: TAP, padding: `0 ${S.x2}px`, borderRadius: R.pill, border: `1.5px solid ${selected === t.id ? C.gold : alpha(hue, 0.6)}`, background: selected === t.id ? alpha(C.gold, 0.2) : C.surface2, color: C.text, fontFamily: "inherit", fontSize: T.sm, cursor: "pointer", opacity: dimmed(t) ? 0.35 : 1 }}>
                           {t.mastery !== null && t.mastery >= 75 && <Check size={12} color={C.green} strokeWidth={3} aria-hidden="true" />}
                           {t.marked && <Heart size={12} color={C.red} fill={C.red} aria-hidden="true" />}
-                          <span style={{ display: "grid", textAlign: "start" }}><span dir="ltr" style={{ textAlign: "end" }}>{t.en || t.title}</span>{t.en && <span style={{ fontSize: T.xs, color: C.muted, fontWeight: 400 }}>{t.title}</span>}</span>{t.level && <span className="madar-num" style={{ fontSize: 10, color: C.muted }}>{t.level}</span>}
+                          <span style={{ display: "grid", textAlign: "start" }}><span dir="ltr" style={{ textAlign: "end" }}>{t.en || t.title}</span>{t.en && <span style={{ fontSize: T.xs, color: C.muted, fontWeight: 400 }}>{t.title}</span>}</span>{t.level && <span className="madar-num" style={{ fontSize: T.xs, color: C.muted }}>{t.level}</span>}
                         </button>
                       ))}
                     </div>

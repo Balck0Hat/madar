@@ -73,7 +73,7 @@ html { -webkit-text-size-adjust: 100%; }
   /* قائمة بطاقات على عرض 888px تصير أشرطة رفيعة فارغة الوسط. عمود القراءة
      يبقى بعرض معقول، وهو ما يفصل تطبيقاً مصمَّماً عن تطبيق هاتف مكبَّر. */
   .madar-col{max-width:${BP.colMax}px;margin-inline:auto}
-  .madar-side{display:flex;position:fixed;inset-block:0;inset-inline-start:calc(50% - 560px);width:216px;flex-direction:column;gap:6px;padding:22px 14px;border-inline-end:1px solid var(--line);background:var(--surface)}
+  .madar-side{display:flex;position:fixed;inset-block:0;inset-inline-start:calc(50% - ${BP.appMax / 2}px);width:216px;flex-direction:column;gap:6px;padding:22px 14px;border-inline-end:1px solid var(--line);background:var(--surface)}
   .madar-wide{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:22px;align-items:start;padding:0 16px}
   .madar-wide > *{min-width:0}
   .madar-hide-lg{display:none !important}

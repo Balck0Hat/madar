@@ -49,12 +49,12 @@ export default function FiguresScreen({ onBack, onOpen }) {
             style={{ ...inputStyle, background: "transparent", border: 0, padding: 0, height: "100%" }} />
         </div>
         {eras.size > 1 && (
-          <div style={{ display: "flex", gap: S.md, overflowX: "auto", paddingBottom: S.xs }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: S.md }}>
             <Chip on={!era} onClick={() => setEra("")}>كل العصور</Chip>
             {ERAS.filter((e) => eras.has(e)).map((e) => <Chip key={e} on={era === e} count={eras.get(e)} onClick={() => setEra(era === e ? "" : e)}>{e}</Chip>)}
           </div>
         )}
-        <div style={{ display: "flex", gap: S.md, overflowX: "auto", paddingBottom: S.xs }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: S.md }}>
           <Chip on={!category} onClick={() => setCategory("")}>كل المجالات</Chip>
           {CATEGORIES.filter((c) => cats.has(c)).map((c) => <Chip key={c} on={category === c} color={colorOf(c)} count={cats.get(c)} onClick={() => setCategory(category === c ? "" : c)}>{c}</Chip>)}
         </div>

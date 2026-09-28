@@ -40,7 +40,7 @@ export default function NetworkLab({ onBack }) {
     <div className="madar-in madar-col" style={{ paddingBottom: S.x8 }}>
       <TopBar title="ابنِ شبكتك" onBack={onBack} />
       <div style={{ padding: `0 ${S.x4}px`, display: "grid", gap: S.x3 }}>
-        <div style={{ display: "flex", gap: S.sm, overflowX: "auto", paddingBottom: S.xs }} role="tablist" aria-label="السيناريو">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: S.sm }} role="tablist" aria-label="السيناريو">
           {SCENARIOS.map((s) => <button key={s.id} type="button" role="tab" aria-selected={scenarioId === s.id} onClick={() => load(s.id)} style={chip(scenarioId === s.id)}>{s.title}</button>)}
           <button type="button" role="tab" aria-selected={scenarioId === "free"} onClick={() => load("free")} style={chip(scenarioId === "free")}>لوحة حرة</button>
         </div>

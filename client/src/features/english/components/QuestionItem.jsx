@@ -1,4 +1,5 @@
 import { Check, X } from "lucide-react";
+import { Bidi } from "../../../shared/components/ui";
 import { C, R, S, T, TAP, alpha, inputStyle } from "../../../shared/constants/theme";
 import MultiSelect from "./MultiSelect";
 
@@ -16,7 +17,7 @@ export default function QuestionItem({ n, q, value, onChange, result }) {
       <span>{q.q}</span>
     </div>
   );
-  const why = done && result.why && <div style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.8, borderInlineStart: `3px solid ${alpha(C.gold, 0.6)}`, paddingInlineStart: S.x2 }}>{result.why}</div>;
+  const why = done && result.why && <div style={{ color: C.muted, fontSize: T.sm, lineHeight: 1.8, borderInlineStart: `3px solid ${alpha(C.gold, 0.6)}`, paddingInlineStart: S.x2 }}><Bidi>{result.why}</Bidi></div>;
 
   if (type === "gap") return (
     <div style={{ display: "grid", gap: S.md }}>
