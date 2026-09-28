@@ -18,12 +18,13 @@ export default function NodeSheet({ node, boss, tone, desktop, onClose, onLesson
   }, [onClose, node?.tag, boss?.id]);
   const locked = node ? node.status === "locked" : boss?.boss.status === "locked";
   const title = node ? node.title : `زعيم ${boss.title}`;
+  const en = node ? node.en : boss.en ? `${boss.en} Boss` : "";
   const panel = (
     <div ref={box} tabIndex={-1} role="dialog" aria-modal={!desktop} aria-label={title} className="madar-rise"
       style={{ background: C.surface, color: C.text, borderRadius: desktop ? R.x3 : `${R.x3}px ${R.x3}px 0 0`, padding: S.x4, display: "grid", gap: S.x3, boxShadow: "var(--shadow-3)", outline: "none", borderInlineStart: `4px solid ${tone}`, width: "100%", maxWidth: desktop ? 360 : 520 }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: S.lg }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 700, fontSize: T.x2 }}>{title}</div>
+          {en && <div dir="ltr" style={{ fontWeight: 700, fontSize: T.x2, textAlign: "end" }}>{en}</div>}<div style={en ? { color: C.muted, fontSize: T.base } : { fontWeight: 700, fontSize: T.x2 }}>{title}</div>
           <div style={{ color: C.muted, fontSize: T.sm, marginTop: S.xs }}>
             {node ? <>{node.level ? `المستوى ${node.level} · ` : ""}{node.minutes ? `${num(node.minutes)} دقيقة · ` : ""}{node.pct !== null ? `أفضل نتيجة ${num(node.pct)}٪` : "لم تُجرَّب بعد"}{node.status === "mastered" ? " · متقن" : ""}</> : `${num(boss.nodes.length)} مواضيع · 15 سؤالاً · النجاح 70٪${boss.boss.pct !== null ? ` · أفضل نتيجة ${num(boss.boss.pct)}٪` : ""}`}
           </div>
@@ -32,7 +33,7 @@ export default function NodeSheet({ node, boss, tone, desktop, onClose, onLesson
       </div>
       {locked && (
         <div role="status" style={{ display: "flex", alignItems: "center", gap: S.md, color: C.muted, fontSize: T.sm, background: alpha(C.text, 0.05), borderRadius: R.lg, padding: `${S.md}px ${S.x2}px`, lineHeight: 1.6 }}>
-          <Lock size={14} aria-hidden="true" />{node ? (node.prereqs.length ? `أتقن أولاً: ${node.prereqs.map((p) => node.prereqTitles?.[p] || p).join("، ")}` : "اجتز زعيم الجزيرة السابقة أولاً") : "أتقن كل مواضيع الجزيرة (75٪ فأكثر) ليظهر الزعيم"}
+          <Lock size={14} aria-hidden="true" />{node ? (node.prereqs.length ? `أتقن أولاً: ${node.prereqs.map((p) => node.prereqTitles?.[p] || p).join("، ")}` : "اجتز زعيم المحطة السابقة أولاً") : "أتقن كل دروس المحطة (75٪ فأكثر) ليظهر الزعيم"}
         </div>
       )}
       {node?.topics?.length > 0 && (

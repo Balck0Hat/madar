@@ -41,6 +41,7 @@ export default function EnglishScreen({ onBack, onPlacement, onTrack, onWeak, on
               </div>
             )}
             <div style={{ fontWeight: 700, fontSize: T.sm, color: C.muted, marginTop: S.md }}>المسارات</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: S.x3 }}>
             {tr?.tracks.map((t) => {
               const count = t.lessons ? `${num(t.lessons.length)} درساً` : `${num(t.modules.length)} وحدات · ${num(t.writing.length)} مهام كتابة`;
               return (
@@ -54,6 +55,7 @@ export default function EnglishScreen({ onBack, onPlacement, onTrack, onWeak, on
                 </Card>
               );
             })}
+            </div>
             {isAdmin && (
               <button type="button" onClick={onAdmin} className="madar-press" style={{ display: "flex", alignItems: "center", gap: S.md, background: "transparent", border: `1px dashed ${C.line}`, borderRadius: R.xl, padding: S.x2, color: C.muted, fontFamily: "inherit", fontSize: T.sm, cursor: "pointer", marginTop: S.md }}>
                 <SlidersHorizontal size={16} aria-hidden="true" />لوحة معايرة بنك الأسئلة (مشرف)

@@ -56,16 +56,16 @@ export async function getWorld(userId) {
 // امتحان الزعيم: 15 سؤالاً من مواضيع الجزيرة (البنك والدروس)، يُفضَّل ما لم يُرَ
 export async function startBoss(userId, islandId) {
   const isl = islandById(islandId);
-  if (!isl) throw notFound("الجزيرة غير موجودة", "ISLAND_NOT_FOUND");
+  if (!isl) throw notFound("المحطة غير موجودة", "ISLAND_NOT_FOUND");
   const { mastery, boss } = await masteryOf(userId);
   const state = computeWorld(mastery, boss).islands.find((i) => i.id === islandId);
-  if (state.boss.status === "locked") throw new AppError("أتقن كل مواضيع الجزيرة أولاً", 400, "BOSS_LOCKED");
+  if (state.boss.status === "locked") throw new AppError(state.open ? "أتقن كل دروس المحطة (75٪ فأكثر) ليظهر زعيمها." : "هذه المحطة مقفلة بعد: اجتز زعيم المحطة السابقة أولاً.", 400, "BOSS_LOCKED");
   const pool = [...PLACEMENT.grammar, ...isl.nodes.flatMap((t) => (lessonByTag(t)?.qs || []).map((q, i) => ({ ...q, id: `lesson:${t}#${i}`, tag: t })))];
   const seen = new Set((await Practice.find({ user: userId, kind: { $in: ["weak", "boss"] } }).select("itemIds").lean()).flatMap((a) => a.itemIds));
   const items = pickBossItems(pool, isl.nodes, BOSS_ITEMS, seen);
   await Practice.updateMany({ user: userId, kind: "boss", refId: islandId, finishedAt: null }, { $set: { finishedAt: new Date() } });
   const a = await Practice.create({ user: userId, kind: "boss", track: "general", refId: islandId, itemIds: items.map((i) => i.id) });
-  return { attempt: attemptView(a), items: items.map((i) => ({ ...stripQuestion(i), id: i.id })), label: `زعيم ${isl.title}` };
+  return { attempt: attemptView(a), items: items.map((i) => ({ ...stripQuestion(i), id: i.id })), label: `زعيم ${isl.title}`, en: `${isl.en} Boss`, stage: { id: isl.id, title: isl.title, en: isl.en } };
 }
 
 export const islands = () => ISLANDS;

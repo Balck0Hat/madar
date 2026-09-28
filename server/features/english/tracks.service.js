@@ -1,7 +1,8 @@
+import { islandOfTag, ISLANDS } from "../../shared/data/english/tracks/world.js";
 import Practice from "./practice.model.js";
 import Placement from "./placement.model.js";
 import { TRACKS, MODULES, WRITING, LESSONS, moduleById } from "../../shared/data/english/tracks/index.js";
-import { TAGS } from "../../shared/data/english/tags.js";
+import { TAGS, TAG_EN } from "../../shared/data/english/tags.js";
 import { notFound, AppError } from "../../shared/utils/AppError.js";
 import { stripQuestion, gradeSection, scoreModule } from "./tracks.logic.js";
 
@@ -26,7 +27,7 @@ export async function overview(userId) {
     const last = by("writing", w.id).find((a) => a.writing?.status === "done");
     return { id: w.id, title: w.title, task: w.task, minutes: w.minutes, words: w.words, attempts: by("writing", w.id).length, last: last ? { band: last.writing.band, at: last.finishedAt } : null };
   });
-  const lessons = LESSONS.map((l) => { const best = bestOf(by("lesson", l.tag)); return { tag: l.tag, title: l.title, level: l.level, minutes: l.minutes, best: best?.score || null }; });
+  const lessons = LESSONS.map((l) => { const best = bestOf(by("lesson", l.tag)); const st = islandOfTag(l.tag); return { tag: l.tag, title: l.title, en: TAG_EN[l.tag] || "", level: l.level, minutes: l.minutes, stage: st ? { id: st.id, title: st.title, en: st.en } : null, best: best?.score || null }; });
   const placement = await Placement.findOne({ user: userId, stage: "done", result: { $ne: null } }).sort("-finishedAt").select("result.level result.skills.weak result.recommendation finishedAt").lean();
   const weakHistory = {};
   for (const a of done.filter((x) => x.kind === "weak")) (weakHistory[a.refId] ||= []).unshift({ pct: a.score?.pct ?? 0, at: a.finishedAt });
@@ -34,7 +35,7 @@ export async function overview(userId) {
   const practised = Object.keys(weakHistory).filter((t) => !weak.some((w) => w.tag === t)).map((t) => ({ tag: t, label: TAGS[t]?.label || t, history: weakHistory[t], hasLesson: LESSONS.some((l) => l.tag === t) }));
   return {
     tracks: [
-      { ...TRACKS.general, lessons },
+      { ...TRACKS.general, lessons, stages: ISLANDS.map((i) => ({ id: i.id, title: i.title, en: i.en, level: i.level })) },
       { ...TRACKS.ielts, modules: modules("ielts"), writing: writing("ielts") },
       { ...TRACKS.toefl, modules: modules("toefl"), writing: writing("toefl") },
     ],

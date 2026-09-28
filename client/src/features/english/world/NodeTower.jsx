@@ -19,7 +19,7 @@ export default function NodeTower({ node, pos, tone, quest, player, friends = []
         {player && <MapPin size={22} color={C.red} fill={C.red} aria-hidden="true" className="world-walk" style={{ position: "absolute", top: -26, left: "50%", transform: "translateX(-50%)" }} />}
       </button>
       <div aria-hidden="true" style={{ position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", marginTop: S.xs, whiteSpace: "nowrap", fontSize: T.xs, fontWeight: 700, color: locked ? C.muted : C.text, background: alpha(C.surface, 0.85), borderRadius: R.pill, padding: `${S.xs}px ${S.lg}px` }}>
-        {node.title}{node.pct !== null && !mastered ? <span className="madar-num" style={{ color: C.muted }}> {num(node.pct)}٪</span> : null}
+        <span dir="ltr">{node.en || node.title}</span>{node.pct !== null && !mastered ? <span className="madar-num" style={{ color: C.muted }}> {num(node.pct)}٪</span> : null}
       </div>
       {friends.length > 0 && (
         <div aria-hidden="true" style={{ position: "absolute", bottom: "100%", insetInlineEnd: -6, display: "flex", gap: 2, marginBottom: 2 }}>

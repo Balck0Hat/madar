@@ -1,12 +1,12 @@
-import { BookOpenText, Headphones, PenLine, Check } from "lucide-react";
+import { BookOpenText, Headphones, PenLine } from "lucide-react";
 import { C, R, S, T, alpha } from "../../../shared/constants/theme";
 import { useAsync } from "../../../shared/hooks/useAsync";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { TopBar, Skeleton, ErrorState, Card } from "../../../shared/components/ui";
 import { getTracks } from "../services/english.service";
+import GeneralLessons from "./GeneralLessons";
 
 const ICON = { reading: BookOpenText, listening: Headphones, writing: PenLine };
-const LEVELS = ["A1", "A2", "B1", "B2", "C1"];
 
 function Row({ icon: Icon, title, sub, right, onClick }) {
   return (
@@ -36,21 +36,7 @@ export default function TrackScreen({ track: trackId, onBack, onModule, onWritin
   if (error || !track) return shell(<ErrorState message={error?.message || "المسار غير موجود"} onRetry={reload} onBack={onBack} />);
   const pill = (text, tone = C.gold) => <span className="madar-num" style={{ fontSize: T.xs, fontWeight: 700, color: tone, background: alpha(tone, 0.12), borderRadius: R.pill, padding: `${S.xs}px ${S.x2}px`, flexShrink: 0 }}>{text}</span>;
 
-  if (trackId === "general") return shell(
-    <>
-      <p style={{ color: C.muted, lineHeight: 1.8, margin: 0 }}>{track.text}</p>
-      {LEVELS.map((lv) => {
-        const ls = track.lessons.filter((l) => l.level === lv);
-        return ls.length ? (
-          <div key={lv} style={{ display: "grid", gap: S.lg }}>
-            <div style={{ fontWeight: 700, fontSize: T.sm, color: C.muted }}>المستوى {lv}</div>
-            {ls.map((l) => <Row key={l.tag} icon={BookOpenText} title={l.title} sub={`نحو ${num(l.minutes)} دقيقة · شرح وتمرين من 8 أسئلة`} onClick={() => onLesson(l.tag)}
-              right={l.best ? pill(l.best.pct >= 75 ? <><Check size={12} aria-hidden="true" /> {num(l.best.pct)}٪</> : `${num(l.best.pct)}٪`, l.best.pct >= 75 ? C.green : C.gold) : null} />)}
-          </div>
-        ) : null;
-      })}
-    </>,
-  );
+  if (trackId === "general") return shell(<GeneralLessons track={track} onLesson={onLesson} />);
   return shell(
     <>
       <p style={{ color: C.muted, lineHeight: 1.8, margin: 0 }}>{track.text} المحادثة ستُضاف لاحقاً.</p>

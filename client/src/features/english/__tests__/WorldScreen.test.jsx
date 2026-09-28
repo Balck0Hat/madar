@@ -23,9 +23,9 @@ describe("WorldScreen", () => {
   it("should draw the islands, mark locked nodes, show the quest, and open a node sheet with lesson and practice", async () => {
     const onLesson = vi.fn(), onPractice = vi.fn();
     render(<WorldScreen onBack={() => {}} onLesson={onLesson} onPractice={onPractice} onBoss={() => {}} onList={() => {}} />);
-    expect(await screen.findByRole("region", { name: "جزيرة أساس الجملة" })).toBeInTheDocument();
-    expect(screen.getByText(/مهمة اليوم: الضمائر/)).toBeInTheDocument();
-    expect(screen.getByText("اجتز زعيم الجزيرة السابقة")).toBeInTheDocument(); // ضباب الجزيرة المقفلة
+    expect(await screen.findByRole("region", { name: "محطة أساس الجملة" })).toBeInTheDocument();
+    expect(screen.getByText((_, el) => el?.tagName === "DIV" && /^مهمة اليوم: الضمائر/.test(el.textContent))).toBeInTheDocument();
+    expect(screen.getByText("اجتز زعيم المحطة السابقة")).toBeInTheDocument(); // ضباب الجزيرة المقفلة
     fireEvent.click(screen.getByRole("button", { name: /أدوات التعريف · مقفل/ }));
     expect(await screen.findByRole("dialog", { name: "أدوات التعريف" })).toBeInTheDocument();
     expect(screen.getByText(/أتقن أولاً: الضمائر/)).toBeInTheDocument();
@@ -52,7 +52,7 @@ describe("WorldScreen", () => {
   it("should render the scene flat when the user prefers reduced motion", async () => {
     reduced = true;
     const { container } = render(<WorldScreen onBack={() => {}} onLesson={() => {}} onPractice={() => {}} onBoss={() => {}} onList={() => {}} />);
-    await screen.findByRole("region", { name: "جزيرة أساس الجملة" });
+    await screen.findByRole("region", { name: "محطة أساس الجملة" });
     const scene = container.querySelector(".world-scene");
     expect(scene.style.transform).toBe("none"); // بلا ميلان؛ والحركات تُعطَّل في CSS بقاعدة prefers-reduced-motion
     reduced = false;

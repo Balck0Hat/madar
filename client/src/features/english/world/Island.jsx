@@ -19,10 +19,10 @@ export default function Island({ island, index, focusedTag, quest, player, frien
   const boss = bossPos(n);
   const bossOpen = island.boss.status !== "locked";
   return (
-    <section aria-label={`جزيرة ${island.title}`} className={island.open ? "world-float" : undefined}
+    <section aria-label={`محطة ${island.title}`} className={island.open ? "world-float" : undefined}
       style={{ position: "relative", width: "100%", animationDelay: `${index * 700}ms`, transform: focused ? "scale(1.03)" : undefined, transition: "transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s", opacity: dim ? 0.55 : 1 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: S.lg, marginBottom: S.sm }}>
-        <h2 style={{ margin: 0, fontSize: T.lg, fontWeight: 700, color: island.open ? C.text : C.muted, background: alpha(C.surface, 0.9), borderRadius: R.pill, padding: `${S.sm}px ${S.x3}px`, borderInlineStart: `4px solid ${tone}` }}>{island.title}</h2>
+        <h2 style={{ margin: 0, fontSize: T.lg, fontWeight: 700, color: island.open ? C.text : C.muted, background: alpha(C.surface, 0.9), borderRadius: R.pill, padding: `${S.sm}px ${S.x3}px`, borderInlineStart: `4px solid ${tone}` }}><span dir="ltr">{island.en || island.title}</span>{island.en && <span style={{ fontSize: T.sm, fontWeight: 400, color: C.muted }}> · {island.title}</span>}</h2>
         <span className="madar-num" style={{ fontSize: T.xs, color: C.muted, background: alpha(C.surface, 0.9), borderRadius: R.pill, padding: `${S.sm}px ${S.x2}px` }}>{island.level} · {num(island.mastered)} من {num(n)}</span>
       </div>
       <div style={{ position: "relative", aspectRatio: `100 / ${h}` }}>
@@ -44,7 +44,7 @@ export default function Island({ island, index, focusedTag, quest, player, frien
         </button>
         {!island.open && (
           <div aria-hidden="true" className="world-fog" style={{ position: "absolute", inset: -8, borderRadius: R.x4, background: `radial-gradient(ellipse at center, ${alpha(GLASS, 0.3)}, ${alpha(GLASS, 0.6)})`, backdropFilter: "blur(1.5px)", display: "grid", placeItems: "center", color: C.muted, fontWeight: 700, fontSize: T.sm }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: S.md, background: alpha(C.surface, 0.9), borderRadius: R.pill, padding: `${S.md}px ${S.x3}px` }}><Lock size={14} aria-hidden="true" />اجتز زعيم الجزيرة السابقة</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: S.md, background: alpha(C.surface, 0.9), borderRadius: R.pill, padding: `${S.md}px ${S.x3}px` }}><Lock size={14} aria-hidden="true" />اجتز زعيم المحطة السابقة</span>
           </div>
         )}
       </div>

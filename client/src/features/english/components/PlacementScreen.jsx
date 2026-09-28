@@ -12,7 +12,7 @@ import PlacementIntro from "./PlacementIntro";
 import StageTimer from "./StageTimer";
 
 const STAGES = ["grammar", "reading", "listening", "writing", "done"];
-const LABEL = { grammar: "قواعد ومفردات", reading: "قراءة", listening: "استماع", writing: "كتابة", done: "النتيجة" };
+const LABEL = { grammar: "قواعد", reading: "قراءة", listening: "استماع", writing: "كتابة", done: "النتيجة" };
 
 // اختبار تحديد المستوى: مرحلة تلو الأخرى، والخادم يقرر السؤال التالي ومستواه ويحفظ مؤقّت كل جزء.
 // الكتابة اختيارية وتُصحَّح في الخلفية؛ صفحة النتيجة تتحدّث حين ينتهي التصحيح.
@@ -48,9 +48,13 @@ export default function PlacementScreen({ onBack, onGo }) {
       <TopBar title="تحديد المستوى" onBack={onBack} />
       <div style={{ padding: `0 ${S.x4}px`, display: "grid", gap: S.x3 }}>
         {session && session.stage !== "done" && (
-          <div style={{ display: "flex", gap: S.sm }} aria-label="مراحل الاختبار">
-            {STAGES.slice(0, 4).map((st) => <span key={st} title={LABEL[st]} style={{ flex: 1, height: 4, borderRadius: R.pill, background: STAGES.indexOf(st) <= STAGES.indexOf(session.stage) ? C.gold : C.line }} />)}
-          </div>
+          <ol aria-label="مراحل الاختبار" style={{ display: "flex", gap: S.sm, listStyle: "none", margin: 0, padding: 0 }}>
+            {STAGES.slice(0, 4).map((st) => { const i = STAGES.indexOf(st), cur = STAGES.indexOf(session.stage); const on = i === cur; return (
+              <li key={st} aria-current={on ? "step" : undefined} style={{ flex: 1, display: "grid", gap: S.xs }}>
+                <span style={{ height: S.sm, borderRadius: R.pill, background: i <= cur ? C.gold : C.line }} />
+                <span style={{ fontSize: T.xs, textAlign: "center", color: on ? C.gold : i < cur ? C.text : C.muted, fontWeight: on ? 700 : 400, whiteSpace: "nowrap" }}>{LABEL[st]}</span>
+              </li>); })}
+          </ol>
         )}
         {session?.timer && session.stage !== "done" && session.stage !== "writing" && <StageTimer timer={session.timer} onExpire={expire} />}
         {notice && <div role="status" style={{ color: C.gold, fontSize: T.sm }}>{notice}</div>}

@@ -4,6 +4,7 @@ import { useAsync } from "../../../shared/hooks/useAsync";
 import { useNum } from "../../../shared/context/PrefsContext";
 import { TopBar, Skeleton, ErrorState, Btn } from "../../../shared/components/ui";
 import { getModule, startModule, submitSection } from "../services/english.service";
+import ModuleIntro from "./ModuleIntro";
 import PassageView from "./PassageView";
 import ListenBox from "./ListenBox";
 import QuestionItem from "./QuestionItem";
@@ -56,13 +57,7 @@ export default function ModuleScreen({ moduleId, onBack }) {
   if (!mod) return null;
 
   if (finished) return shell(<ModuleResult module={mod} score={attempt.score} onRetry={start} onBack={onBack} />);
-  if (!attempt) return shell(
-    <div style={{ display: "grid", gap: S.x3 }}>
-      <h1 style={{ fontSize: T.x4, fontWeight: 700, margin: 0 }}>{mod.title}</h1>
-      <p style={{ color: C.muted, lineHeight: 1.8, margin: 0 }}>{num(mod.sections.length)} أقسام · {num(mod.sections.reduce((n, s) => n + s.qs.length, 0))} سؤالاً · {num(mod.minutes)} دقيقة بمؤقّت واحد للوحدة كما في الامتحان. أجب عن أسئلة كل قسم ثم سلّمه لترى التصحيح والشرح.{mod.skill === "listening" ? " في الاستماع يُشغَّل الصوت مرة ويُعاد مرة واحدة." : ""}</p>
-      <Btn primary onClick={start}>ابدأ</Btn>
-    </div>,
-  );
+  if (!attempt) return shell(<ModuleIntro mod={mod} onStart={start} />);
   return shell(
     <div style={{ display: "grid", gap: S.x3 }}>
       <div style={{ color: C.muted, fontSize: T.xs }}>القسم {num(si + 1)} من {num(mod.sections.length)} · {num(section.qs.length)} أسئلة</div>

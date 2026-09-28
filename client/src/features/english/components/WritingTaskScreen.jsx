@@ -14,6 +14,18 @@ const words = (s) => String(s || "").trim().split(/\s+/).filter(Boolean).length;
 
 // مهمة كتابة آيلتس (جدول/رسم أو مقال) أو توفل (نقاش أكاديمي): المؤقّت يبدأ عند أول كتابة،
 // والتصحيح في الخلفية بمعيار المهمة، ثم الدرجة بمعاييرها والأخطاء والنصائح
+// عدّاد الكلمات: شريط يمتلئ حتى الحد المطلوب ولونه يتحول للأخضر، وجملة تقول كم بقي
+const MIN_SEND = 20; // أقل من هذا لا يُصحَّح
+const WordMeter = ({ n, target }) => {
+  const num = useNum(); const ok = n >= target; const tone = ok ? C.green : C.gold;
+  return (
+    <div role="status" aria-live="polite" style={{ display: "grid", gap: S.sm }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: T.sm }}><span style={{ color: ok ? C.green : C.text, fontWeight: 600 }}>{ok ? "وصلت الحد المطلوب" : n < MIN_SEND ? `اكتب ${num(MIN_SEND - n)} كلمة على الأقل لتتمكن من الإرسال` : `بقي ${num(target - n)} كلمة للحد المطلوب؛ الأقصر يخسر درجات في الامتحان`}</span><span className="madar-num" style={{ color: C.muted }}>{num(n)} / {num(target)}</span></div>
+      <div style={{ height: S.md, borderRadius: R.pill, background: C.line, overflow: "hidden" }}><div style={{ width: `${Math.min(100, (n / target) * 100)}%`, height: "100%", background: tone, borderRadius: R.pill, transition: "width .2s" }} /></div>
+    </div>
+  );
+};
+
 export default function WritingTaskScreen({ taskId, onBack }) {
   const num = useNum();
   const { data, loading, error, reload } = useAsync(() => getWritingTask(taskId), [taskId]);
@@ -69,10 +81,10 @@ export default function WritingTaskScreen({ taskId, onBack }) {
       ))}
       {task.tips && <ul style={{ margin: 0, paddingInlineStart: S.x5, color: C.muted, fontSize: T.sm, lineHeight: 1.8 }}>{task.tips.map((t, i) => <li key={i}>{t}</li>)}</ul>}
       {startedAt ? <StageTimer timer={{ startedAt, budget: task.minutes * 60, now: Date.now() }} /> : <div style={{ color: C.muted, fontSize: T.sm }}>المؤقّت ({num(task.minutes)} دقيقة) يبدأ عند أول كلمة تكتبها.</div>}
-      <div style={{ color: C.muted, fontSize: T.sm, textAlign: "end" }}>{num(n)} كلمة · المطلوب {num(task.words)} فأكثر</div>
+      <WordMeter n={n} target={task.words} />
       <textarea dir="ltr" value={text} onChange={(e) => { if (!startedAt) setStartedAt(new Date().toISOString()); setText(e.target.value); }} aria-label="نصّ الكتابة" rows={12} placeholder="Write here…" spellCheck={false}
         style={{ ...inputStyle, fontFamily: "Georgia, serif", fontSize: T.lg, lineHeight: 1.7, textAlign: "left", minHeight: 260, resize: "vertical" }} />
-      <Btn primary disabled={busy || n < 20} onClick={send}>{busy ? "جارٍ الإرسال…" : "أرسل للتصحيح"}</Btn>
+      <Btn primary disabled={busy || n < MIN_SEND} onClick={send}>{busy ? "جارٍ الإرسال…" : "أرسل للتصحيح"}</Btn>
     </div>,
   );
 }

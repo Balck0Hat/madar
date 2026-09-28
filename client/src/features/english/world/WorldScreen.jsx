@@ -13,7 +13,7 @@ import WorldScene from "./WorldScene";
 import Island from "./Island";
 import NodeSheet from "./NodeSheet";
 
-// عالم القواعد: خمس جزر على مشهد مائل. الهاتف: عمودياً ولوح من الأسفل. الحاسوب: شبكة ولوح جانبي.
+// خريطة محطة واحدة من رحلة القواعد (أو كل المحطات بلا stageId) على مشهد مائل. الهاتف: عمودياً ولوح من الأسفل. الحاسوب: شبكة ولوح جانبي.
 // الضغط على عقدة «ينزل» الكاميرا عليها ثم يفتح بطاقتها.
 export default function WorldScreen({ stageId = null, onBack, onLesson, onPractice, onBoss, onList }) {
   const num = useNum();
@@ -35,19 +35,21 @@ export default function WorldScreen({ stageId = null, onBack, onLesson, onPracti
 
   const shell = (children) => (
     <div className="madar-in madar-tabpad madar-col">
-      <TopBar title={(stageId && world?.islands.find((i) => i.id === stageId)?.title) || "خريطة القواعد"} onBack={onBack} right={<Btn small full={false} paper onClick={onList}><span style={{ display: "inline-flex", alignItems: "center", gap: S.md }}><List size={14} aria-hidden="true" />قائمة</span></Btn>} />
+      <TopBar title={(stageId && world?.islands.find((i) => i.id === stageId)?.en) || "خريطة القواعد"} onBack={onBack} right={<Btn small full={false} paper onClick={onList}><span style={{ display: "inline-flex", alignItems: "center", gap: S.md }}><List size={14} aria-hidden="true" />قائمة</span></Btn>} />
       <div style={{ padding: `0 ${S.x4}px`, display: "grid", gap: S.x3 }}>{children}</div>
     </div>
   );
   if (loading) return shell(<Skeleton lines={8} />);
   if (error) return shell(<ErrorState message={error.message} onRetry={reload} onBack={onBack} />);
 
-  const questNode = world.quest ? nodes[world.quest] : null;
+  const stage = stageId ? world.islands.find((i) => i.id === stageId) : null;
+  const questNode = world.quest && (!stage || stage.nodes.some((n) => n.tag === world.quest)) ? nodes[world.quest] : null;
+  const doneHere = stage ? stage.mastered : world.mastered, totalHere = stage ? stage.nodes.length : world.total;
   const header = (
     <div style={{ display: "flex", alignItems: "center", gap: S.lg, flexWrap: "wrap", background: C.surface, border: `1px solid ${C.line}`, borderRadius: R.x2, padding: `${S.x2}px ${S.x3}px` }}>
       <div style={{ flex: 1, minWidth: 160 }}>
-        <div style={{ fontWeight: 700 }}>أتقنت <span className="madar-num">{num(world.mastered)}</span> من <span className="madar-num">{num(world.total)}</span> موضوعاً · <span className="madar-num">{num(world.bosses)}</span> زعماء</div>
-        {questNode && <div style={{ color: C.muted, fontSize: T.sm, marginTop: S.xs }}>مهمة اليوم: {questNode.title}</div>}
+        <div style={{ fontWeight: 700 }}>أتقنت <span className="madar-num">{num(doneHere)}</span> من <span className="madar-num">{num(totalHere)}</span> {stage ? "دروس هذه المحطة" : "موضوعاً"}{stage ? (stage.boss.status === "passed" ? " · اجتزت الزعيم" : "") : <> · <span className="madar-num">{num(world.bosses)}</span> محطات مجتازة</>}</div>
+        {questNode && <div style={{ color: C.muted, fontSize: T.sm, marginTop: S.xs }}>مهمة اليوم: <span dir="ltr">{questNode.en || questNode.title}</span>{questNode.en ? ` · ${questNode.title}` : ""}</div>}
       </div>
       <Btn primary full={false} small onClick={resume}><span style={{ display: "inline-flex", alignItems: "center", gap: S.md }}><Navigation size={14} aria-hidden="true" />ابدأ من حيث توقفت</span></Btn>
     </div>
@@ -69,7 +71,7 @@ export default function WorldScreen({ stageId = null, onBack, onLesson, onPracti
         <div style={{ display: "grid", gap: S.x6 }}>{islands}</div>
       </WorldScene>
       {sheet}
-      <div style={{ color: C.muted, fontSize: T.xs, lineHeight: 1.7, background: alpha(C.gold, 0.06), borderRadius: R.lg, padding: S.x2 }}>أتقن الموضوع بـ75٪ في تمرينه لتُفتح العقدة التالية، وأتقن كل الجزيرة ليظهر زعيمها؛ اجتيازه يبني الجسر إلى الجزيرة التالية. جزيرة الكلمات مفتوحة دائماً.</div>
+      <div style={{ color: C.muted, fontSize: T.xs, lineHeight: 1.7, background: alpha(C.gold, 0.06), borderRadius: R.lg, padding: S.x2 }}>أتقن الدرس بـ75٪ في تمرينه ليُفتح الدرس التالي. أتقن كل دروس المحطة ليظهر زعيمها، واجتيازه يفتح المحطة التالية في رحلتك.</div>
     </>,
   );
 }

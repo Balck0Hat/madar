@@ -14,7 +14,7 @@ export default function MindMap({ data, dimmed, selected, onSelect, height = 620
   const [view, setView] = useState({ x: 0, y: 0, z: 1 });
   const drag = useRef(null);
   const fit = () => { const el = box.current; if (!el) return; const z = Math.min(ZOOM.max, Math.max(ZOOM.min, Math.min(el.clientWidth / data.width, el.clientHeight / data.height) * 0.96)); setView({ x: el.clientWidth / 2, y: el.clientHeight / 2, z }); };
-  const home = () => { const el = box.current; if (!el) return; setView({ x: el.clientWidth / 2, y: el.clientHeight / 2, z: 0.6 }); }; // بداية مقروءة حول المركز
+  const home = () => { const el = box.current; if (!el) return; setView({ x: el.clientWidth / 2, y: el.clientHeight / 2, z: el.clientWidth < 600 ? 0.9 : 0.75 }); }; // بداية مقروءة حول المركز: الأزرار بحجم لمس حقيقي على الهاتف
   useEffect(() => { home(); }, [data.width, data.height]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!selected || !box.current) return;
